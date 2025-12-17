@@ -37,8 +37,6 @@ MonoBehaviour:
     Version: 3.0.0
   - Name: cn.etetet.proto
     Version: 3.0.2
-  - Name: cn.etetet.packagemanager
-    Version: 1.0.7
   - Name: cn.etetet.numeric
     Version: 3.0.0
   - Name: cn.etetet.netinner
@@ -145,6 +143,8 @@ MonoBehaviour:
     Version: 2.0.9
   - Name: cn.etetet.statesync
     Version: 3.0.12
+  - Name: cn.etetet.packagemanager
+    Version: 1.0.7
   BanPackageInfo: []
-  LastUpdateTime: 1765971596
+  LastUpdateTime: 1765962143
   UpdateInterval: 3600
