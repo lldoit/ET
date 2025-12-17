@@ -14,7 +14,7 @@
   },
   "relatedPackages": {},
   "dependencies": {
-    "cn.etetet.packagemanager": "1.0.0",
+    "cn.etetet.packagemanager": "1.0.7",
     "cn.etetet.actorlocation": "3.0.0",
     "cn.etetet.core": "3.0.3",
     "cn.etetet.loader": "3.0.1",
