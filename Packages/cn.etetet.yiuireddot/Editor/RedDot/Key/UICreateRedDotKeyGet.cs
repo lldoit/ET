@@ -19,7 +19,9 @@ namespace YIUIFramework.Editor
         }
 
         private const string m_EnumContent = @"
+#if ODIN_INSPECTOR
         [LabelText(""{0}"")]
+#endif
         public const int Key{1} = {1};
 ";
 

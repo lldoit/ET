@@ -1,4 +1,6 @@
-﻿using Sirenix.OdinInspector;
+﻿#if ODIN_INSPECTOR
+using Sirenix.OdinInspector;
+#endif
 
 namespace ET
 {
@@ -9,7 +11,9 @@ namespace ET
     [UniqueId]
     public static class ERedDotKeyType
     {
+#if ODIN_INSPECTOR
         [LabelText("无")]
+#endif
         public const int None = 0;
 ${Content}
 
