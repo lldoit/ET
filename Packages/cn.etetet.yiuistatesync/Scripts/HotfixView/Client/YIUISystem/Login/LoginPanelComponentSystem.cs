@@ -30,7 +30,7 @@ namespace ET.Client
         [YIUIInvoke(LoginPanelComponent.OnEventLoginInvoke)]
         private static async ETTask OnEventLoginInvoke(this LoginPanelComponent self)
         {
-            Log.Info($"登录");
+            Log.Info("登录");
             GlobalComponent globalComponent = self.Root().GetComponent<GlobalComponent>();
             await LoginHelper.Login(self.Root(),
                 globalComponent.GlobalConfig.Address,
