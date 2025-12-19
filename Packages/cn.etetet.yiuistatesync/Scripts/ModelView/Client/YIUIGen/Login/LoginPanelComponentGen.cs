@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using YIUIFramework;
 using System.Collections.Generic;
@@ -22,8 +22,6 @@ namespace ET.Client
         public YIUIWindowComponent UIWindow => u_UIWindow;
         public EntityRef<YIUIPanelComponent> u_UIPanel;
         public YIUIPanelComponent UIPanel => u_UIPanel;
-        public UnityEngine.UI.InputField u_ComAccount;
-        public UnityEngine.UI.InputField u_ComPassword;
         public UITaskEventP0 u_EventLogin;
         public UITaskEventHandleP0 u_EventLoginHandle;
         public const string OnEventLoginInvoke = "LoginPanelComponent.OnEventLoginInvoke";
