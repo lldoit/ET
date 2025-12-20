@@ -6,7 +6,8 @@ namespace ET.Client
 	{
 		protected override async ETTask Run(Scene scene, LoginFinish args)
 		{
-			await scene.YIUIRoot().OpenPanelAsync<LobbyPanelComponent>();
+			await ETTask.CompletedTask;
+			//await scene.YIUIRoot().OpenPanelAsync<LobbyPanelComponent>();
 		}
 	}
 }

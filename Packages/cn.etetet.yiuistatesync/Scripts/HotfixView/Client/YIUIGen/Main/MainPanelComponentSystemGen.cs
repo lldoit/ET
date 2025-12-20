@@ -30,13 +30,13 @@ namespace ET.Client
             self.u_UIBase = self.GetParent<YIUIChild>();
             self.u_UIWindow = self.UIBase.GetComponent<YIUIWindowComponent>();
             self.u_UIPanel = self.UIBase.GetComponent<YIUIPanelComponent>();
-            self.UIWindow.WindowOption = EWindowOption.None;
+            self.UIWindow.WindowOption = EWindowOption.BanOpenTween|EWindowOption.BanCloseTween;
             self.UIPanel.Layer = EPanelLayer.Panel;
-            self.UIPanel.PanelOption = EPanelOption.TimeCache;
-            self.UIPanel.StackOption = EPanelStackOption.VisibleTween;
+            self.UIPanel.PanelOption = EPanelOption.ForeverCache;
+            self.UIPanel.StackOption = EPanelStackOption.Visible;
             self.UIPanel.Priority = 0;
-            self.UIPanel.CachePanelTime = 10;
 
+            self.u_DataViewTable = self.UIBase.DataTable.FindDataValue<YIUIFramework.UIDataValueInt>("u_DataViewTable");
 
         }
     }

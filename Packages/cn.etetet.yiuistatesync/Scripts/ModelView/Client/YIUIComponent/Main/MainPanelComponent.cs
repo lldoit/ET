@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace ET.Client
 {
-    public partial class MainPanelComponent : Entity
+    public partial class MainPanelComponent : Entity, IYIUIOpen<EMainPanelViewEnum>
     {
 
     }
