@@ -6,6 +6,7 @@ using JetBrains.Annotations;
 using JetBrains.Rider.PathLocator;
 using Packages.Rider.Editor.ProjectGeneration;
 using Packages.Rider.Editor.Util;
+using Rider.Editor.Util;
 using Unity.CodeEditor;
 using UnityEditor;
 using UnityEngine;
@@ -17,10 +18,11 @@ namespace Packages.Rider.Editor
   [InitializeOnLoad]
   internal class RiderScriptEditor : IExternalCodeEditor
   {
-    IDiscovery m_Discoverability;
-    static IGenerator m_ProjectGeneration;
-    RiderInitializer m_Initiliazer = new RiderInitializer();
-    static RiderScriptEditor m_RiderScriptEditor;
+    private IDiscovery m_Discoverability;
+    private static IGenerator m_ProjectGeneration;
+    private RiderInitializer m_Initiliazer = new RiderInitializer();
+    private static RiderScriptEditor m_RiderScriptEditor;
+    private static GUIStyle m_InfoLabelStyle => new GUIStyle("ControlLabel") { wordWrap = true };
 
     static RiderScriptEditor()
     {
@@ -134,7 +136,7 @@ namespace Packages.Rider.Editor
       EditorGUI.indentLevel--;
     }
 
-    void RegenerateProjectFiles()
+    private void RegenerateProjectFiles()
     {
       var rect = EditorGUI.IndentedRect(EditorGUILayout.GetControlRect(new GUILayoutOption[] {}));
       rect.width = 252;
@@ -144,7 +146,7 @@ namespace Packages.Rider.Editor
       }
     }
 
-    void SettingsButton(ProjectGenerationFlag preference, string guiMessage, string toolTip)
+    private void SettingsButton(ProjectGenerationFlag preference, string guiMessage, string toolTip)
     {
       var prevValue = m_ProjectGeneration.AssemblyNameProvider.ProjectGenerationFlag.HasFlag(preference);
       var newValue = EditorGUILayout.Toggle(new GUIContent(guiMessage, toolTip), prevValue);
@@ -311,13 +313,13 @@ namespace Packages.Rider.Editor
         return false;
       }
       
-      //if (!IsUnityScript(path))
-      //{
-      //  m_ProjectGeneration.SyncIfNeeded(affectedFiles: new string[] { }, new string[] { });
-      //  var fastOpenResult = EditorPluginInterop.OpenFileDllImplementation(path, line, column);
-      //  if (fastOpenResult)
-      //    return true;
-      //}
+      if (!IsUnityScript(path))
+      {
+        m_ProjectGeneration.SyncIfNeeded(affectedFiles: new string[] { }, new string[] { });
+        var fastOpenResult = EditorPluginInterop.OpenFileDllImplementation(path, line, column);
+        if (fastOpenResult)
+          return true;
+      }
       
       var slnFile = GetSolutionFile(path);
       return Discovery.RiderFileOpener.OpenFile(CurrentEditor, slnFile, path, line, column);
@@ -325,21 +327,21 @@ namespace Packages.Rider.Editor
 
     private string GetSolutionFile(string path)
     {
-      //if (IsUnityScript(path))
-      //{
-      //  return Path.Combine(GetBaseUnityDeveloperFolder(), "Projects/CSharp/Unity.CSharpProjects.gen.sln");
-      //}
-//
-      //var solutionFile = m_ProjectGeneration.SolutionFile();
-      //if (File.Exists(solutionFile))
-      //{
-      //  return solutionFile;
-      //}
+      if (IsUnityScript(path))
+      {
+        return Path.Combine(GetBaseUnityDeveloperFolder(), "Projects/CSharp/Unity.CSharpProjects.gen.sln");
+      }
 
-      return System.IO.Path.GetFullPath("./ET.sln");
+      var solutionFile = m_ProjectGeneration.SolutionFile();
+      if (File.Exists(solutionFile))
+      {
+        return solutionFile;
+      }
+
+      return "";
     }
 
-    static bool IsUnityScript(string path)
+    private static bool IsUnityScript(string path)
     {
       if (UnityEditor.Unsupported.IsDeveloperBuild())
       {
@@ -356,7 +358,7 @@ namespace Packages.Rider.Editor
       return false;
     }
 
-    static string GetBaseUnityDeveloperFolder()
+    private static string GetBaseUnityDeveloperFolder()
     {
       return Directory.GetParent(EditorApplication.applicationPath).Parent.Parent.FullName;
     }

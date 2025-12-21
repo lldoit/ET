@@ -117,13 +117,24 @@ namespace Packages.Rider.Editor.ProjectGeneration
 
     private bool HasFilesBeenModified(IEnumerable<string> affectedFiles, IEnumerable<string> reimportedFiles)
     {
-      return affectedFiles.Any(ShouldFileBePartOfSolution) || reimportedFiles.Any(ShouldSyncOnReimportedAsset);
+      return affectedFiles.Any(it => ShouldFileBePartOfSolution(it) || ShouldSyncOnAffectedFiles(it)) 
+             || reimportedFiles.Any(ShouldSyncOnReimportedAsset);
+    }
+
+    private static bool ShouldSyncOnAffectedFiles(string asset)
+    {
+      var extension = Path.GetExtension(asset);
+      // https://docs.unity3d.com/6000.2/Documentation/ScriptReference/Compilation.ScriptCompilerOptions.RoslynAdditionalFilePaths.html
+      // Source Generated files should get updated, when the additionalfile files are renamed/moved
+      return extension.Equals(".additionalfile", StringComparison.OrdinalIgnoreCase); 
     }
 
     private static bool ShouldSyncOnReimportedAsset(string asset)
     {
       var extension = Path.GetExtension(asset);
-      return extension == ".asmdef" || extension == ".asmref" || Path.GetFileName(asset) == "csc.rsp";
+      return extension.Equals(".asmdef", StringComparison.OrdinalIgnoreCase) ||
+             extension.Equals(".asmref", StringComparison.OrdinalIgnoreCase) ||
+             Path.GetFileName(asset).Equals("csc.rsp", StringComparison.OrdinalIgnoreCase);
     }
 
     public void Sync()
@@ -274,7 +285,12 @@ namespace Packages.Rider.Editor.ProjectGeneration
               a.EndsWith("UnityEngine.CoreModule.dll", StringComparison.Ordinal)).ToArray();
           }
 
-          projectParts.Add(AddProjectPart(assembly, riderAssembly, coreReferences, additionalAssets));
+          var rootNamespace = string.Empty;
+#if UNITY_2020_2_OR_NEWER
+          if (additionalAssets.Any()) 
+            rootNamespace = CompilationPipeline.GetAssemblyRootNamespaceFromScriptPath(additionalAssets.First());
+#endif
+          projectParts.Add(AddProjectPart(assembly, riderAssembly, coreReferences, additionalAssets, rootNamespace));
         }
       }
 
@@ -290,7 +306,7 @@ namespace Packages.Rider.Editor.ProjectGeneration
     }
 
     private static ProjectPart AddProjectPart(string assemblyName, Assembly riderAssembly, string[] coreReferences,
-      List<string> additionalAssets)
+      List<string> additionalAssets, string rootNamespace)
     {
       Assembly assembly = null;
       if (riderAssembly != null)
@@ -301,7 +317,12 @@ namespace Packages.Rider.Editor.ProjectGeneration
           new []{"UNITY_EDITOR"},
           Array.Empty<Assembly>(),
           coreReferences,
-          riderAssembly.flags);
+          riderAssembly.flags
+#if UNITY_2020_2_OR_NEWER
+          , new ScriptCompilerOptions(),
+          rootNamespace
+#endif
+          );
       }
       return new ProjectPart(assemblyName, assembly, additionalAssets);
     }
@@ -643,7 +664,7 @@ namespace Packages.Rider.Editor.ProjectGeneration
 
     public string SolutionFile()
     {
-      return Path.Combine(ProjectDirectory, $"Unity.sln");
+      return Path.Combine(ProjectDirectory, $"{m_ProjectName}.sln");
     }
 
     private void ProjectHeader(StringBuilder stringBuilder, ProjectPart assembly, List<ResponseFileData> responseFilesData)

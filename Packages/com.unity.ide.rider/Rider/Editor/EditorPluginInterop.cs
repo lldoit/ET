@@ -3,13 +3,14 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.CompilerServices;
+using UnityEditor.Build.Reporting;
 using Debug = UnityEngine.Debug;
 
 namespace Packages.Rider.Editor
 {
   internal static class EditorPluginInterop
   {
-    private static string EditorPluginAssemblyNamePrefix = "JetBrains.Rider.Unity.Editor.Plugin.";
+    public static readonly string EditorPluginAssemblyNamePrefix = "JetBrains.Rider.Unity.Editor.Plugin.";
     public static readonly string EditorPluginAssemblyName = $"{EditorPluginAssemblyNamePrefix}Net46.Repacked";
     public static readonly string EditorPluginAssemblyNameFallback = $"{EditorPluginAssemblyNamePrefix}Full.Repacked";
     private static string ourEntryPointTypeName = "JetBrains.Rider.Unity.Editor.PluginEntryPoint";
