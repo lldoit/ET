@@ -11,8 +11,10 @@ namespace ET.Client
     /// </summary>
     public enum EMainPanelViewEnum
     {
-        HeroesView = 1,
-        LobbyView = 2,
+        ShopView = 1,
+        HeroesView = 2,
+        LobbyView = 3,
+        BagView = 4,
     }
     /// <summary>
     /// 由YIUI工具自动创建 请勿修改
@@ -30,6 +32,7 @@ namespace ET.Client
         public YIUIWindowComponent UIWindow => u_UIWindow;
         public EntityRef<YIUIPanelComponent> u_UIPanel;
         public YIUIPanelComponent UIPanel => u_UIPanel;
+        public UnityEngine.RectTransform u_ComTabMenuRectTransform;
         public YIUIFramework.UIDataValueInt u_DataViewTable;
 
     }

@@ -11,13 +11,13 @@ namespace ET.Client
         [EntitySystem]
         private static void YIUIInitialize(this MainPanelComponent self)
         {
-            self.u_DataViewTable.AddValueChangeAction(ViewTableValueChange);
+            self.u_DataViewTable.AddValueChangeAction(ViewChangeAction);
         }
 
         [EntitySystem]
         private static void Destroy(this MainPanelComponent self)
         {
-            self.u_DataViewTable.RemoveValueChangeAction(ViewTableValueChange);
+            self.u_DataViewTable.RemoveValueChangeAction(ViewChangeAction);
         }
 
         [EntitySystem]
@@ -27,18 +27,39 @@ namespace ET.Client
             return true;
         }
 
-        public static async ETTask<bool> YIUIOpen(this MainPanelComponent self, EMainPanelViewEnum a)
+        [EntitySystem]
+        private static async ETTask<bool> YIUIOpen(this MainPanelComponent self, EMainPanelViewEnum a)
         {
-            self.u_DataViewTable.SetValue((int)a, false, false);
+            self.u_DataViewTable.SetValue((int)a, true, false);
 
             await self.UIPanel.OpenViewAsync(a.ToString());
 
             return true;
         }
 
-        private static void ViewTableValueChange(int arg1, int arg2)
+        private static void ViewChangeAction(int newValue, int oldValue)
         {
-            throw new NotImplementedException();
+            Fiber.Instance.Root.YIUIMgr().GetPanel<MainPanelComponent>()
+                    .UIPanel.OpenViewAsync(((EMainPanelViewEnum)newValue).ToString()).NoContext();
+        }
+
+        /// <summary>
+        /// 显示隐藏TabMenu
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="isShow"></param>
+        public static void ShowTab(this MainPanelComponent self, bool isShow)
+        {
+            self.u_ComTabMenuRectTransform.gameObject.SetActive(isShow);
+        }
+
+        /// <summary>
+        /// 返回LobbyTab
+        /// </summary>
+        /// <param name="self"></param>
+        public static void BackLobby(this MainPanelComponent self)
+        {
+            self.u_DataViewTable.SetValue((int)EMainPanelViewEnum.LobbyView);
         }
 
         #region YIUIEvent开始

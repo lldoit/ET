@@ -36,6 +36,7 @@ namespace ET.Client
             self.UIPanel.StackOption = EPanelStackOption.Visible;
             self.UIPanel.Priority = 0;
 
+            self.u_ComTabMenuRectTransform = self.UIBase.ComponentTable.FindComponent<UnityEngine.RectTransform>("u_ComTabMenuRectTransform");
             self.u_DataViewTable = self.UIBase.DataTable.FindDataValue<YIUIFramework.UIDataValueInt>("u_DataViewTable");
 
         }
