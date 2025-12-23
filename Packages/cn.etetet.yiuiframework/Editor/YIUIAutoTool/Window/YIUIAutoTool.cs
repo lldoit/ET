@@ -49,6 +49,12 @@ namespace YIUIFramework.Editor
             EditorApplication.ExecuteMenuItem("Assets/Refresh");
         }
 
+        public static void Refresh()
+        {
+            AssetDatabase.SaveAssets();
+            EditorApplication.ExecuteMenuItem("Assets/Refresh");
+        }
+
         private FloatPrefs m_MenuWidthPrefs = new("YIUIAutoTool_MenuWidth", null, 300f);
 
         private float m_MenuWidth = 300f;

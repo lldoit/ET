@@ -74,7 +74,8 @@ namespace YIUIFramework.Editor
 
             MenuItemYIUIPanelSource.CreateYIUIPanelByPath(sourcePath, createName);
 
-            YIUIAutoTool.CloseWindowRefresh();
+            YIUIAutoTool.Refresh();
+            //YIUIAutoTool.CloseWindowRefresh();
         }
 
         public override void Initialize()
