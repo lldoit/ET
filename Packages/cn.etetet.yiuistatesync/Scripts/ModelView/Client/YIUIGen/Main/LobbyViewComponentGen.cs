@@ -29,6 +29,9 @@ namespace ET.Client
         public UIEventP0 u_EventHideMenu;
         public UIEventHandleP0 u_EventHideMenuHandle;
         public const string OnEventHideMenuInvoke = "LobbyViewComponent.OnEventHideMenuInvoke";
+        public UITaskEventP0 u_EventStage;
+        public UITaskEventHandleP0 u_EventStageHandle;
+        public const string OnEventStageInvoke = "LobbyViewComponent.OnEventStageInvoke";
 
     }
 }

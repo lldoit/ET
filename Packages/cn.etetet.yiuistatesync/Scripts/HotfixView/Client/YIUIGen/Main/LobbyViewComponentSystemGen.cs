@@ -39,6 +39,8 @@ namespace ET.Client
             self.u_EventMenuHandle = self.u_EventMenu.Add(self,LobbyViewComponent.OnEventMenuInvoke);
             self.u_EventHideMenu = self.UIBase.EventTable.FindEvent<UIEventP0>("u_EventHideMenu");
             self.u_EventHideMenuHandle = self.u_EventHideMenu.Add(self,LobbyViewComponent.OnEventHideMenuInvoke);
+            self.u_EventStage = self.UIBase.EventTable.FindEvent<UITaskEventP0>("u_EventStage");
+            self.u_EventStageHandle = self.u_EventStage.Add(self,LobbyViewComponent.OnEventStageInvoke);
 
         }
     }

@@ -44,6 +44,12 @@ namespace ET.Client
         {
             self.u_ComMenuRectTransform.gameObject.SetActive(false);
         }
+        
+        [YIUIInvoke(LobbyViewComponent.OnEventStageInvoke)]
+        private static async ETTask OnEventStageInvoke(this LobbyViewComponent self)
+        {
+            await self.YIUIMgr().Root.OpenPanelAsync<StagePanelComponent>();
+        }
         #endregion YIUIEvent结束
     }
 }
