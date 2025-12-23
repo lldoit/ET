@@ -34,6 +34,11 @@ namespace ET.Client
             self.UIView.ViewWindowType = EViewWindowType.View;
             self.UIView.StackOption = EViewStackOption.VisibleTween;
 
+            self.u_ComMenuRectTransform = self.UIBase.ComponentTable.FindComponent<UnityEngine.RectTransform>("u_ComMenuRectTransform");
+            self.u_EventMenu = self.UIBase.EventTable.FindEvent<UIEventP0>("u_EventMenu");
+            self.u_EventMenuHandle = self.u_EventMenu.Add(self,LobbyViewComponent.OnEventMenuInvoke);
+            self.u_EventHideMenu = self.UIBase.EventTable.FindEvent<UIEventP0>("u_EventHideMenu");
+            self.u_EventHideMenuHandle = self.u_EventHideMenu.Add(self,LobbyViewComponent.OnEventHideMenuInvoke);
 
         }
     }

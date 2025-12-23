@@ -22,6 +22,13 @@ namespace ET.Client
         public YIUIWindowComponent UIWindow => u_UIWindow;
         public EntityRef<YIUIViewComponent> u_UIView;
         public YIUIViewComponent UIView => u_UIView;
+        public UnityEngine.RectTransform u_ComMenuRectTransform;
+        public UIEventP0 u_EventMenu;
+        public UIEventHandleP0 u_EventMenuHandle;
+        public const string OnEventMenuInvoke = "LobbyViewComponent.OnEventMenuInvoke";
+        public UIEventP0 u_EventHideMenu;
+        public UIEventHandleP0 u_EventHideMenuHandle;
+        public const string OnEventHideMenuInvoke = "LobbyViewComponent.OnEventHideMenuInvoke";
 
     }
 }

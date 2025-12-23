@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using YIUIFramework;
 using System.Collections.Generic;
+using Sirenix.OdinInspector;
 
 namespace ET.Client
 {
@@ -31,6 +32,18 @@ namespace ET.Client
         }
 
         #region YIUIEvent开始
+        
+        [YIUIInvoke(LobbyViewComponent.OnEventMenuInvoke)]
+        private static void OnEventMenuInvoke(this LobbyViewComponent self)
+        {
+            self.u_ComMenuRectTransform.gameObject.SetActive(true);
+        }
+        
+        [YIUIInvoke(LobbyViewComponent.OnEventHideMenuInvoke)]
+        private static void OnEventHideMenuInvoke(this LobbyViewComponent self)
+        {
+            self.u_ComMenuRectTransform.gameObject.SetActive(false);
+        }
         #endregion YIUIEvent结束
     }
 }
