@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using YIUIFramework;
 using System.Collections.Generic;
+using UnityEngine.UI;
 
 namespace ET.Client
 {
@@ -11,11 +12,14 @@ namespace ET.Client
     /// Desc
     /// </summary>
     [FriendOf(typeof(BagViewComponent))]
+    [FriendOf(typeof(BagItemComponent))]
     public static partial class BagViewComponentSystem
     {
         [EntitySystem]
         private static void YIUIInitialize(this BagViewComponent self)
         {
+            self.m_Loop = self.AddChild<YIUILoopScrollChild, LoopScrollRect, Type, string>(self.u_ComLoopScrollVerticalGroup,
+                typeof(BagItemComponent), "u_EventSelect");
         }
 
         [EntitySystem]
@@ -33,6 +37,15 @@ namespace ET.Client
                 ShowTab = false
             });
             
+            List<int> list = new List<int>();
+            for (int i = 0; i < 50; i++)
+            {
+                list.Add(i);
+            }
+
+            self.Loop.ClearSelect();
+            self.Loop.SetDataRefresh(list, 0).NoContext();
+            
             return true;
         }
         
@@ -47,6 +60,21 @@ namespace ET.Client
             });
 
             return true;
+        }
+
+        [EntitySystem]
+        private static void YIUILoopRenderer(this BagViewComponent self, BagItemComponent item, int data, 
+        int index, bool select)
+        {
+            item.u_DataCount.SetValue(index);
+            //item.u_DataSelect.SetValue(select);
+        }
+
+        [EntitySystem]
+        private static void YIUILoopOnClick(this BagViewComponent self, BagItemComponent item, int data, int index,
+        bool select)
+        {
+            //item.u_DataSelect.SetValue(select);
         }
 
         #region YIUIEvent开始

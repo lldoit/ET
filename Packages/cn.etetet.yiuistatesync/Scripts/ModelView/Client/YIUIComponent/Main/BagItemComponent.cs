@@ -7,12 +7,11 @@ namespace ET.Client
 {
     /// <summary>
     /// Author  YIUI
-    /// Date    2025.12.22
+    /// Date    2025.12.24
     /// Desc
     /// </summary>
-    public partial class BagViewComponent : Entity, IYIUIClose
+    public partial class BagItemComponent : Entity
     {
-        public EntityRef<YIUILoopScrollChild> m_Loop;
-        public YIUILoopScrollChild Loop => m_Loop;
+
     }
 }

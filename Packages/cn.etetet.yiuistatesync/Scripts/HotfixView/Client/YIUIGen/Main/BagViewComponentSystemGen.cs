@@ -34,6 +34,7 @@ namespace ET.Client
             self.UIView.ViewWindowType = EViewWindowType.View;
             self.UIView.StackOption = EViewStackOption.VisibleTween;
 
+            self.u_ComLoopScrollVerticalGroup = self.UIBase.ComponentTable.FindComponent<UnityEngine.UI.LoopVerticalScrollRect>("u_ComLoopScrollVerticalGroup");
             self.u_EventBack = self.UIBase.EventTable.FindEvent<UIEventP0>("u_EventBack");
             self.u_EventBackHandle = self.u_EventBack.Add(self,BagViewComponent.OnEventBackInvoke);
 
