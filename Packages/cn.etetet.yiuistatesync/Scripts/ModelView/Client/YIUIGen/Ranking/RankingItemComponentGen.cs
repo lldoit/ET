@@ -11,16 +11,16 @@ namespace ET.Client
     /// </summary>
     [YIUI(EUICodeType.Common)]
     [ComponentOf(typeof(YIUIChild))]
-    public partial class BagItemComponent : Entity, IDestroy, IAwake, IYIUIBind, IYIUIInitialize
+    public partial class RankingItemComponent : Entity, IDestroy, IAwake, IYIUIBind, IYIUIInitialize
     {
-        public const string PkgName = "Main";
-        public const string ResName = "BagItem";
+        public const string PkgName = "Ranking";
+        public const string ResName = "RankingItem";
 
         public EntityRef<YIUIChild> u_UIBase;
         public YIUIChild UIBase => u_UIBase;
         public UIEventP0 u_EventSelect;
         public UIEventHandleP0 u_EventSelectHandle;
-        public const string OnEventSelectInvoke = "BagItemComponent.OnEventSelectInvoke";
+        public const string OnEventSelectInvoke = "RankingItemComponent.OnEventSelectInvoke";
 
     }
 }

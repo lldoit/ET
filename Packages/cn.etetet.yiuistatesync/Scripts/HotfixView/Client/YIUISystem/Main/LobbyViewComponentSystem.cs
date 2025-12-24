@@ -50,6 +50,12 @@ namespace ET.Client
         {
             await self.YIUIMgr().Root.OpenPanelAsync<StagePanelComponent>();
         }
+        
+        [YIUIInvoke(LobbyViewComponent.OnEventRankingInvoke)]
+        private static async ETTask OnEventRankingInvoke(this LobbyViewComponent self)
+        {
+            await self.YIUIMgr().Root.OpenPanelAsync<RankingPanelComponent, ERankingPanelViewEnum>(ERankingPanelViewEnum.RankingClanView);
+        }
         #endregion YIUIEvent结束
     }
 }

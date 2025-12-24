@@ -66,7 +66,7 @@ namespace ET.Client
         private static void YIUILoopRenderer(this BagViewComponent self, BagItemComponent item, int data, 
         int index, bool select)
         {
-            item.u_DataCount.SetValue(index);
+            //item.u_DataCount.SetValue(index);
             //item.u_DataSelect.SetValue(select);
         }
 

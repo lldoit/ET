@@ -41,6 +41,8 @@ namespace ET.Client
             self.u_EventHideMenuHandle = self.u_EventHideMenu.Add(self,LobbyViewComponent.OnEventHideMenuInvoke);
             self.u_EventStage = self.UIBase.EventTable.FindEvent<UITaskEventP0>("u_EventStage");
             self.u_EventStageHandle = self.u_EventStage.Add(self,LobbyViewComponent.OnEventStageInvoke);
+            self.u_EventRanking = self.UIBase.EventTable.FindEvent<UITaskEventP0>("u_EventRanking");
+            self.u_EventRankingHandle = self.u_EventRanking.Add(self,LobbyViewComponent.OnEventRankingInvoke);
 
         }
     }
