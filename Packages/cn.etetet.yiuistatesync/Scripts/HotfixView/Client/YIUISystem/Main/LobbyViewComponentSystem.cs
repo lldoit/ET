@@ -62,6 +62,12 @@ namespace ET.Client
         {
             await self.YIUIMgr().Root.OpenPanelAsync<ClanPanelComponent>();
         }
+        
+        [YIUIInvoke(LobbyViewComponent.OnEventMissionInvoke)]
+        private static async ETTask OnEventMissionInvoke(this LobbyViewComponent self)
+        {
+            await self.YIUIMgr().Root.OpenPanelAsync<MissionPanelComponent, EMissionPanelViewEnum>(EMissionPanelViewEnum.DailyView);
+        }
         #endregion YIUIEvent结束
     }
 }

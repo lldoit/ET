@@ -38,6 +38,9 @@ namespace ET.Client
         public UITaskEventP0 u_EventClan;
         public UITaskEventHandleP0 u_EventClanHandle;
         public const string OnEventClanInvoke = "LobbyViewComponent.OnEventClanInvoke";
+        public UITaskEventP0 u_EventMission;
+        public UITaskEventHandleP0 u_EventMissionHandle;
+        public const string OnEventMissionInvoke = "LobbyViewComponent.OnEventMissionInvoke";
 
     }
 }
