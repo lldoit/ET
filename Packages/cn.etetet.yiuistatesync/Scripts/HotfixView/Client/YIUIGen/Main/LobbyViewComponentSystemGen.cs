@@ -43,6 +43,8 @@ namespace ET.Client
             self.u_EventStageHandle = self.u_EventStage.Add(self,LobbyViewComponent.OnEventStageInvoke);
             self.u_EventRanking = self.UIBase.EventTable.FindEvent<UITaskEventP0>("u_EventRanking");
             self.u_EventRankingHandle = self.u_EventRanking.Add(self,LobbyViewComponent.OnEventRankingInvoke);
+            self.u_EventClan = self.UIBase.EventTable.FindEvent<UITaskEventP0>("u_EventClan");
+            self.u_EventClanHandle = self.u_EventClan.Add(self,LobbyViewComponent.OnEventClanInvoke);
 
         }
     }

@@ -35,6 +35,9 @@ namespace ET.Client
         public UITaskEventP0 u_EventRanking;
         public UITaskEventHandleP0 u_EventRankingHandle;
         public const string OnEventRankingInvoke = "LobbyViewComponent.OnEventRankingInvoke";
+        public UITaskEventP0 u_EventClan;
+        public UITaskEventHandleP0 u_EventClanHandle;
+        public const string OnEventClanInvoke = "LobbyViewComponent.OnEventClanInvoke";
 
     }
 }
