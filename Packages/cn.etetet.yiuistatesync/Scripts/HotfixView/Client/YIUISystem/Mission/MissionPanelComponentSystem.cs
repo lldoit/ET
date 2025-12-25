@@ -53,7 +53,7 @@ namespace ET.Client
         [YIUIInvoke(MissionPanelComponent.OnEventBackInvoke)]
         private static void OnEventBackInvoke(this MissionPanelComponent self)
         {
-            self.YIUIMgr().HomePanel<MainPanelComponent>().NoContext();
+            self.YIUIMgr().ClosePanel<MissionPanelComponent>();
         }
         #endregion YIUIEvent结束
     }

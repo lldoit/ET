@@ -35,7 +35,7 @@ namespace ET.Client
         [YIUIInvoke(StagePanelComponent.OnEventBackInvoke)]
         private static void OnEventBackInvoke(this StagePanelComponent self)
         {
-            self.YIUIMgr().HomePanel<MainPanelComponent>().NoContext();
+            self.YIUIMgr().ClosePanel<StagePanelComponent>();;
         }
         
         [YIUIInvoke(StagePanelComponent.OnEventEnterMapInvoke)]

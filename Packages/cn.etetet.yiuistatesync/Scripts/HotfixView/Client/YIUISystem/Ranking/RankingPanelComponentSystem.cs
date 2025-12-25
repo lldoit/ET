@@ -53,7 +53,7 @@ namespace ET.Client
         [YIUIInvoke(RankingPanelComponent.OnEventBackInvoke)]
         private static void OnEventBackInvoke(this RankingPanelComponent self)
         {
-            self.YIUIMgr().HomePanel<MainPanelComponent>().NoContext();
+            self.YIUIMgr().ClosePanel<RankingPanelComponent>();
         }
         #endregion YIUIEvent结束
     }

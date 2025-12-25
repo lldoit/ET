@@ -63,7 +63,7 @@ namespace ET.Client
         [YIUIInvoke(ClanPanelComponent.OnEventBackInvoke)]
         private static void OnEventBackInvoke(this ClanPanelComponent self)
         {
-            self.YIUIMgr().HomePanel<MainPanelComponent>().NoContext();
+            self.YIUIMgr().ClosePanel<ClanPanelComponent>();
         }
         #endregion YIUIEvent结束
     }
