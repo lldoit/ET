@@ -1,7 +1,7 @@
 {
   "name": "cn.etetet.yiui3ddisplay",
   "displayName": "ET.YIUI.3DDisplay",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "unity": "2022.3",
   "category": "UI/YIUI",
   "description": "YIUI UI上展示3D模型 >>> 文档: https://lib9kmxvq7k.feishu.cn/wiki/ES7Gwz4EAiVGKSkotY5cRbTznuh",
@@ -20,5 +20,5 @@
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/@ET-Packages"
   },
-  "_fingerprint": "d232a72c96366a0023248975b105a92b8823588d"
+  "_fingerprint": "83cf4fbfcc5842be8a7c81202e0d87dbae1057a9"
 }

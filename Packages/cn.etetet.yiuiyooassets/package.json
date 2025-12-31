@@ -1,7 +1,7 @@
 {
   "name": "cn.etetet.yiuiyooassets",
   "displayName": "ET.YIUI.YooAssets",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "unity": "2022.3",
   "category": "UI/YIUI",
   "description": "YIUI YooAssets >>> 文档: https://lib9kmxvq7k.feishu.cn/wiki/ES7Gwz4EAiVGKSkotY5cRbTznuh",
@@ -20,5 +20,5 @@
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/@ET-Packages"
   },
-  "_fingerprint": "b2f3cfff1fa1c6196f10c8289b57c47c699ab8e6"
+  "_fingerprint": "d4f31d3955996b47d0e0c27fa261771bd428e11b"
 }

@@ -59,18 +59,17 @@ namespace ET.Client
             EntityRef<YIUIMgrComponent> selfRef = self;
             var coroutineLockCode = info.PanelLayer == EPanelLayer.Panel ? YIUIConstHelper.Const.UIProjectName.GetHashCode() : panelName.GetHashCode();
 
-            using var coroutineLock = ignoreLock ? null : await self.Root().GetComponent<CoroutineLockComponent>()?.Wait(CoroutineLockType.YIUIPanel, coroutineLockCode);
+            using var _ = ignoreLock ? null : await self.Root().GetComponent<CoroutineLockComponent>()?.Wait(CoroutineLockType.YIUIPanel, coroutineLockCode);
 
             if (info.UIPanel == null) return true;
 
             self = selfRef;
 
-            await EventSystem.Instance?.PublishAsync(self.Root(),
-                new YIUIEventPanelCloseBefore
-                {
-                    UIPkgName = info.PkgName, UIResName = info.ResName, UIComponentName = info.Name,
-                    PanelLayer = info.PanelLayer,
-                });
+            await EventSystem.Instance?.PublishAsync(self.Root(), new YIUIEventPanelCloseBefore
+            {
+                UIPkgName = info.PkgName, UIResName = info.ResName, UIComponentName = info.Name,
+                PanelLayer = info.PanelLayer,
+            });
 
             if (info.UIPanel.PanelOption.HasFlag(EPanelOption.DisClose))
             {
@@ -113,6 +112,7 @@ namespace ET.Client
 
             if (!isCloseTriggerTween)
             {
+                self = selfRef;
                 ignoreTween = self.IsClose(info.UIPanel);
             }
 

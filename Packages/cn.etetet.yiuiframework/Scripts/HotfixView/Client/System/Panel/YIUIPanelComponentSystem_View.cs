@@ -77,7 +77,7 @@ namespace ET.Client
 
             EntityRef<YIUIPanelComponent> selfRef = self;
 
-            using var coroutineLock = await self.Root().GetComponent<CoroutineLockComponent>().Wait(CoroutineLockType.YIUIPanel, resName.GetHashCode());
+            using var _ = await self.Root().GetComponent<CoroutineLockComponent>().Wait(CoroutineLockType.YIUIPanel, resName.GetHashCode());
 
             self = selfRef;
             var data = self.YIUIBind().GetBindVoByResName(resName);
@@ -127,7 +127,7 @@ namespace ET.Client
 
             EntityRef<YIUIPanelComponent> selfRef = self;
 
-            using var coroutineLock = await self.Root().GetComponent<CoroutineLockComponent>().Wait(CoroutineLockType.YIUIPanel, typeof(T).GetHashCode());
+            using var _ = await self.Root().GetComponent<CoroutineLockComponent>().Wait(CoroutineLockType.YIUIPanel, typeof(T).GetHashCode());
 
             self = selfRef;
             var data = self.YIUIBind().GetBindVoByType<T>();
@@ -323,7 +323,7 @@ namespace ET.Client
         /// <summary>
         /// Panel被关闭前需要触发关闭所有View
         /// </summary>
-        internal static async ETTask<bool> CloseAllView(this YIUIPanelComponent self, bool tween = true)
+        internal static async ETTask CloseAllView(this YIUIPanelComponent self, bool tween = true)
         {
             foreach (Entity view in self.m_ExistView.Values)
             {
@@ -334,8 +334,51 @@ namespace ET.Client
                     await viewComponent.CloseAsync(tween);
                 }
             }
+        }
 
-            return true;
+        /// <summary>
+        /// 仅调用关闭动画
+        /// 适用于进入堆栈
+        /// </summary>
+        internal static async ETTask CloseAllViewTween(this YIUIPanelComponent self)
+        {
+            EntityRef<YIUIPanelComponent> selfRef = self;
+            self.m_LastCloseView.Clear();
+            foreach (Entity view in self.m_ExistView.Values)
+            {
+                var uiBase = view.GetParent<YIUIChild>();
+                var viewComponent = uiBase?.GetComponent<YIUIViewComponent>();
+                if (viewComponent != null && uiBase is { ActiveSelf: true })
+                {
+                    var uiWindow = viewComponent.UIWindow;
+                    await uiWindow.InternalOnWindowCloseTween();
+                    self = selfRef;
+                    self.m_LastCloseView.Add(uiWindow);
+                    uiBase.SetActive(false);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 仅调用打开动画
+        /// 根据上次关闭的
+        /// 适用于堆栈恢复
+        /// </summary>
+        internal static async ETTask OpenAllViewTween(this YIUIPanelComponent self, bool tween = true)
+        {
+            foreach (YIUIWindowComponent uiWindow in self.m_LastCloseView)
+            {
+                if (tween)
+                {
+                    await uiWindow.InternalOnWindowOpenTween();
+                }
+                else
+                {
+                    uiWindow.UIBase.SetActive(true);
+                }
+            }
+
+            self.m_LastCloseView.Clear();
         }
     }
 }
