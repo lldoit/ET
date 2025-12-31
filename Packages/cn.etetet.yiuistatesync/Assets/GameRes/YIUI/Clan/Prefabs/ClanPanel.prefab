@@ -3296,6 +3296,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: PanelFrame_Topbar_03
       objectReference: {fileID: 0}
+    - target: {fileID: 3836679771233535730, guid: 232bc3bfc435341c788202ea21f92e46,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6492185195966497724, guid: 232bc3bfc435341c788202ea21f92e46,
         type: 3}
       propertyPath: m_Pivot.x
