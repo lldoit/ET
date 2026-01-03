@@ -1,0 +1,202 @@
+using UnityEngine;
+
+namespace ET.Client
+{
+    /// <summary>
+    /// 道具视图系统 - 处理道具的视觉表现逻辑
+    /// </summary>
+    [FriendOf(typeof(BoosterViewComponent))]
+    [EntitySystemOf(typeof(BoosterViewComponent))]
+    public static partial class BoosterViewComponentSystem
+    {
+        [EntitySystem]
+        private static void Awake(this BoosterViewComponent self)
+        {
+            // 初始化默认值
+            self.LollipopAnimDuration = 300;
+            self.BombAnimDuration = 500;
+            self.ColorBombAnimDuration = 600;
+            self.SwitchAnimDuration = 250;
+        }
+        
+        [EntitySystem]
+        private static void Destroy(this BoosterViewComponent self)
+        {
+            // 清理资源
+            self.LollipopEffectPrefab = null;
+            self.BombEffectPrefab = null;
+            self.ColorBombEffectPrefab = null;
+            self.SwitchEffectPrefab = null;
+            self.EffectPool = null;
+        }
+
+        /// <summary>
+        /// 播放棒棒糖道具效果
+        /// </summary>
+        public static async ETTask PlayLollipopEffectAsync(this BoosterViewComponent self, Vector3 worldPosition)
+        {
+            // 播放音效
+            self.PlayBoosterSound(self.LollipopSound);
+            
+            // 播放特效
+            if (self.LollipopEffectPrefab != null)
+            {
+                var effect = UnityEngine.Object.Instantiate(self.LollipopEffectPrefab, worldPosition, Quaternion.identity);
+                UnityEngine.Object.Destroy(effect, self.LollipopAnimDuration / 1000f);
+            }
+            
+            // 等待动画完成
+            await self.Root().GetComponent<TimerComponent>().WaitAsync(self.LollipopAnimDuration);
+        }
+
+        /// <summary>
+        /// 播放炸弹道具效果
+        /// </summary>
+        public static async ETTask PlayBombEffectAsync(this BoosterViewComponent self, Vector3 worldPosition)
+        {
+            // 播放音效
+            self.PlayBoosterSound(self.BombSound);
+            
+            // 播放特效
+            if (self.BombEffectPrefab != null)
+            {
+                var effect = UnityEngine.Object.Instantiate(self.BombEffectPrefab, worldPosition, Quaternion.identity);
+                
+                // 炸弹特效可能需要扩散动画
+                var particleSystem = effect.GetComponent<ParticleSystem>();
+                if (particleSystem != null)
+                {
+                    particleSystem.Play();
+                }
+                
+                UnityEngine.Object.Destroy(effect, self.BombAnimDuration / 1000f);
+            }
+            
+            // 等待动画完成
+            await self.Root().GetComponent<TimerComponent>().WaitAsync(self.BombAnimDuration);
+        }
+
+        /// <summary>
+        /// 播放彩色炸弹道具效果
+        /// </summary>
+        public static async ETTask PlayColorBombEffectAsync(this BoosterViewComponent self, Vector3 worldPosition)
+        {
+            // 播放音效
+            self.PlayBoosterSound(self.ColorBombSound);
+            
+            // 播放特效
+            if (self.ColorBombEffectPrefab != null)
+            {
+                var effect = UnityEngine.Object.Instantiate(self.ColorBombEffectPrefab, worldPosition, Quaternion.identity);
+                
+                // 彩色炸弹生成特效
+                var particleSystem = effect.GetComponent<ParticleSystem>();
+                if (particleSystem != null)
+                {
+                    particleSystem.Play();
+                }
+                
+                UnityEngine.Object.Destroy(effect, self.ColorBombAnimDuration / 1000f);
+            }
+            
+            // 等待动画完成
+            await self.Root().GetComponent<TimerComponent>().WaitAsync(self.ColorBombAnimDuration);
+        }
+
+        /// <summary>
+        /// 播放交换道具效果
+        /// </summary>
+        public static async ETTask PlaySwitchEffectAsync(this BoosterViewComponent self, Vector3 worldPosition1, Vector3 worldPosition2)
+        {
+            // 播放音效
+            self.PlayBoosterSound(self.SwitchSound);
+            
+            // 播放交换特效（在两个位置之间）
+            if (self.SwitchEffectPrefab != null)
+            {
+                // 在两个瓦片位置之间的中点播放特效
+                Vector3 midPoint = (worldPosition1 + worldPosition2) / 2f;
+                var effect = UnityEngine.Object.Instantiate(self.SwitchEffectPrefab, midPoint, Quaternion.identity);
+                
+                // 可以添加连线效果
+                var lineRenderer = effect.GetComponent<LineRenderer>();
+                if (lineRenderer != null)
+                {
+                    lineRenderer.SetPosition(0, worldPosition1);
+                    lineRenderer.SetPosition(1, worldPosition2);
+                }
+                
+                UnityEngine.Object.Destroy(effect, self.SwitchAnimDuration / 1000f);
+            }
+            
+            // 等待动画完成
+            await self.Root().GetComponent<TimerComponent>().WaitAsync(self.SwitchAnimDuration);
+        }
+
+        /// <summary>
+        /// 显示道具激活提示
+        /// </summary>
+        public static void ShowBoosterActivatedHint(this BoosterViewComponent self, BoosterType boosterType)
+        {
+            // TODO: 显示UI提示，例如：
+            // - 改变光标样式
+            // - 高亮道具按钮
+            // - 显示提示文本
+            
+            Log.Info($"道具 {boosterType} 已激活，请选择目标瓦片");
+        }
+
+        /// <summary>
+        /// 隐藏道具激活提示
+        /// </summary>
+        public static void HideBoosterActivatedHint(this BoosterViewComponent self)
+        {
+            // TODO: 恢复正常UI状态
+            
+            Log.Info("道具已取消激活");
+        }
+
+        /// <summary>
+        /// 高亮可能的目标瓦片（用于道具提示）
+        /// </summary>
+        public static void HighlightTargetTiles(this BoosterViewComponent self, System.Collections.Generic.List<(int x, int y)> positions)
+        {
+            // TODO: 在指定位置显示高亮效果
+            foreach (var pos in positions)
+            {
+                // 显示高亮特效
+                Log.Debug($"高亮瓦片位置: ({pos.x}, {pos.y})");
+            }
+        }
+
+        /// <summary>
+        /// 清除所有高亮效果
+        /// </summary>
+        public static void ClearHighlights(this BoosterViewComponent self)
+        {
+            // TODO: 移除所有高亮特效
+        }
+
+        /// <summary>
+        /// 播放道具音效
+        /// </summary>
+        private static void PlayBoosterSound(this BoosterViewComponent self, string soundName)
+        {
+            // TODO: 集成音效系统
+            // 示例：SoundManager.instance.PlaySound(soundName);
+            Log.Debug($"播放音效: {soundName}");
+        }
+
+        /// <summary>
+        /// 显示道具使用动画（瓦片消失前的特效）
+        /// </summary>
+        public static async ETTask ShowTileDestroyedByBoosterAsync(this BoosterViewComponent self, Vector3 worldPosition)
+        {
+            // 播放瓦片被道具消除的特效
+            // TODO: 可以根据不同道具类型播放不同的消除特效
+            
+            await ETTask.CompletedTask;
+        }
+    }
+}
+

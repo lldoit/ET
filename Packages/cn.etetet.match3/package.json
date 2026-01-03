@@ -1,0 +1,23 @@
+{
+  "name": "cn.etetet.match3",
+  "displayName": "ET.Match3",
+  "version": "1.0.0",
+  "unity": "2022.3",
+  "description": "ET框架的三消游戏模块，基于CandyMatch3Kit实现",
+  "author": {
+    "name": "ET Framework",
+    "url": "https://github.com/egametang/ET"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/egametang/ET"
+  },
+  "dependencies": {
+    "cn.etetet.core": "3.0.3"
+  },
+  "relatedPackages": {},
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/@ET-Packages"
+  }
+}
+

@@ -1,0 +1,84 @@
+using UnityEngine;
+
+namespace ET.Client
+{
+    /// <summary>
+    /// 不可破坏视图组件系统
+    /// </summary>
+    [EntitySystemOf(typeof(UnbreakableViewComponent))]
+    public static partial class UnbreakableViewComponentSystem
+    {
+        [EntitySystem]
+        private static void Awake(this UnbreakableViewComponent self, GameObject gameObject)
+        {
+            self.GameObject = gameObject;
+            self.Animator = gameObject.GetComponent<Animator>();
+            self.SpriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+        }
+
+        [EntitySystem]
+        private static void Destroy(this UnbreakableViewComponent self)
+        {
+            if (self.GameObject != null)
+            {
+                UnityEngine.Object.Destroy(self.GameObject);
+                self.GameObject = null;
+            }
+            self.Animator = null;
+            self.SpriteRenderer = null;
+        }
+
+        /// <summary>
+        /// 播放消除动画
+        /// </summary>
+        public static void PlayExplodeAnimation(this UnbreakableViewComponent self)
+        {
+            // 不可破坏的Tile不应该播放消除动画
+            // 但保留方法以防需要特殊效果
+        }
+
+        /// <summary>
+        /// 设置精灵
+        /// </summary>
+        public static void SetSprite(this UnbreakableViewComponent self, Sprite sprite)
+        {
+            if (self.SpriteRenderer != null)
+            {
+                self.SpriteRenderer.sprite = sprite;
+            }
+        }
+
+        /// <summary>
+        /// 设置颜色
+        /// </summary>
+        public static void SetColor(this UnbreakableViewComponent self, Color color)
+        {
+            if (self.SpriteRenderer != null)
+            {
+                self.SpriteRenderer.color = color;
+            }
+        }
+
+        /// <summary>
+        /// 重置视图状态
+        /// </summary>
+        public static void ResetView(this UnbreakableViewComponent self)
+        {
+            if (self.GameObject != null)
+            {
+                self.GameObject.transform.localScale = Vector3.one;
+                self.GameObject.transform.localRotation = Quaternion.identity;
+                
+                if (self.SpriteRenderer != null)
+                {
+                    var color = self.SpriteRenderer.color;
+                    color.a = 1.0f;
+                    self.SpriteRenderer.color = color;
+                }
+            }
+        }
+    }
+}
+
+
+

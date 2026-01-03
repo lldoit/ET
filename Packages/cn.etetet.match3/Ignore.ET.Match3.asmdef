@@ -1,0 +1,19 @@
+{
+    "name": "Ignore.ET.Match3",
+    "rootNamespace": "ET",
+    "references": [
+        "GUID:9ef2053bcf13a254ab3940a767f7b1a5"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "IGNORE"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
+
