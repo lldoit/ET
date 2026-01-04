@@ -182,9 +182,31 @@ namespace ET.Client
         /// </summary>
         private static void PlayBoosterSound(this BoosterViewComponent self, string soundName)
         {
-            // TODO: 集成音效系统
-            // 示例：SoundManager.instance.PlaySound(soundName);
-            Log.Debug($"播放音效: {soundName}");
+            // 使用Match3AudioHelper播放音效
+            Scene clientScene = self.Root() as Scene;
+            
+            if (clientScene != null)
+            {
+                // 根据音效名称调用对应的方法
+                switch (soundName)
+                {
+                    case "BoosterLollipop":
+                        Match3AudioHelper.PlayBoosterLollipopSound(clientScene);
+                        break;
+                    case "BoosterBomb":
+                        Match3AudioHelper.PlayBoosterBombSound(clientScene);
+                        break;
+                    case "BoosterColorBomb":
+                        Match3AudioHelper.PlayBoosterColorBombSound(clientScene);
+                        break;
+                    case "BoosterSwitch":
+                        Match3AudioHelper.PlayBoosterSwitchSound(clientScene);
+                        break;
+                    default:
+                        Log.Warning($"未知的道具音效: {soundName}");
+                        break;
+                }
+            }
         }
 
         /// <summary>

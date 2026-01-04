@@ -18,6 +18,15 @@
       "source": "embedded",
       "dependencies": {}
     },
+    "cn.etetet.audio": {
+      "version": "file:cn.etetet.audio",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "cn.etetet.core": "3.0.3",
+        "cn.etetet.yooassets": "2.3.6"
+      }
+    },
     "cn.etetet.console": {
       "version": "file:cn.etetet.console",
       "depth": 0,
@@ -71,7 +80,8 @@
       "depth": 0,
       "source": "embedded",
       "dependencies": {
-        "cn.etetet.core": "3.0.3"
+        "cn.etetet.core": "3.0.3",
+        "cn.etetet.audio": "1.0.0"
       }
     },
     "cn.etetet.mathematics": {

@@ -19,6 +19,18 @@ namespace ET
                 return;
             }
 
+            // 播放匹配音效
+            Scene scene = self.Root() as Scene;
+            if (scene != null)
+            {
+                int totalTiles = 0;
+                foreach (var match in matches)
+                {
+                    totalTiles += match.tiles.Count;
+                }
+                EventSystem.Instance.Publish(scene, new PlayMatchSoundEvent { MatchCount = totalTiles });
+            }
+
             // 增加连续消除计数
             self.ConsecutiveCascades++;
 
@@ -139,8 +151,25 @@ namespace ET
             // 更新游戏状态
             self.UpdateGameStateForTile(tile);
 
+            // 播放爆炸音效
+            Scene scene = self.Root() as Scene;
+            if (scene != null)
+            {
+                // 根据瓦片类型播放不同音效
+                var chocolateComp = tile.GetComponent<ChocolateComponent>();
+                var marshmallowComp = tile.GetComponent<MarshmallowComponent>();
+                
+                if (chocolateComp != null)
+                {
+                    EventSystem.Instance.Publish(scene, new PlaySoundEvent { SoundType = "ChocolateBreak" });
+                }
+                else if (marshmallowComp != null)
+                {
+                    EventSystem.Instance.Publish(scene, new PlaySoundEvent { SoundType = "MarshmallowBreak" });
+                }
+            }
+
             // TODO: 播放爆炸动画（在HotfixView层实现）
-            // TODO: 播放爆炸音效
             
             // 从棋盘上移除
             self.SetTile(x, y, null);

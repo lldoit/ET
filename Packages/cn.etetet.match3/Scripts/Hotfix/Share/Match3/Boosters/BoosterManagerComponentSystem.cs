@@ -164,7 +164,12 @@ namespace ET
             // 更新游戏状态
             board.UpdateGameStateForTile(tile);
 
-            // TODO: 播放道具使用动画和音效（在HotfixView层实现）
+            // 播放道具使用音效
+            Scene scene = self.Root() as Scene;
+            if (scene != null)
+            {
+                EventSystem.Instance.Publish(scene, new PlaySoundEvent { SoundType = "BoosterLollipop" });
+            }
             
             // 销毁瓦片
             board.SetTile(x, y, null);
@@ -211,6 +216,13 @@ namespace ET
                 }
             }
 
+            // 播放炸弹道具音效
+            Scene scene = self.Root() as Scene;
+            if (scene != null)
+            {
+                EventSystem.Instance.Publish(scene, new PlaySoundEvent { SoundType = "BoosterBomb" });
+            }
+
             // TODO: 播放炸弹道具动画（在HotfixView层实现）
 
             // 爆炸所有收集的瓦片
@@ -255,6 +267,13 @@ namespace ET
             // 更新游戏状态
             board.UpdateGameStateForTile(tile);
 
+            // 播放道具使用音效
+            Scene scene = self.Root() as Scene;
+            if (scene != null)
+            {
+                EventSystem.Instance.Publish(scene, new PlaySoundEvent { SoundType = "BoosterColorBomb" });
+            }
+
             // TODO: 播放道具使用动画（在HotfixView层实现）
 
             // 销毁原瓦片
@@ -264,6 +283,12 @@ namespace ET
             // 创建彩色炸弹
             var colorBombTile = board.CreateColorBombTile(x, y);
             board.SetTile(x, y, colorBombTile);
+
+            // 播放彩色炸弹生成音效
+            if (scene != null)
+            {
+                EventSystem.Instance.Publish(scene, new PlaySoundEvent { SoundType = "SpecialCandyCreate" });
+            }
 
             // TODO: 播放彩色炸弹生成动画
             
@@ -345,6 +370,13 @@ namespace ET
             // 直接交换，不检查匹配
             board.SetTile(x1, y1, tile2);
             board.SetTile(x2, y2, tile1);
+
+            // 播放交换道具音效
+            Scene scene = self.Root() as Scene;
+            if (scene != null)
+            {
+                EventSystem.Instance.Publish(scene, new PlaySoundEvent { SoundType = "BoosterSwitch" });
+            }
 
             // TODO: 播放交换动画（在HotfixView层实现）
             await board.Root().GetComponent<TimerComponent>().WaitAsync(250);

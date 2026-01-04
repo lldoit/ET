@@ -1,9 +1,9 @@
 {
-  "name": "cn.etetet.match3",
-  "displayName": "ET.Match3",
+  "name": "cn.etetet.audio",
+  "displayName": "ET.Audio",
   "version": "1.0.0",
   "unity": "2022.3",
-  "description": "ET框架的三消游戏模块，基于CandyMatch3Kit实现",
+  "description": "ET框架的音频管理模块，支持YooAsset资源加载，包含音乐和音效播放、对象池管理等功能",
   "author": {
     "name": "ET Framework",
     "url": "https://github.com/egametang/ET"
@@ -14,11 +14,12 @@
   },
   "dependencies": {
     "cn.etetet.core": "3.0.3",
-    "cn.etetet.audio": "1.0.0"
+    "cn.etetet.yooassets": "2.3.6"
   },
   "relatedPackages": {},
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/@ET-Packages"
   }
 }
+
 

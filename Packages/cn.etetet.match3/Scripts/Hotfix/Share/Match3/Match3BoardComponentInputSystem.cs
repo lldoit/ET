@@ -110,6 +110,13 @@ namespace ET
             self.SetTile(x1, y1, tile2);
             self.SetTile(x2, y2, tile1);
 
+            // 播放交换音效
+            Scene scene = self.Root() as Scene;
+            if (scene != null)
+            {
+                EventSystem.Instance.Publish(scene, new PlaySoundEvent { SoundType = "TileSwap" });
+            }
+
             // TODO: 播放交换动画（在HotfixView层实现）
             // 发送事件通知View层播放动画
             

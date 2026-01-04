@@ -1,0 +1,14 @@
+{
+    "Id": 33,
+    "Name": "Audio",
+    "ScriptsReferences": {
+        "ModelView": [
+            "ET.YooAssets"
+        ],
+        "HotfixView": [
+            "ET.YooAssets"
+        ]
+    }
+}
+
+

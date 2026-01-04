@@ -133,6 +133,9 @@ if (board.CurrentLimit <= 0)
 ## 详细文档
 
 - [道具系统文档](BOOSTER_SYSTEM.md)
+- [道具视觉表现指南](BOOSTER_VIEW_GUIDE.md)
+- [音效管理系统指南](AUDIO_SYSTEM_GUIDE.md)
+- [音效事件系统文档](AUDIO_EVENTS.md)
 - 更多文档编写中...
 
 ## 目录结构
