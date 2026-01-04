@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: dbaae733e5a0f49a190918aba35d401c
+timeCreated: 1517510041
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 111083
+  packageName: Candy Match 3 Kit
+  packageVersion: 3.0.0
+  assetPath: Assets/CandyMatch3Kit/Prefabs/Particles/Game/Spawn.prefab
+  uploadId: 805118

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 12fcde19099ed46baac08392ce7e4eed
+timeCreated: 1517501549
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 111083
+  packageName: Candy Match 3 Kit
+  packageVersion: 3.0.0
+  assetPath: Assets/CandyMatch3Kit/Prefabs/Particles/Game/ColorBombParticles.prefab
+  uploadId: 805118

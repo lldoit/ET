@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 216f33954c6854d3094be162f80890bd
+timeCreated: 1515428675
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 111083
+  packageName: Candy Match 3 Kit
+  packageVersion: 3.0.0
+  assetPath: Assets/CandyMatch3Kit/Prefabs/Particles/Game/CollectablesParticles.prefab
+  uploadId: 805118

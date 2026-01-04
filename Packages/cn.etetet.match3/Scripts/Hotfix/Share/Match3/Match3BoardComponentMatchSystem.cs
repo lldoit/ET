@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ET.Client;
 
 namespace ET
 {
@@ -33,6 +34,34 @@ namespace ET
 
             // 增加连续消除计数
             self.ConsecutiveCascades++;
+
+            // 检查是否需要显示表扬特效（Good/Super/Yummy）
+            // 仅在达到2/4/6次连续消除时显示
+            int cascadeCount = self.ConsecutiveCascades;
+            if (cascadeCount == 2 || cascadeCount == 4 || cascadeCount == 6)
+            {
+                ComplimentType? complimentType = null;
+                if (cascadeCount >= 6)
+                {
+                    complimentType = ComplimentType.Yummy;
+                }
+                else if (cascadeCount >= 4)
+                {
+                    complimentType = ComplimentType.Super;
+                }
+                else if (cascadeCount >= 2)
+                {
+                    complimentType = ComplimentType.Good;
+                }
+
+                if (complimentType.HasValue && scene != null)
+                {
+                    EventSystem.Instance.Publish(scene, new ShowComplimentEvent 
+                    { 
+                        ComplimentType = complimentType.Value 
+                    });
+                }
+            }
 
             foreach (var match in matches)
             {
@@ -131,10 +160,21 @@ namespace ET
                 }
             }
 
-            // 如果生成了特殊糖果，设置到棋盘上
+            // 如果生成了特殊糖果，设置到棋盘上并播放生成特效
             if (specialTile != null)
             {
                 self.SetTile(specialTilePos.x, specialTilePos.y, specialTile);
+                
+                // 播放生成特效（通过事件通知HotfixView层）
+                Scene scene = self.Root() as Scene;
+                if (scene != null)
+                {
+                    EventSystem.Instance.Publish(scene, new PlaySpawnEffectEvent
+                    {
+                        X = specialTilePos.x,
+                        Y = specialTilePos.y
+                    });
+                }
             }
         }
 
@@ -169,7 +209,16 @@ namespace ET
                 }
             }
 
-            // TODO: 播放爆炸动画（在HotfixView层实现）
+            // 播放爆炸特效（通过事件通知HotfixView层）
+            if (scene != null)
+            {
+                EventSystem.Instance.Publish(scene, new PlayTileExplosionEvent
+                {
+                    TileId = tile.Id,
+                    X = x,
+                    Y = y
+                });
+            }
             
             // 从棋盘上移除
             self.SetTile(x, y, null);
@@ -291,13 +340,25 @@ namespace ET
         }
 
         /// <summary>
-        /// 爆炸整行
+        /// 爆炸整行（带条纹特效）
         /// </summary>
         private static async ETTask ExplodeRowAsync(this Match3BoardComponent self, int row)
         {
+            Scene scene = self.Root() as Scene;
             int width = self.GetWidth();
             for (int x = 0; x < width; x++)
             {
+                // 播放横向条纹特效（通过事件通知HotfixView层）
+                if (scene != null)
+                {
+                    EventSystem.Instance.Publish(scene, new PlayStripedEffectEvent
+                    {
+                        Direction = StripeDirection.Horizontal,
+                        X = x,
+                        Y = row
+                    });
+                }
+                
                 var tile = self.GetTile(x, row);
                 if (tile != null && tile.Destructable)
                 {
@@ -307,13 +368,25 @@ namespace ET
         }
 
         /// <summary>
-        /// 爆炸整列
+        /// 爆炸整列（带条纹特效）
         /// </summary>
         private static async ETTask ExplodeColumnAsync(this Match3BoardComponent self, int column)
         {
+            Scene scene = self.Root() as Scene;
             int height = self.GetHeight();
             for (int y = 0; y < height; y++)
             {
+                // 播放竖向条纹特效（通过事件通知HotfixView层）
+                if (scene != null)
+                {
+                    EventSystem.Instance.Publish(scene, new PlayStripedEffectEvent
+                    {
+                        Direction = StripeDirection.Vertical,
+                        X = column,
+                        Y = y
+                    });
+                }
+                
                 var tile = self.GetTile(column, y);
                 if (tile != null && tile.Destructable)
                 {
@@ -323,10 +396,21 @@ namespace ET
         }
 
         /// <summary>
-        /// 爆炸区域（NxN）
+        /// 爆炸区域（NxN）（带包装特效）
         /// </summary>
         private static async ETTask ExplodeAreaAsync(this Match3BoardComponent self, int centerX, int centerY, int radius)
         {
+            // 在中心位置播放包装糖果爆炸特效（通过事件通知HotfixView层）
+            Scene scene = self.Root() as Scene;
+            if (scene != null)
+            {
+                EventSystem.Instance.Publish(scene, new PlayWrappedEffectEvent
+                {
+                    X = centerX,
+                    Y = centerY
+                });
+            }
+            
             for (int dx = -radius; dx <= radius; dx++)
             {
                 for (int dy = -radius; dy <= radius; dy++)

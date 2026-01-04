@@ -227,3 +227,6 @@ private static async ETTask FadeInMusic(...)
 淡入淡出功能为ET.Audio包带来了专业级的音乐切换体验，让游戏音频更加流畅自然。实现上严格遵循ET框架规范，性能优秀，使用简单，是游戏音频系统的重要升级。
 
 
+
+
+
