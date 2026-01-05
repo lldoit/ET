@@ -51,23 +51,47 @@ namespace ET.Client
             switch (boosterType)
             {
                 case BoosterType.Lollipop:
+                    // 播放道具使用特效
                     await boosterView.PlayLollipopEffectAsync(worldPos);
+                    // 播放被消除瓦片的特效（根据瓦片类型自动选择特效）
+                    await boosterView.ShowTileDestroyedByBoosterAsync(boosterType, tile, worldPos);
+                    // 执行逻辑层销毁
                     await self.ExecuteLollipopAsync(board, tile);
                     break;
                     
                 case BoosterType.Bomb:
+                    // 播放道具使用特效
                     await boosterView.PlayBombEffectAsync(worldPos);
+                    // 收集3x3范围内的瓦片并播放消除特效
+                    for (int dx = -1; dx <= 1; dx++)
+                    {
+                        for (int dy = -1; dy <= 1; dy++)
+                        {
+                            var targetTile = board.GetTile(x + dx, y + dy);
+                            if (targetTile != null && targetTile.Destructable)
+                            {
+                                Vector3 targetWorldPos = GetTileWorldPosition(targetTile);
+                                await boosterView.ShowTileDestroyedByBoosterAsync(boosterType, targetTile, targetWorldPos);
+                            }
+                        }
+                    }
+                    // 执行逻辑层销毁
                     await self.ExecuteBombAsync(board, tile);
                     break;
                     
                 case BoosterType.ColorBomb:
+                    // 播放道具使用特效
                     await boosterView.PlayColorBombEffectAsync(worldPos);
+                    // 播放被消除瓦片的特效
+                    await boosterView.ShowTileDestroyedByBoosterAsync(boosterType, tile, worldPos);
+                    // 执行逻辑层（创建彩色炸弹）
                     await self.ExecuteColorBombAsync(board, tile);
                     break;
                     
                 case BoosterType.Switch:
-                    // Switch 道具通过 HandleSwitchInputWithViewAsync 处理
-                    break;
+                    // Switch道具使用拖拽模式，在Match3InputComponentSystem中处理
+                    // 不会走到这里，直接返回
+                    return;
             }
 
             // 隐藏激活提示
@@ -78,63 +102,22 @@ namespace ET.Client
         }
 
         /// <summary>
-        /// 处理Switch道具的输入（带视觉效果）
+        /// 执行Switch道具拖拽交换（带视觉效果）
+        /// 用于拖拽模式，直接传入起点和终点坐标
         /// </summary>
-        public static async ETTask HandleSwitchInputWithViewAsync(this BoosterManagerComponent self, Match3BoardComponent board, int x, int y)
+        public static async ETTask ExecuteSwitchDragWithViewAsync(this BoosterManagerComponent self, Match3BoardComponent board, int x1, int y1, int x2, int y2)
         {
             if (!self.InSwitchMode)
             {
                 return;
             }
 
-            var tile = board.GetTile(x, y);
-            if (tile == null)
+            var tile1 = board.GetTile(x1, y1);
+            var tile2 = board.GetTile(x2, y2);
+
+            if (tile1 == null || tile2 == null)
             {
-                return;
-            }
-
-            var boosterView = self.GetComponent<BoosterViewComponent>();
-
-            // 第一次点击：记录位置
-            if (self.SwitchFirstX == -1)
-            {
-                self.SwitchFirstX = x;
-                self.SwitchFirstY = y;
-                
-                // 高亮选中的瓦片
-                if (boosterView != null)
-                {
-                    var positions = new System.Collections.Generic.List<(int, int)> { (x, y) };
-                    boosterView.HighlightTargetTiles(positions);
-                }
-                
-                return;
-            }
-
-            // 第二次点击：执行交换
-            int x1 = self.SwitchFirstX;
-            int y1 = self.SwitchFirstY;
-            int x2 = x;
-            int y2 = y;
-
-            // 重置选择
-            self.SwitchFirstX = -1;
-            self.SwitchFirstY = -1;
-
-            // 清除高亮
-            if (boosterView != null)
-            {
-                boosterView.ClearHighlights();
-            }
-
-            // 检查是否相邻
-            bool isAdjacent = (System.Math.Abs(x1 - x2) == 1 && y1 == y2) ||
-                             (System.Math.Abs(y1 - y2) == 1 && x1 == x2);
-
-            if (!isAdjacent)
-            {
-                // TODO: 提示玩家必须选择相邻瓦片
-                Log.Warning("必须选择相邻瓦片");
+                self.DeactivateBooster();
                 return;
             }
 
@@ -145,11 +128,11 @@ namespace ET.Client
                 return;
             }
 
+            var boosterView = self.GetComponent<BoosterViewComponent>();
+
             // 播放交换特效
             if (boosterView != null)
             {
-                var tile1 = board.GetTile(x1, y1);
-                var tile2 = board.GetTile(x2, y2);
                 Vector3 worldPos1 = GetTileWorldPosition(tile1);
                 Vector3 worldPos2 = GetTileWorldPosition(tile2);
                 await boosterView.PlaySwitchEffectAsync(worldPos1, worldPos2);

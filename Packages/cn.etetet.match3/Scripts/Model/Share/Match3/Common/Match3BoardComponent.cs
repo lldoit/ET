@@ -67,6 +67,16 @@ namespace ET
         /// 是否炸毁过巧克力
         /// </summary>
         public bool ExplodedChocolate;
+        
+        /// <summary>
+        /// 当前正在显示的匹配提示瓦片列表
+        /// </summary>
+        public List<TileDef> SuggestedMatchTiles = new List<TileDef>();
+        
+        /// <summary>
+        /// 匹配提示计时器Token（用于取消计时器）
+        /// </summary>
+        public ETCancellationToken SuggestedMatchCancelToken;
     }
 }
 

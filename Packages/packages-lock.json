@@ -339,6 +339,12 @@
         "com.unity.sharp-zip-lib": "1.3.4-preview"
       }
     },
+    "com.kyrylokuzyk.primetween": {
+      "version": "file:com.kyrylokuzyk.primetween",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
     "com.unity.ai.navigation": {
       "version": "2.0.9",
       "depth": 0,

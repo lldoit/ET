@@ -60,11 +60,6 @@ namespace ET.Client
         public GameObject SpawnParticles;
 
         /// <summary>
-        /// 表扬文本预制件（Good/Super/Yummy）
-        /// </summary>
-        public GameObject ComplimentTextPrefab;
-
-        /// <summary>
         /// 特效对象池字典
         /// </summary>
         public Dictionary<GameObject, Queue<GameObject>> EffectPools;
@@ -73,6 +68,11 @@ namespace ET.Client
         /// 特效对象池根节点
         /// </summary>
         public Transform PoolRoot;
+
+        /// <summary>
+        /// 已创建的特效总数
+        /// </summary>
+        public int TotalCreated;
     }
 }
 

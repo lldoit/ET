@@ -54,6 +54,10 @@ namespace ET
             int width = self.GetWidth();
             int height = self.GetHeight();
 
+            // 收集移动信息
+            var moves = new List<FillMoveInfo>();
+            var newTiles = new List<FillCreateInfo>();
+
             // 第一步：让现有瓦片下落
             for (int i = 0; i < width; i++)
             {
@@ -84,12 +88,19 @@ namespace ET
 
                     if (bottom != -1)
                     {
+                        // 记录移动信息
+                        moves.Add(new FillMoveInfo
+                        {
+                            FromX = i,
+                            FromY = j,
+                            ToX = i,
+                            ToY = bottom,
+                            TileRef = tile
+                        });
+                        
                         // 移动瓦片到底部
                         self.SetTile(i, j, null);
                         self.SetTile(i, bottom, tile);
-                        
-                        // TODO: 播放下落动画（在HotfixView层实现）
-                        // 可以发送事件通知View层播放动画
                     }
                 }
             }
@@ -132,11 +143,34 @@ namespace ET
                             var newTile = self.CreateRandomTile(i, j, true);
                             self.SetTile(i, j, newTile);
                             
-                            // TODO: 设置初始位置在顶部（在HotfixView层实现）
-                            // TODO: 播放下落动画到目标位置
+                            // 记录新瓦片创建信息（初始位置在上方numEmpties个单位）
+                            newTiles.Add(new FillCreateInfo
+                            {
+                                InitialX = i,
+                                InitialY = -numEmpties,
+                                TargetX = i,
+                                TargetY = j,
+                                TileRef = newTile
+                            });
+                            
                             numEmpties--;
                         }
                     }
+                }
+            }
+
+            // 发布填充事件通知View层播放动画
+            if (moves.Count > 0 || newTiles.Count > 0)
+            {
+                Scene scene = self.Root() as Scene;
+                if (scene != null)
+                {
+                    EventSystem.Instance.Publish(scene, new Match3FillEvent
+                    {
+                        Moves = moves,
+                        NewTiles = newTiles,
+                        Duration = 0.5f // 动画持续时间0.5秒，对应CandyMatch3Kit的设置
+                    });
                 }
             }
         }
@@ -187,6 +221,10 @@ namespace ET
             int width = self.GetWidth();
             int height = self.GetHeight();
 
+            // 收集移动信息
+            var moves = new List<FillMoveInfo>();
+            var newTiles = new List<FillCreateInfo>();
+
             // 第一步：让现有糖果滑动下落填充空位
             for (int j = height - 1; j >= 0; j--)
             {
@@ -204,11 +242,21 @@ namespace ET
                     {
                         var finalPos = dropPath[dropPath.Count - 1];
                         
+                        // 记录移动信息，包含完整路径用于滑动动画
+                        // 参考CandyMatch3Kit：路径动画时长 = 0.5秒 * 路径长度
+                        moves.Add(new FillMoveInfo
+                        {
+                            FromX = i,
+                            FromY = j,
+                            ToX = finalPos.x,
+                            ToY = finalPos.y,
+                            TileRef = tile,
+                            Path = new List<TileDef>(dropPath) // 复制路径信息
+                        });
+                        
                         // 移动瓦片
                         self.SetTile(i, j, null);
                         self.SetTile(finalPos.x, finalPos.y, tile);
-                        
-                        // TODO: 播放滑动路径动画（在HotfixView层实现）
                     }
                 }
             }
@@ -244,10 +292,34 @@ namespace ET
                             var newTile = self.CreateRandomTile(i, j, true);
                             self.SetTile(i, j, newTile);
                             
-                            // TODO: 播放从顶部滑入动画
+                            // 记录新瓦片创建信息
+                            newTiles.Add(new FillCreateInfo
+                            {
+                                InitialX = i,
+                                InitialY = -numEmpties,
+                                TargetX = i,
+                                TargetY = j,
+                                TileRef = newTile
+                            });
+                            
                             numEmpties--;
                         }
                     }
+                }
+            }
+
+            // 发布填充事件通知View层播放动画
+            if (moves.Count > 0 || newTiles.Count > 0)
+            {
+                Scene scene = self.Root() as Scene;
+                if (scene != null)
+                {
+                    EventSystem.Instance.Publish(scene, new Match3FillEvent
+                    {
+                        Moves = moves,
+                        NewTiles = newTiles,
+                        Duration = 0.5f // 动画持续时间0.5秒
+                    });
                 }
             }
         }
@@ -313,42 +385,97 @@ namespace ET
             return tile == null && !(levelTile is HoleTile);
         }
 
-        /// <summary>
-        /// 获取关卡瓦片数据
-        /// </summary>
-        private static LevelTile GetLevelTile(this Match3BoardComponent self, int x, int y)
-        {
-            if (self.Level == null) return null;
-            
-            int width = self.GetWidth();
-            int height = self.GetHeight();
-            
-            if (x < 0 || x >= width || y < 0 || y >= height)
-            {
-                return null;
-            }
-
-            int index = x + (y * width);
-            if (index >= 0 && index < self.Level.tiles.Count)
-            {
-                return self.Level.tiles[index];
-            }
-
-            return null;
-        }
+        // GetLevelTile方法已移至Match3BoardComponentSystem.cs作为公开方法
 
         /// <summary>
         /// 洗牌棋盘（当没有可能的移动时）
+        /// 参考CandyMatch3Kit.RegenerateLevel()
         /// </summary>
-        private static async ETTask ShuffleBoardAsync(this Match3BoardComponent self)
+        public static async ETTask ShuffleBoardAsync(this Match3BoardComponent self)
         {
-            // TODO: 实现洗牌逻辑
-            // 1. 收集所有可移动的瓦片
-            // 2. 随机重新分配位置
-            // 3. 确保重新分配后有可能的移动
-            // 4. 播放洗牌动画
+            int width = self.GetWidth();
+            int height = self.GetHeight();
             
-            await ETTask.CompletedTask;
+            // 收集所有需要洗牌的移动信息
+            var shuffleMoves = new List<ShuffleMoveInfo>();
+            
+            // 等待2秒（参考CandyMatch3Kit）
+            await self.Root().GetComponent<TimerComponent>().WaitAsync(2000);
+            
+            // 发布洗牌开始事件（可用于显示提示弹窗）
+            Scene scene = self.Root() as Scene;
+            
+            // 遍历所有瓦片，替换普通糖果
+            for (int j = 0; j < height; j++)
+            {
+                for (int i = 0; i < width; i++)
+                {
+                    var tile = self.GetTile(i, j);
+                    if (tile == null)
+                    {
+                        continue;
+                    }
+                    
+                    // 只替换普通糖果，保留特殊糖果、特殊方块等
+                    // 参考CandyMatch3Kit：不替换StripedCandy、WrappedCandy、ColorBomb等
+                    if (tile.GetComponent<SpecialBlockComponent>() != null ||
+                        tile.GetComponent<StripedCandyComponent>() != null ||
+                        tile.GetComponent<WrappedCandyComponent>() != null ||
+                        tile.GetComponent<ColorBombComponent>() != null)
+                    {
+                        continue;
+                    }
+                    
+                    // 记录原始位置
+                    int oldX = i;
+                    int oldY = j;
+                    
+                    // 创建新的随机瓦片替换（runtime=false以避免产生初始匹配）
+                    var newTile = self.CreateRandomTile(i, j, false);
+                    
+                    // 更新棋盘
+                    self.SetTile(i, j, newTile);
+                    
+                    // 销毁旧瓦片
+                    tile.Dispose();
+                    
+                    // 记录移动信息用于动画
+                    shuffleMoves.Add(new ShuffleMoveInfo
+                    {
+                        TileRef = newTile,
+                        FromX = oldX,
+                        FromY = oldY,
+                        ToX = i,
+                        ToY = j
+                    });
+                }
+            }
+            
+            // 发布洗牌动画事件
+            if (scene != null && shuffleMoves.Count > 0)
+            {
+                EventSystem.Instance.Publish(scene, new Match3ShuffleEvent
+                {
+                    Moves = shuffleMoves,
+                    Duration = 0.5f
+                });
+                
+                // 播放洗牌音效
+                EventSystem.Instance.Publish(scene, new PlaySoundEvent { SoundType = "Shuffle" });
+            }
+            
+            // 等待动画完成
+            await self.Root().GetComponent<TimerComponent>().WaitAsync(500);
+            
+            // 重新检测可能的交换
+            self.PossibleSwaps = self.DetectPossibleSwaps();
+            
+            // 如果仍然没有可能的交换，递归洗牌
+            if (self.PossibleSwaps.Count == 0)
+            {
+                Log.Warning("洗牌后仍无可能的交换，再次洗牌");
+                await self.ShuffleBoardAsync();
+            }
         }
     }
 }

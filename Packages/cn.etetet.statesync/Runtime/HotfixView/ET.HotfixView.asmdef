@@ -15,7 +15,8 @@
         "ET.YIUIFramework",
         "ET.YooAssets",
         "Unity.Mathematics",
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "PrimeTween.Runtime"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

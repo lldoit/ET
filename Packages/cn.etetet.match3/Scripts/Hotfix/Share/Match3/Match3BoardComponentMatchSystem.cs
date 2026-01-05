@@ -68,8 +68,15 @@ namespace ET
                 await self.ProcessSingleMatchAsync(match);
             }
 
-            // 更新游戏状态
-            // TODO: 发送事件通知UI更新
+            // 发送事件通知UI更新
+            if (scene != null)
+            {
+                EventSystem.Instance.Publish(scene, new GameStateChangedEvent
+                {
+                    Score = self.GameState.score,
+                    CascadeCount = self.ConsecutiveCascades
+                });
+            }
         }
 
         /// <summary>
@@ -334,7 +341,10 @@ namespace ET
             var colorBomb = tile.GetComponent<ColorBombComponent>();
             if (colorBomb != null)
             {
-                // TODO: 实现彩色炸弹逻辑（需要指定目标颜色）
+                // 彩色炸弹被消除时，如果没有指定目标颜色（比如被横向/纵向/包装糖果炸到），
+                // 随机选择一种颜色进行消除
+                var targetColor = (CandyColor)RandomGenerator.RandomNumber(0, 5); 
+                await self.ExplodeColorBombAsync(x, y, targetColor);
                 return;
             }
         }
@@ -424,6 +434,75 @@ namespace ET
                         await self.ExplodeTileAsync(tile, x, y);
                     }
                 }
+            }
+        }
+
+
+        /// <summary>
+        /// 爆炸彩色炸弹（消除所有同色糖果）
+        /// </summary>
+        public static async ETTask ExplodeColorBombAsync(this Match3BoardComponent self, int centerX, int centerY, CandyColor targetColor)
+        {
+            // 播放彩色炸弹特效
+            Scene scene = self.Root() as Scene;
+            if (scene != null)
+            {
+                EventSystem.Instance.Publish(scene, new PlayColorBombEffectEvent 
+                { 
+                    TargetColor = targetColor,
+                    CenterX = centerX,
+                    CenterY = centerY
+                });
+            }
+
+            // 收集所有同色糖果
+            var tilesToExplode = new List<Tile>();
+            int width = self.GetWidth();
+            int height = self.GetHeight();
+            
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    var tile = self.GetTile(x, y);
+                    if (tile == null || !tile.Destructable) continue;
+                    
+                    // 检查是否是同色糖果
+                    var candy = tile.GetComponent<CandyComponent>();
+                    if (candy != null && candy.GetColor() == targetColor)
+                    {
+                        tilesToExplode.Add(tile);
+                    }
+                    // 或者是同色的条纹/包装糖果
+                    else 
+                    {
+                        var striped = tile.GetComponent<StripedCandyComponent>();
+                        if (striped != null && striped.GetColor() == targetColor)
+                        {
+                            tilesToExplode.Add(tile);
+                        }
+                        else
+                        {
+                            var wrapped = tile.GetComponent<WrappedCandyComponent>();
+                            if (wrapped != null && wrapped.GetColor() == targetColor)
+                            {
+                                tilesToExplode.Add(tile);
+                            }
+                        }
+                    }
+                }
+            }
+            
+            // 异步消除所有收集到的糖果
+            // 为了视觉效果，可以稍微做一些随机延迟或者从中心向外扩散
+            foreach (var tile in tilesToExplode)
+            {
+                 // 注意：这里可能会有些瓦片已经被前面的连带反应炸掉了，所以需要判空
+                 if (!tile.IsDisposed)
+                 {
+                     // 同时触发特殊糖果的效果
+                     await self.ExplodeTileAsync(tile, tile.X, tile.Y);
+                 }
             }
         }
     }

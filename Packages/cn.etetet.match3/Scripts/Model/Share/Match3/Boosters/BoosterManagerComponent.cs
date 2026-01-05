@@ -22,12 +22,6 @@ namespace ET
         /// 是否处于交换模式（Switch道具专用）
         /// </summary>
         public bool InSwitchMode;
-        
-        /// <summary>
-        /// 交换模式下选中的第一个瓦片位置
-        /// </summary>
-        public int SwitchFirstX;
-        public int SwitchFirstY;
     }
 }
 

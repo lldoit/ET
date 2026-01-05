@@ -14,9 +14,15 @@ namespace ET
         /// </summary>
         public static async ETTask<bool> TrySwapTilesAsync(this Match3BoardComponent self, int x1, int y1, int x2, int y2)
         {
+            // 清除匹配提示并停止计时器
+            self.ClearSuggestedMatch();
+            self.StopSuggestedMatchTimer();
+            
             // 检查输入是否锁定
             if (self.InputLocked || self.CurrentlySwapping || self.CurrentlyAwarding)
             {
+                // 重启匹配提示计时器
+                _ = self.StartSuggestedMatchTimerAsync();
                 return false;
             }
 
@@ -60,6 +66,9 @@ namespace ET
                 // 应用填充
                 await self.ApplyFillStrategyAsync();
                 
+                // 重启匹配提示计时器
+                _ = self.StartSuggestedMatchTimerAsync();
+                
                 return true;
             }
 
@@ -87,6 +96,10 @@ namespace ET
                 await self.ApplyFillStrategyAsync();
                 
                 self.CurrentlySwapping = false;
+                
+                // 重启匹配提示计时器
+                _ = self.StartSuggestedMatchTimerAsync();
+                
                 return true;
             }
             else
@@ -94,6 +107,10 @@ namespace ET
                 // 没有匹配，交换回来
                 await self.SwapTilesWithAnimationAsync(x2, y2, x1, y1);
                 self.CurrentlySwapping = false;
+                
+                // 重启匹配提示计时器
+                _ = self.StartSuggestedMatchTimerAsync();
+                
                 return false;
             }
         }
@@ -115,10 +132,15 @@ namespace ET
             if (scene != null)
             {
                 EventSystem.Instance.Publish(scene, new PlaySoundEvent { SoundType = "TileSwap" });
+                
+                // 发布交换动画事件
+                EventSystem.Instance.Publish(scene, new Match3SwapEvent
+                {
+                    Tile1Ref = tile1,
+                    Tile2Ref = tile2,
+                    Duration = 0.25f // 对应CandyMatch3Kit的0.25秒动画
+                });
             }
-
-            // TODO: 播放交换动画（在HotfixView层实现）
-            // 发送事件通知View层播放动画
             
             // 等待动画完成
             await self.Root().GetComponent<TimerComponent>().WaitAsync(250);
@@ -151,7 +173,18 @@ namespace ET
             if (self.Level.limitType == LimitType.Moves)
             {
                 self.CurrentLimit--;
-                // TODO: 发送事件更新UI
+                
+                // 发送事件更新UI
+                Scene scene = self.Root() as Scene;
+                if (scene != null)
+                {
+                    EventSystem.Instance.Publish(scene, new LimitChangedEvent
+                    {
+                        LimitType = LimitType.Moves,
+                        CurrentLimit = self.CurrentLimit,
+                        Delta = -1
+                    });
+                }
             }
             // 时间限制由外部倒计时处理
         }

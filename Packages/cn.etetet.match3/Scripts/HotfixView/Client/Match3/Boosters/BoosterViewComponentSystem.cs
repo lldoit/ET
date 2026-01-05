@@ -138,10 +138,25 @@ namespace ET.Client
         /// </summary>
         public static void ShowBoosterActivatedHint(this BoosterViewComponent self, BoosterType boosterType)
         {
-            // TODO: 显示UI提示，例如：
-            // - 改变光标样式
-            // - 高亮道具按钮
-            // - 显示提示文本
+            // 发布提示事件
+            Scene scene = self.Root() as Scene;
+            if (scene != null)
+            {
+                string message = boosterType switch
+                {
+                    BoosterType.Lollipop => "点击要消除的瓦片",
+                    BoosterType.Bomb => "点击要爆炸的位置",
+                    BoosterType.ColorBomb => "点击要替换的瓦片",
+                    BoosterType.Switch => "选择第一个瓦片",
+                    _ => "选择目标瓦片"
+                };
+                
+                EventSystem.Instance.Publish(scene, new ShowHintTextEvent
+                {
+                    Message = message,
+                    Duration = 3f
+                });
+            }
             
             Log.Info($"道具 {boosterType} 已激活，请选择目标瓦片");
         }
@@ -151,30 +166,7 @@ namespace ET.Client
         /// </summary>
         public static void HideBoosterActivatedHint(this BoosterViewComponent self)
         {
-            // TODO: 恢复正常UI状态
-            
             Log.Info("道具已取消激活");
-        }
-
-        /// <summary>
-        /// 高亮可能的目标瓦片（用于道具提示）
-        /// </summary>
-        public static void HighlightTargetTiles(this BoosterViewComponent self, System.Collections.Generic.List<(int x, int y)> positions)
-        {
-            // TODO: 在指定位置显示高亮效果
-            foreach (var pos in positions)
-            {
-                // 显示高亮特效
-                Log.Debug($"高亮瓦片位置: ({pos.x}, {pos.y})");
-            }
-        }
-
-        /// <summary>
-        /// 清除所有高亮效果
-        /// </summary>
-        public static void ClearHighlights(this BoosterViewComponent self)
-        {
-            // TODO: 移除所有高亮特效
         }
 
         /// <summary>
@@ -211,11 +203,22 @@ namespace ET.Client
 
         /// <summary>
         /// 显示道具使用动画（瓦片消失前的特效）
+        /// 根据瓦片类型播放对应的消除特效
         /// </summary>
-        public static async ETTask ShowTileDestroyedByBoosterAsync(this BoosterViewComponent self, Vector3 worldPosition)
+        /// <param name="self">道具视图组件</param>
+        /// <param name="boosterType">使用的道具类型</param>
+        /// <param name="tile">被消除的瓦片</param>
+        /// <param name="worldPosition">世界坐标位置</param>
+        public static async ETTask ShowTileDestroyedByBoosterAsync(this BoosterViewComponent self, BoosterType boosterType, Tile tile, Vector3 worldPosition)
         {
-            // 播放瓦片被道具消除的特效
-            // TODO: 可以根据不同道具类型播放不同的消除特效
+            // 获取棋盘组件并播放瓦片对应的消除特效
+            var match3Board = self.Root().GetComponent<Match3BoardComponent>();
+            if (match3Board != null && tile != null)
+            {
+                // 根据瓦片类型（CandyComponent/StripedCandyComponent/WrappedCandyComponent等）
+                // 自动播放对应的消除特效
+                match3Board.PlayTileExplosionEffect(tile, worldPosition);
+            }
             
             await ETTask.CompletedTask;
         }

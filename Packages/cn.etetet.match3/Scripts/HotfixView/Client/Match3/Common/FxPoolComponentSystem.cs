@@ -56,6 +56,7 @@ namespace ET.Client
         /// </summary>
         public static async ETTask InitializeAsync(this FxPoolComponent self)
         {
+            self.TotalCreated = 0;
             var resourcePackage = YooAssets.GetPackage("DefaultPackage");
             
             // 辅助方法：加载GameObject资源
@@ -108,6 +109,37 @@ namespace ET.Client
             }
 
             // 注意：ComplimentText 建议使用 YIUI Tips 系统实现，而非粒子特效
+            
+            // 预热常用特效
+            self.WarmUp(self.RedCandyExplosion, 5);
+            self.WarmUp(self.BlueCandyExplosion, 5);
+            self.WarmUp(self.GreenCandyExplosion, 5);
+            self.WarmUp(self.YellowCandyExplosion, 5);
+            self.WarmUp(self.OrangeCandyExplosion, 5);
+            self.WarmUp(self.PurpleCandyExplosion, 5);
+            self.WarmUp(self.SpawnParticles, 5);
+        }
+
+        /// <summary>
+        /// 预热对象池
+        /// </summary>
+        public static void WarmUp(this FxPoolComponent self, GameObject prefab, int count)
+        {
+            if (prefab == null || count <= 0) return;
+
+            if (!self.EffectPools.ContainsKey(prefab))
+            {
+                self.EffectPools[prefab] = new Queue<GameObject>();
+            }
+
+            var pool = self.EffectPools[prefab];
+            for (int i = 0; i < count; i++)
+            {
+                GameObject obj = UnityEngine.Object.Instantiate(prefab, self.PoolRoot);
+                obj.SetActive(false);
+                pool.Enqueue(obj);
+                self.TotalCreated++;
+            }
         }
 
         /// <summary>
@@ -165,6 +197,7 @@ namespace ET.Client
             if (effectObj == null)
             {
                 effectObj = UnityEngine.Object.Instantiate(prefab, position, Quaternion.identity);
+                self.TotalCreated++;
                 if (self.PoolRoot != null)
                 {
                     effectObj.transform.SetParent(self.PoolRoot);
@@ -178,8 +211,10 @@ namespace ET.Client
                 ps.Play();
             }
 
-            // 异步回收（2秒后）
-            self.ScheduleReturnEffect(effectObj, prefab, 2.0f).NoContext();
+            // 智能计算回收时间
+            float duration = self.GetParticleDuration(effectObj);
+            // 异步回收（保留一点缓冲时间）
+            self.ScheduleReturnEffect(effectObj, prefab, duration + 0.2f).NoContext();
 
             return effectObj;
         }
@@ -354,6 +389,45 @@ namespace ET.Client
         public static bool ShouldShowCompliment(int cascadeCount)
         {
             return cascadeCount == 2 || cascadeCount == 4 || cascadeCount == 6;
+        }
+
+        /// <summary>
+        /// 获取粒子系统最大时长
+        /// </summary>
+        private static float GetParticleDuration(this FxPoolComponent self, GameObject effectObj)
+        {
+            if (effectObj == null) return 2.0f;
+            
+            float maxDuration = 0f;
+            var particleSystems = effectObj.GetComponentsInChildren<ParticleSystem>();
+            foreach (var ps in particleSystems)
+            {
+                if (ps.main.loop) continue; // 忽略循环粒子
+                float duration = ps.main.duration + ps.main.startLifetime.constantMax;
+                if (duration > maxDuration)
+                {
+                    maxDuration = duration;
+                }
+            }
+            
+            return maxDuration > 0 ? maxDuration : 2.0f; // 默认2秒
+        }
+
+        /// <summary>
+        /// 获取当前池状态信息
+        /// </summary>
+        public static string GetPoolStats(this FxPoolComponent self)
+        {
+            int pooledCount = 0;
+            if (self.EffectPools != null)
+            {
+                foreach (var pool in self.EffectPools.Values)
+                {
+                    pooledCount += pool.Count;
+                }
+            }
+            
+            return $"Total Created: {self.TotalCreated}, Pooled: {pooledCount}, Active: {self.TotalCreated - pooledCount}";
         }
     }
 }

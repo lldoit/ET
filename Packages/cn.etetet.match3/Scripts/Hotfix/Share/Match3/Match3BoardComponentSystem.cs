@@ -97,7 +97,7 @@ namespace ET
                 for (int x = 0; x < width; x++)
                 {
                     var tile = self.GetTile(x, y);
-                    if (tile == null || tile.GetComponent<SpecialBlockComponent>() != null)
+                    if (tile == null)
                     {
                         continue;
                     }
@@ -106,9 +106,11 @@ namespace ET
                     if (x < width - 1)
                     {
                         var rightTile = self.GetTile(x + 1, y);
-                        if (rightTile != null && rightTile.GetComponent<SpecialBlockComponent>() == null)
+                        // 包含ColorBomb的特殊处理，允许ColorBomb参与交换
+                        if (rightTile != null)
                         {
-                            if (self.WouldCreateMatch(x, y, x + 1, y))
+                            if (self.IsColorBombSwap(tile, rightTile) || 
+                                (tile.GetComponent<SpecialBlockComponent>() == null && rightTile.GetComponent<SpecialBlockComponent>() == null && self.WouldCreateMatch(x, y, x + 1, y)))
                             {
                                 possibleSwaps.Add(new SwapInfo(
                                     tile.Id, rightTile.Id,
@@ -122,9 +124,10 @@ namespace ET
                     if (y < height - 1)
                     {
                         var bottomTile = self.GetTile(x, y + 1);
-                        if (bottomTile != null && bottomTile.GetComponent<SpecialBlockComponent>() == null)
+                        if (bottomTile != null)
                         {
-                            if (self.WouldCreateMatch(x, y, x, y + 1))
+                            if (self.IsColorBombSwap(tile, bottomTile) || 
+                                (tile.GetComponent<SpecialBlockComponent>() == null && bottomTile.GetComponent<SpecialBlockComponent>() == null && self.WouldCreateMatch(x, y, x, y + 1)))
                             {
                                 possibleSwaps.Add(new SwapInfo(
                                     tile.Id, bottomTile.Id,
@@ -137,6 +140,34 @@ namespace ET
             }
 
             return possibleSwaps;
+        }
+        
+        /// <summary>
+        /// 检查是否是有效的彩色炸弹交换
+        /// </summary>
+        private static bool IsColorBombSwap(this Match3BoardComponent self, Tile t1, Tile t2)
+        {
+            if (t1 == null || t2 == null) return false;
+            
+            bool t1IsBomb = t1.GetComponent<ColorBombComponent>() != null;
+            bool t2IsBomb = t2.GetComponent<ColorBombComponent>() != null;
+
+            if (t1IsBomb && t2IsBomb) return true; // Bomb + Bomb
+            
+            if (t1IsBomb) return IsValidColorBombTarget(t2);
+            if (t2IsBomb) return IsValidColorBombTarget(t1);
+            
+            return false;
+        }
+
+        /// <summary>
+        /// 检查是否是合法的彩色炸弹目标（普通糖果、条纹、包装等）
+        /// </summary>
+        private static bool IsValidColorBombTarget(Tile t)
+        {
+            return t.GetComponent<CandyComponent>() != null || 
+                   t.GetComponent<StripedCandyComponent>() != null || 
+                   t.GetComponent<WrappedCandyComponent>() != null;
         }
 
         /// <summary>
@@ -183,6 +214,7 @@ namespace ET
 
         /// <summary>
         /// 获取一个随机可能的交换（用于提示）
+        /// 参照CandyMatch3Kit.HighlightRandomMatch，过滤掉被冰覆盖和包含特殊方块的交换
         /// </summary>
         public static SwapInfo? GetRandomPossibleSwap(this Match3BoardComponent self)
         {
@@ -191,10 +223,81 @@ namespace ET
                 self.PossibleSwaps = self.DetectPossibleSwaps();
             }
 
-            if (self.PossibleSwaps.Count > 0)
+            // 过滤掉不适合作为提示的交换
+            var filteredSwaps = self.GetFilteredPossibleSwaps();
+            
+            if (filteredSwaps.Count > 0)
             {
-                int randomIndex = RandomGenerator.RandomNumber(0, self.PossibleSwaps.Count);
-                return self.PossibleSwaps[randomIndex];
+                int randomIndex = RandomGenerator.RandomNumber(0, filteredSwaps.Count);
+                return filteredSwaps[randomIndex];
+            }
+
+            return null;
+        }
+        
+        /// <summary>
+        /// 获取过滤后的可能交换列表（排除被冰覆盖和特殊方块的交换）
+        /// 参照CandyMatch3Kit.HighlightRandomMatch的过滤逻辑
+        /// </summary>
+        public static List<SwapInfo> GetFilteredPossibleSwaps(this Match3BoardComponent self)
+        {
+            var filteredSwaps = new List<SwapInfo>();
+            int width = self.GetWidth();
+            
+            foreach (var swap in self.PossibleSwaps)
+            {
+                // 获取关卡瓦片数据
+                var levelTileA = self.GetLevelTile(swap.TileAX, swap.TileAY);
+                var levelTileB = self.GetLevelTile(swap.TileBX, swap.TileBY);
+                
+                // 检查是否被冰覆盖
+                bool isIceA = levelTileA != null && levelTileA.elementType == ElementType.Ice;
+                bool isIceB = levelTileB != null && levelTileB.elementType == ElementType.Ice;
+                
+                if (isIceA || isIceB)
+                {
+                    continue; // 跳过被冰覆盖的交换
+                }
+                
+                // 检查是否包含特殊方块
+                var tileA = self.GetTile(swap.TileAX, swap.TileAY);
+                var tileB = self.GetTile(swap.TileBX, swap.TileBY);
+                
+                if (tileA != null && tileA.GetComponent<SpecialBlockComponent>() != null)
+                {
+                    continue; // 跳过特殊方块
+                }
+                
+                if (tileB != null && tileB.GetComponent<SpecialBlockComponent>() != null)
+                {
+                    continue; // 跳过特殊方块
+                }
+                
+                filteredSwaps.Add(swap);
+            }
+            
+            return filteredSwaps;
+        }
+        
+        /// <summary>
+        /// 获取关卡瓦片数据（公开方法）
+        /// </summary>
+        public static LevelTile GetLevelTile(this Match3BoardComponent self, int x, int y)
+        {
+            if (self.Level == null) return null;
+            
+            int width = self.GetWidth();
+            int height = self.GetHeight();
+            
+            if (x < 0 || x >= width || y < 0 || y >= height)
+            {
+                return null;
+            }
+
+            int index = x + (y * width);
+            if (index >= 0 && index < self.Level.tiles.Count)
+            {
+                return self.Level.tiles[index];
             }
 
             return null;

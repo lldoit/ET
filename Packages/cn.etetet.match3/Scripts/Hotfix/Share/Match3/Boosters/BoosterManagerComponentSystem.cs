@@ -35,7 +35,17 @@ namespace ET
             }
             self.BoosterCounts[type] += count;
             
-            // TODO: 发送事件更新UI
+            // 发送事件更新UI
+            Scene scene = self.Root() as Scene;
+            if (scene != null)
+            {
+                EventSystem.Instance.Publish(scene, new BoosterCountChangedEvent
+                {
+                    BoosterType = type,
+                    NewCount = self.BoosterCounts[type],
+                    Delta = count
+                });
+            }
         }
 
         /// <summary>
@@ -58,7 +68,17 @@ namespace ET
 
             self.BoosterCounts[type]--;
             
-            // TODO: 发送事件更新UI
+            // 发送事件更新UI
+            Scene scene = self.Root() as Scene;
+            if (scene != null)
+            {
+                EventSystem.Instance.Publish(scene, new BoosterCountChangedEvent
+                {
+                    BoosterType = type,
+                    NewCount = self.BoosterCounts[type],
+                    Delta = -1
+                });
+            }
             return true;
         }
 
@@ -80,7 +100,16 @@ namespace ET
                 self.InSwitchMode = true;
             }
             
-            // TODO: 发送事件更新UI（高亮道具按钮等）
+            // 发送事件更新UI（高亮道具按钮等）
+            Scene scene = self.Root() as Scene;
+            if (scene != null)
+            {
+                EventSystem.Instance.Publish(scene, new BoosterActivatedEvent
+                {
+                    BoosterType = type,
+                    IsActive = true
+                });
+            }
             return true;
         }
 
@@ -92,7 +121,16 @@ namespace ET
             self.ActiveBoosterType = null;
             self.InSwitchMode = false;
             
-            // TODO: 发送事件更新UI
+            // 发送事件更新UI
+            Scene scene = self.Root() as Scene;
+            if (scene != null)
+            {
+                EventSystem.Instance.Publish(scene, new BoosterActivatedEvent
+                {
+                    BoosterType = null,
+                    IsActive = false
+                });
+            }
         }
 
         /// <summary>
@@ -223,7 +261,17 @@ namespace ET
                 EventSystem.Instance.Publish(scene, new PlaySoundEvent { SoundType = "BoosterBomb" });
             }
 
-            // TODO: 播放炸弹道具动画（在HotfixView层实现）
+            // 发布炸弹道具动画事件
+            EventSystem.Instance.Publish(scene, new BoosterAnimationEvent
+            {
+                BoosterType = BoosterType.Bomb,
+                TargetX = x,
+                TargetY = y,
+                Duration = 0.5f
+            });
+            
+            // 等待动画播放
+            await self.Root().GetComponent<TimerComponent>().WaitAsync(200);
 
             // 爆炸所有收集的瓦片
             foreach (var t in tilesToExplode)
@@ -274,7 +322,16 @@ namespace ET
                 EventSystem.Instance.Publish(scene, new PlaySoundEvent { SoundType = "BoosterColorBomb" });
             }
 
-            // TODO: 播放道具使用动画（在HotfixView层实现）
+            // 发布道具使用动画事件
+            EventSystem.Instance.Publish(scene, new BoosterAnimationEvent
+            {
+                BoosterType = BoosterType.ColorBomb,
+                TargetX = x,
+                TargetY = y,
+                Duration = 0.3f
+            });
+            
+            await self.Root().GetComponent<TimerComponent>().WaitAsync(100);
 
             // 销毁原瓦片
             board.SetTile(x, y, null);
@@ -290,68 +347,9 @@ namespace ET
                 EventSystem.Instance.Publish(scene, new PlaySoundEvent { SoundType = "SpecialCandyCreate" });
             }
 
-            // TODO: 播放彩色炸弹生成动画
-            
-            await ETTask.CompletedTask;
-        }
-
-        /// <summary>
-        /// 处理Switch道具的输入
-        /// </summary>
-        public static async ETTask HandleSwitchInputAsync(this BoosterManagerComponent self, Match3BoardComponent board, int x, int y)
-        {
-            if (!self.InSwitchMode)
-            {
-                return;
-            }
-
-            var tile = board.GetTile(x, y);
-            if (tile == null)
-            {
-                return;
-            }
-
-            // 第一次点击：记录位置
-            if (self.SwitchFirstX == -1)
-            {
-                self.SwitchFirstX = x;
-                self.SwitchFirstY = y;
-                // TODO: 高亮选中的瓦片
-                return;
-            }
-
-            // 第二次点击：执行交换
-            int x1 = self.SwitchFirstX;
-            int y1 = self.SwitchFirstY;
-            int x2 = x;
-            int y2 = y;
-
-            // 重置选择
-            self.SwitchFirstX = -1;
-            self.SwitchFirstY = -1;
-
-            // 检查是否相邻
-            bool isAdjacent = (System.Math.Abs(x1 - x2) == 1 && y1 == y2) ||
-                             (System.Math.Abs(y1 - y2) == 1 && x1 == x2);
-
-            if (!isAdjacent)
-            {
-                // TODO: 提示玩家必须选择相邻瓦片
-                return;
-            }
-
-            // 消耗道具
-            if (!self.UseBooster(BoosterType.Switch))
-            {
-                self.DeactivateBooster();
-                return;
-            }
-
-            // 执行强制交换
-            await self.ExecuteSwitchAsync(board, x1, y1, x2, y2);
-
-            // 清除激活状态
-            self.DeactivateBooster();
+            // 注意：彩色炸弹的生成特效可以在HotfixView层的TileView中自动播放
+            // 或者通过监听TileComponent的创建来触发
+            await self.Root().GetComponent<TimerComponent>().WaitAsync(300);
         }
 
         /// <summary>
@@ -376,9 +374,16 @@ namespace ET
             if (scene != null)
             {
                 EventSystem.Instance.Publish(scene, new PlaySoundEvent { SoundType = "BoosterSwitch" });
+                
+                // 发布交换动画事件
+                EventSystem.Instance.Publish(scene, new Match3SwapEvent
+                {
+                    Tile1Ref = tile1,
+                    Tile2Ref = tile2,
+                    Duration = 0.25f
+                });
             }
 
-            // TODO: 播放交换动画（在HotfixView层实现）
             await board.Root().GetComponent<TimerComponent>().WaitAsync(250);
 
             // 交换后检测匹配
