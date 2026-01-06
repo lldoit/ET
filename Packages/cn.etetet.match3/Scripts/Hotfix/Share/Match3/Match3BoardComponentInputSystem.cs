@@ -168,9 +168,9 @@ namespace ET
         /// </summary>
         private static void DecrementLimit(this Match3BoardComponent self)
         {
-            if (self.Level == null) return;
+            if (!self.HasLevel) return;
 
-            if (self.Level.limitType == LimitType.Moves)
+            if (self.Level.LimitType == LimitType.Moves)
             {
                 self.CurrentLimit--;
                 

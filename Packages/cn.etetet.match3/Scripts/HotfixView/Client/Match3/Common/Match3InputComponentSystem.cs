@@ -329,7 +329,7 @@ namespace ET.Client
             y = -1;
 
             var board = self.GetParent<Match3BoardComponent>();
-            if (board == null || board.Level == null)
+            if (board == null || !board.HasLevel)
             {
                 return false;
             }
@@ -342,7 +342,7 @@ namespace ET.Client
             y = Mathf.FloorToInt(localPos.y / self.TileSize);
 
             // 边界检查
-            if (x < 0 || x >= board.Level.width || y < 0 || y >= board.Level.height)
+            if (x < 0 || x >= board.Level.Width || y < 0 || y >= board.Level.Height)
             {
                 return false;
             }

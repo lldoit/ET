@@ -168,7 +168,7 @@ namespace ET
                     
                     // 检查此位置是否被冰覆盖
                     var levelTile = self.GetLevelTile(i, j);
-                    if (levelTile != null && levelTile.elementType == ElementType.Ice)
+                    if (levelTile.TileType != LevelTileType.Empty && levelTile.ElementType == ElementType.Ice)
                     {
                         continue; // 跳过被冰覆盖的彩色炸弹
                     }
@@ -198,7 +198,7 @@ namespace ET
                         
                         // 检查邻居位置是否被冰覆盖
                         var neighborLevelTile = self.GetLevelTile(nx, ny);
-                        if (neighborLevelTile != null && neighborLevelTile.elementType == ElementType.Ice)
+                        if (neighborLevelTile.TileType != LevelTileType.Empty && neighborLevelTile.ElementType == ElementType.Ice)
                         {
                             continue; // 跳过被冰覆盖的邻居
                         }

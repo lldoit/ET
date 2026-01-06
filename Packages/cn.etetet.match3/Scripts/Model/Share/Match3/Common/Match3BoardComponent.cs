@@ -3,7 +3,7 @@ using System.Collections.Generic;
 namespace ET
 {
     /// <summary>
-    /// 三消游戏棋盘组件
+    /// 三消游戏棋盘组件（符合ET框架规范）
     /// </summary>
     [ComponentOf]
     public class Match3BoardComponent : Entity, IAwake
@@ -14,9 +14,14 @@ namespace ET
         public Level Level;
         
         /// <summary>
+        /// 是否已加载关卡
+        /// </summary>
+        public bool HasLevel;
+        
+        /// <summary>
         /// 游戏状态
         /// </summary>
-        public GameState GameState = new GameState();
+        public GameState GameState;
         
         /// <summary>
         /// 当前剩余限制（移动次数或时间）
@@ -79,4 +84,3 @@ namespace ET
         public ETCancellationToken SuggestedMatchCancelToken;
     }
 }
-

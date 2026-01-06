@@ -76,7 +76,7 @@ namespace ET
                         var checkTile = self.GetTile(i, k);
                         var levelTile = self.GetLevelTile(i, k);
                         
-                        if (checkTile == null && !(levelTile is HoleTile))
+                        if (checkTile == null && levelTile.TileType != LevelTileType.Hole)
                         {
                             bottom = k;
                         }
@@ -114,7 +114,7 @@ namespace ET
                     var tile = self.GetTile(i, j);
                     var levelTile = self.GetLevelTile(i, j);
                     
-                    if (tile == null && !(levelTile is HoleTile))
+                    if (tile == null && levelTile.TileType != LevelTileType.Hole)
                     {
                         numEmpties++;
                     }
@@ -130,7 +130,7 @@ namespace ET
                     {
                         var tile = self.GetTile(i, j);
                         var levelTile = self.GetLevelTile(i, j);
-                        var isHole = levelTile is HoleTile;
+                        var isHole = levelTile.TileType == LevelTileType.Hole;
                         var hasSpecialBlock = tile != null && tile.GetComponent<SpecialBlockComponent>() != null;
 
                         if (hasSpecialBlock)
@@ -270,7 +270,7 @@ namespace ET
                     var tile = self.GetTile(i, j);
                     var levelTile = self.GetLevelTile(i, j);
                     
-                    if (tile == null && !(levelTile is HoleTile))
+                    if (tile == null && levelTile.TileType != LevelTileType.Hole)
                     {
                         numEmpties++;
                     }
@@ -287,7 +287,7 @@ namespace ET
                         var tile = self.GetTile(i, j);
                         var levelTile = self.GetLevelTile(i, j);
                         
-                        if (tile == null && !(levelTile is HoleTile))
+                        if (tile == null && levelTile.TileType != LevelTileType.Hole)
                         {
                             var newTile = self.CreateRandomTile(i, j, true);
                             self.SetTile(i, j, newTile);
@@ -382,7 +382,7 @@ namespace ET
             var levelTile = self.GetLevelTile(x, y);
             
             // 位置为空且不是洞
-            return tile == null && !(levelTile is HoleTile);
+            return tile == null && levelTile.TileType != LevelTileType.Hole;
         }
 
         // GetLevelTile方法已移至Match3BoardComponentSystem.cs作为公开方法
@@ -479,4 +479,3 @@ namespace ET
         }
     }
 }
-

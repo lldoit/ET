@@ -73,7 +73,7 @@ namespace ET
             {
                 EventSystem.Instance.Publish(scene, new GameStateChangedEvent
                 {
-                    Score = self.GameState.score,
+                    Score = self.GameState.Score,
                     CascadeCount = self.ConsecutiveCascades
                 });
             }
@@ -248,8 +248,8 @@ namespace ET
             var candy = tile.GetComponent<CandyComponent>();
             if (candy != null)
             {
-                self.GameState.AddCandy(candy.GetColor());
-                self.GameState.score += 10 * self.ConsecutiveCascades; // Cascade加分
+                GameStateSystem.AddCandy(ref self.GameState, candy.GetColor());
+                GameStateSystem.AddScore(ref self.GameState, 10 * self.ConsecutiveCascades); // Cascade加分
                 return;
             }
 
@@ -257,8 +257,8 @@ namespace ET
             var stripedCandy = tile.GetComponent<StripedCandyComponent>();
             if (stripedCandy != null)
             {
-                self.GameState.AddCandy(stripedCandy.GetColor());
-                self.GameState.score += 50 * self.ConsecutiveCascades;
+                GameStateSystem.AddCandy(ref self.GameState, stripedCandy.GetColor());
+                GameStateSystem.AddScore(ref self.GameState, 50 * self.ConsecutiveCascades);
                 return;
             }
 
@@ -266,8 +266,8 @@ namespace ET
             var wrappedCandy = tile.GetComponent<WrappedCandyComponent>();
             if (wrappedCandy != null)
             {
-                self.GameState.AddCandy(wrappedCandy.GetColor());
-                self.GameState.score += 50 * self.ConsecutiveCascades;
+                GameStateSystem.AddCandy(ref self.GameState, wrappedCandy.GetColor());
+                GameStateSystem.AddScore(ref self.GameState, 50 * self.ConsecutiveCascades);
                 return;
             }
 
@@ -275,7 +275,7 @@ namespace ET
             var colorBomb = tile.GetComponent<ColorBombComponent>();
             if (colorBomb != null)
             {
-                self.GameState.score += 100 * self.ConsecutiveCascades;
+                GameStateSystem.AddScore(ref self.GameState, 100 * self.ConsecutiveCascades);
                 return;
             }
 
@@ -283,8 +283,8 @@ namespace ET
             var collectable = tile.GetComponent<CollectableComponent>();
             if (collectable != null)
             {
-                self.GameState.AddCollectable(collectable.GetCollectableType());
-                self.GameState.score += 30 * self.ConsecutiveCascades;
+                GameStateSystem.AddCollectable(ref self.GameState, collectable.GetCollectableType());
+                GameStateSystem.AddScore(ref self.GameState, 30 * self.ConsecutiveCascades);
                 return;
             }
 
@@ -292,8 +292,8 @@ namespace ET
             var specialBlock = tile.GetComponent<SpecialBlockComponent>();
             if (specialBlock != null)
             {
-                self.GameState.AddSpecialBlock(specialBlock.GetBlockType());
-                self.GameState.score += 20 * self.ConsecutiveCascades;
+                GameStateSystem.AddSpecialBlock(ref self.GameState, specialBlock.GetBlockType());
+                GameStateSystem.AddScore(ref self.GameState, 20 * self.ConsecutiveCascades);
                 
                 // 如果是巧克力，标记已炸毁
                 if (tile.GetComponent<ChocolateComponent>() != null)
@@ -507,4 +507,3 @@ namespace ET
         }
     }
 }
-

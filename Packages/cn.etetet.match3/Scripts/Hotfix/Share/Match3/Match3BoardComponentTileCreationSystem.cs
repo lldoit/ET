@@ -14,80 +14,83 @@ namespace ET
         /// </summary>
         public static Tile CreateTileFromLevel(this Match3BoardComponent self, LevelTile levelTile, int x, int y)
         {
-            if (levelTile == null)
+            // 空瓦片或空洞不创建实体
+            if (levelTile.TileType == LevelTileType.Empty || levelTile.TileType == LevelTileType.Hole)
             {
                 return null;
             }
 
             Tile tile = null;
 
-            // 创建普通糖果
-            if (levelTile is CandyTile candyTile)
+            switch (levelTile.TileType)
             {
-                if (candyTile.type == CandyType.RandomCandy)
-                {
-                    tile = self.CreateRandomTile(x, y, false);
-                }
-                else
-                {
+                case LevelTileType.Candy:
+                    // 创建普通糖果
+                    if (levelTile.CandyType == CandyType.RandomCandy)
+                    {
+                        tile = self.CreateRandomTile(x, y, false);
+                    }
+                    else
+                    {
+                        tile = self.AddChild<Tile, int, int>(x, y);
+                        tile.AddComponent<CandyComponent, CandyColor>((CandyColor)((int)levelTile.CandyType));
+                    }
+                    break;
+                    
+                case LevelTileType.SpecialCandy:
+                    // 创建特殊糖果
                     tile = self.AddChild<Tile, int, int>(x, y);
-                    var candyComponent = tile.AddComponent<CandyComponent, CandyColor>((CandyColor)((int)candyTile.type));
-                }
-            }
-            // 创建特殊糖果
-            else if (levelTile is SpecialCandyTile specialCandyTile)
-            {
-                tile = self.AddChild<Tile, int, int>(x, y);
-                var specialCandyType = (int)specialCandyTile.type;
+                    var specialCandyType = (int)levelTile.SpecialCandyType;
 
-                // 横向条纹糖果 (0-5)
-                if (specialCandyType >= 0 && specialCandyType <= (int)SpecialCandyType.YellowCandyHorizontalStriped)
-                {
-                    var color = (CandyColor)(specialCandyType % 6);
-                    tile.AddComponent<StripedCandyComponent, CandyColor, StripeDirection>(color, StripeDirection.Horizontal);
-                }
-                // 纵向条纹糖果 (6-11)
-                else if (specialCandyType <= (int)SpecialCandyType.YellowCandyVerticalStriped)
-                {
-                    var color = (CandyColor)(specialCandyType % 6);
-                    tile.AddComponent<StripedCandyComponent, CandyColor, StripeDirection>(color, StripeDirection.Vertical);
-                }
-                // 包装糖果 (12-17)
-                else if (specialCandyType <= (int)SpecialCandyType.YellowCandyWrapped)
-                {
-                    var color = (CandyColor)(specialCandyType % 6);
-                    tile.AddComponent<WrappedCandyComponent, CandyColor>(color);
-                }
-                // 彩色炸弹 (18)
-                else
-                {
-                    tile.AddComponent<ColorBombComponent>();
-                }
-            }
-            // 创建特殊方块
-            else if (levelTile is SpecialBlockTile specialBlockTile)
-            {
-                tile = self.AddChild<Tile, int, int>(x, y);
-                tile.Destructable = false;
+                    // 横向条纹糖果 (0-5)
+                    if (specialCandyType >= 0 && specialCandyType <= (int)SpecialCandyType.YellowCandyHorizontalStriped)
+                    {
+                        var color = (CandyColor)(specialCandyType % 6);
+                        tile.AddComponent<StripedCandyComponent, CandyColor, StripeDirection>(color, StripeDirection.Horizontal);
+                    }
+                    // 纵向条纹糖果 (6-11)
+                    else if (specialCandyType <= (int)SpecialCandyType.YellowCandyVerticalStriped)
+                    {
+                        var color = (CandyColor)(specialCandyType % 6);
+                        tile.AddComponent<StripedCandyComponent, CandyColor, StripeDirection>(color, StripeDirection.Vertical);
+                    }
+                    // 包装糖果 (12-17)
+                    else if (specialCandyType <= (int)SpecialCandyType.YellowCandyWrapped)
+                    {
+                        var color = (CandyColor)(specialCandyType % 6);
+                        tile.AddComponent<WrappedCandyComponent, CandyColor>(color);
+                    }
+                    // 彩色炸弹 (18)
+                    else
+                    {
+                        tile.AddComponent<ColorBombComponent>();
+                    }
+                    break;
+                    
+                case LevelTileType.SpecialBlock:
+                    // 创建特殊方块
+                    tile = self.AddChild<Tile, int, int>(x, y);
+                    tile.Destructable = false;
 
-                switch (specialBlockTile.type)
-                {
-                    case SpecialBlockType.Chocolate:
-                        tile.AddComponent<ChocolateComponent>();
-                        break;
-                    case SpecialBlockType.Marshmallow:
-                        tile.AddComponent<MarshmallowComponent>();
-                        break;
-                    case SpecialBlockType.Unbreakable:
-                        tile.AddComponent<UnbreakableComponent>();
-                        break;
-                }
-            }
-            // 创建收集物
-            else if (levelTile is CollectableTile collectableTile)
-            {
-                tile = self.AddChild<Tile, int, int>(x, y);
-                tile.AddComponent<CollectableComponent, CollectableType>(collectableTile.type);
+                    switch (levelTile.SpecialBlockType)
+                    {
+                        case SpecialBlockType.Chocolate:
+                            tile.AddComponent<ChocolateComponent>();
+                            break;
+                        case SpecialBlockType.Marshmallow:
+                            tile.AddComponent<MarshmallowComponent>();
+                            break;
+                        case SpecialBlockType.Unbreakable:
+                            tile.AddComponent<UnbreakableComponent>();
+                            break;
+                    }
+                    break;
+                    
+                case LevelTileType.Collectable:
+                    // 创建收集物
+                    tile = self.AddChild<Tile, int, int>(x, y);
+                    tile.AddComponent<CollectableComponent, CollectableType>(levelTile.CollectableType);
+                    break;
             }
 
             return tile;
@@ -98,14 +101,14 @@ namespace ET
         /// </summary>
         public static Tile CreateRandomTile(this Match3BoardComponent self, int x, int y, bool runtime)
         {
-            if (self.Level == null || self.Level.availableColors.Count == 0)
+            if (!self.HasLevel || self.Level.AvailableColors == null || self.Level.AvailableColors.Count == 0)
             {
                 return null;
             }
 
             // 创建符合条件的颜色列表（避免初始就有3连）
             var eligibleColors = new List<CandyColor>();
-            eligibleColors.AddRange(self.Level.availableColors);
+            eligibleColors.AddRange(self.Level.AvailableColors);
 
             // 检查左边两个瓦片
             var leftTile1 = self.GetTile(x - 1, y);
@@ -136,14 +139,14 @@ namespace ET
             // 确保至少有一种颜色可选
             if (eligibleColors.Count == 0)
             {
-                eligibleColors.AddRange(self.Level.availableColors);
+                eligibleColors.AddRange(self.Level.AvailableColors);
             }
 
             // 在运行时可能创建收集物
-            if (runtime && self.EligibleCollectables.Count > 0 && self.Level.collectableChance > 0)
+            if (runtime && self.EligibleCollectables.Count > 0 && self.Level.CollectableChance > 0)
             {
                 var random = RandomGenerator.RandomNumber(0, 100);
-                if (random <= self.Level.collectableChance)
+                if (random <= self.Level.CollectableChance)
                 {
                     var idx = RandomGenerator.RandomNumber(0, self.EligibleCollectables.Count);
                     var collectableType = self.EligibleCollectables[idx];
@@ -203,4 +206,3 @@ namespace ET
         }
     }
 }
-

@@ -13,7 +13,7 @@ namespace ET
         [EntitySystem]
         private static void Awake(this Match3BoardComponent self)
         {
-            self.GameState = new GameState();
+            GameStateSystem.Reset(ref self.GameState);
         }
 
         /// <summary>
@@ -62,8 +62,9 @@ namespace ET
         public static void LoadLevel(this Match3BoardComponent self, Level level)
         {
             self.Level = level;
-            self.GameState.Reset();
-            self.CurrentLimit = level.limit;
+            self.HasLevel = true;
+            GameStateSystem.Reset(ref self.GameState);
+            self.CurrentLimit = level.Limit;
         }
 
         /// <summary>
@@ -71,7 +72,7 @@ namespace ET
         /// </summary>
         public static int GetWidth(this Match3BoardComponent self)
         {
-            return self.Level?.width ?? 0;
+            return self.HasLevel ? self.Level.Width : 0;
         }
 
         /// <summary>
@@ -79,7 +80,7 @@ namespace ET
         /// </summary>
         public static int GetHeight(this Match3BoardComponent self)
         {
-            return self.Level?.height ?? 0;
+            return self.HasLevel ? self.Level.Height : 0;
         }
 
         /// <summary>
@@ -242,7 +243,6 @@ namespace ET
         public static List<SwapInfo> GetFilteredPossibleSwaps(this Match3BoardComponent self)
         {
             var filteredSwaps = new List<SwapInfo>();
-            int width = self.GetWidth();
             
             foreach (var swap in self.PossibleSwaps)
             {
@@ -251,8 +251,8 @@ namespace ET
                 var levelTileB = self.GetLevelTile(swap.TileBX, swap.TileBY);
                 
                 // 检查是否被冰覆盖
-                bool isIceA = levelTileA != null && levelTileA.elementType == ElementType.Ice;
-                bool isIceB = levelTileB != null && levelTileB.elementType == ElementType.Ice;
+                bool isIceA = levelTileA.TileType != LevelTileType.Empty && levelTileA.ElementType == ElementType.Ice;
+                bool isIceB = levelTileB.TileType != LevelTileType.Empty && levelTileB.ElementType == ElementType.Ice;
                 
                 if (isIceA || isIceB)
                 {
@@ -284,23 +284,9 @@ namespace ET
         /// </summary>
         public static LevelTile GetLevelTile(this Match3BoardComponent self, int x, int y)
         {
-            if (self.Level == null) return null;
+            if (!self.HasLevel) return default;
             
-            int width = self.GetWidth();
-            int height = self.GetHeight();
-            
-            if (x < 0 || x >= width || y < 0 || y >= height)
-            {
-                return null;
-            }
-
-            int index = x + (y * width);
-            if (index >= 0 && index < self.Level.tiles.Count)
-            {
-                return self.Level.tiles[index];
-            }
-
-            return null;
+            return self.Level.GetTile(x, y);
         }
 
         /// <summary>
@@ -337,4 +323,3 @@ namespace ET
         }
     }
 }
-

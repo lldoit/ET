@@ -1,123 +1,131 @@
 namespace ET
 {
     /// <summary>
-    /// 目标基类
+    /// 目标类型枚举
     /// </summary>
-    public abstract class Goal : Object
+    public enum GoalType
     {
-        public abstract bool IsComplete(GameState state);
+        ReachScore,           // 达到分数
+        CollectCandy,         // 收集糖果
+        CollectElement,       // 收集元素
+        CollectSpecialBlock,  // 收集特殊方块
+        CollectCollectable,   // 收集收集物
+        DestroyAllChocolate   // 摧毁所有巧克力
     }
 
     /// <summary>
-    /// 达到分数目标
+    /// 目标结构体（纯数据，符合ET框架规范）
     /// </summary>
-    public class ReachScoreGoal : Goal
+    public struct Goal
     {
-        public int score;
-
-        public override bool IsComplete(GameState state)
+        /// <summary>
+        /// 目标类型
+        /// </summary>
+        public GoalType GoalType;
+        
+        /// <summary>
+        /// 目标数量（分数、收集数量等）
+        /// </summary>
+        public int Amount;
+        
+        /// <summary>
+        /// 糖果颜色（当GoalType为CollectCandy时有效）
+        /// </summary>
+        public CandyColor CandyColor;
+        
+        /// <summary>
+        /// 元素类型（当GoalType为CollectElement时有效）
+        /// </summary>
+        public ElementType ElementType;
+        
+        /// <summary>
+        /// 特殊方块类型（当GoalType为CollectSpecialBlock时有效）
+        /// </summary>
+        public SpecialBlockType SpecialBlockType;
+        
+        /// <summary>
+        /// 收集物类型（当GoalType为CollectCollectable时有效）
+        /// </summary>
+        public CollectableType CollectableType;
+        
+        /// <summary>
+        /// 是否完成（用于DestroyAllChocolate等条件目标）
+        /// </summary>
+        public bool IsCompleted;
+        
+        /// <summary>
+        /// 创建达到分数目标
+        /// </summary>
+        public static Goal CreateReachScore(int score)
         {
-            return state.score >= score;
+            return new Goal
+            {
+                GoalType = GoalType.ReachScore,
+                Amount = score
+            };
         }
-
-        public override string ToString()
+        
+        /// <summary>
+        /// 创建收集糖果目标
+        /// </summary>
+        public static Goal CreateCollectCandy(CandyColor candyColor, int amount)
         {
-            return "Reach " + score + " points";
+            return new Goal
+            {
+                GoalType = GoalType.CollectCandy,
+                CandyColor = candyColor,
+                Amount = amount
+            };
         }
-    }
-
-    /// <summary>
-    /// 收集糖果目标
-    /// </summary>
-    public class CollectCandyGoal : Goal
-    {
-        public CandyColor candyType;
-        public int amount;
-
-        public override bool IsComplete(GameState state)
+        
+        /// <summary>
+        /// 创建收集元素目标
+        /// </summary>
+        public static Goal CreateCollectElement(ElementType elementType, int amount)
         {
-            return state.collectedCandies[candyType] >= amount;
+            return new Goal
+            {
+                GoalType = GoalType.CollectElement,
+                ElementType = elementType,
+                Amount = amount
+            };
         }
-
-        public override string ToString()
+        
+        /// <summary>
+        /// 创建收集特殊方块目标
+        /// </summary>
+        public static Goal CreateCollectSpecialBlock(SpecialBlockType specialBlockType, int amount)
         {
-            return "Collect " + amount + " " + candyType;
+            return new Goal
+            {
+                GoalType = GoalType.CollectSpecialBlock,
+                SpecialBlockType = specialBlockType,
+                Amount = amount
+            };
         }
-    }
-
-    /// <summary>
-    /// 收集元素目标
-    /// </summary>
-    public class CollectElementGoal : Goal
-    {
-        public ElementType elementType;
-        public int amount;
-
-        public override bool IsComplete(GameState state)
+        
+        /// <summary>
+        /// 创建收集收集物目标
+        /// </summary>
+        public static Goal CreateCollectCollectable(CollectableType collectableType, int amount)
         {
-            return state.collectedElements[elementType] >= amount;
+            return new Goal
+            {
+                GoalType = GoalType.CollectCollectable,
+                CollectableType = collectableType,
+                Amount = amount
+            };
         }
-
-        public override string ToString()
+        
+        /// <summary>
+        /// 创建摧毁所有巧克力目标
+        /// </summary>
+        public static Goal CreateDestroyAllChocolate()
         {
-            return "Collect " + amount + " " + elementType;
-        }
-    }
-
-    /// <summary>
-    /// 收集特殊方块目标
-    /// </summary>
-    public class CollectSpecialBlockGoal : Goal
-    {
-        public SpecialBlockType specialBlockType;
-        public int amount;
-
-        public override bool IsComplete(GameState state)
-        {
-            return state.collectedSpecialBlocks[specialBlockType] >= amount;
-        }
-
-        public override string ToString()
-        {
-            return "Collect " + amount + " " + specialBlockType;
-        }
-    }
-
-    /// <summary>
-    /// 收集收集物目标
-    /// </summary>
-    public class CollectCollectableGoal : Goal
-    {
-        public CollectableType collectableType;
-        public int amount;
-
-        public override bool IsComplete(GameState state)
-        {
-            return state.collectedCollectables[collectableType] >= amount;
-        }
-
-        public override string ToString()
-        {
-            return "Collect " + amount + " " + collectableType;
-        }
-    }
-
-    /// <summary>
-    /// 摧毁所有巧克力目标
-    /// </summary>
-    public class DestroyAllChocolateGoal : Goal
-    {
-        public bool completed;
-
-        public override bool IsComplete(GameState state)
-        {
-            return completed;
-        }
-
-        public override string ToString()
-        {
-            return "Destroy all chocolate";
+            return new Goal
+            {
+                GoalType = GoalType.DestroyAllChocolate
+            };
         }
     }
 }
-

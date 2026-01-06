@@ -82,10 +82,11 @@ var board = scene.AddComponent<Match3BoardComponent>();
 // 创建关卡数据
 var level = new Level
 {
-    width = 8,
-    height = 8,
-    limitType = LimitType.Moves,
-    limitValue = 30,
+    Width = 8,
+    Height = 8,
+    LimitType = LimitType.Moves,
+    Limit = 30,
+    AvailableColors = new List<CandyColor> { CandyColor.Blue, CandyColor.Green, CandyColor.Orange, CandyColor.Purple, CandyColor.Red, CandyColor.Yellow },
     // ... 设置其他关卡参数
 };
 
@@ -248,7 +249,7 @@ public static partial class Match3BoardComponentSystem
     [EntitySystem]
     private static void Awake(this Match3BoardComponent self)
     {
-        self.GameState = new GameState();
+        GameStateSystem.Reset(ref self.GameState);
     }
     
     public static void LoadLevel(this Match3BoardComponent self, Level level)
