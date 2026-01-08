@@ -29,6 +29,10 @@ namespace YIUIFramework
         [LabelText("响应中 屏蔽所有操作")]
         private bool m_BanLayerOption = true;
 
+        [SerializeField]
+        [LabelText("超时时间(秒，0=不超时)")]
+        private float m_Timeout = 30f;
+
         public void OnPointerClick(PointerEventData eventData)
         {
             if (m_Selectable != null && !m_Selectable.interactable)
@@ -72,7 +76,19 @@ namespace YIUIFramework
 
             try
             {
-                await OnUIEvent(eventData);
+                if (m_Timeout > 0)
+                {
+                    // 使用通用的超时扩展方法
+                    bool completed = await OnUIEvent(eventData).WithTimeout((long)(m_Timeout * 1000));
+                    if (!completed)
+                    {
+                        Logger.LogWarning($"[UITaskEventBindClick] 异步事件超时: {gameObject.name}, 超时时间: {m_Timeout}秒");
+                    }
+                }
+                else
+                {
+                    await OnUIEvent(eventData);
+                }
             }
             catch (Exception e)
             {
