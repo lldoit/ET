@@ -1,0 +1,23 @@
+{
+    "Id": 5000,
+    "Name": "Battle",
+    "ScriptsReferences": {
+        "Model": [
+            "ET.Match3"
+        ],
+        "ModelView": [
+            "ET.Match3",
+            "ET.Match3.ModelView"
+        ],
+        "Hotfix": [
+            "ET.Match3",
+            "ET.Match3.Hotfix"
+        ],
+        "HotfixView": [
+            "ET.Match3",
+            "ET.Match3.ModelView",
+            "ET.Match3.Hotfix",
+            "ET.Match3.HotfixView"
+        ]
+    }
+}

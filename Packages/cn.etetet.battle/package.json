@@ -1,0 +1,24 @@
+{
+  "name": "cn.etetet.battle",
+  "displayName": "ET.Battle",
+  "version": "1.0.0",
+  "unity": "2022.3",
+  "description": "ET框架的战斗系统模块，基于三消的战斗逻辑实现",
+  "author": {
+    "name": "ET Framework",
+    "url": "https://github.com/egametang/ET"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/egametang/ET"
+  },
+  "dependencies": {
+    "cn.etetet.core": "3.0.3",
+    "cn.etetet.audio": "1.0.0",
+    "cn.etetet.match3": "1.0.0"
+  },
+  "relatedPackages": {},
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/@ET-Packages"
+  }
+}
