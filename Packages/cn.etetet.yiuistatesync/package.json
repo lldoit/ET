@@ -15,6 +15,7 @@
   },
   "relatedPackages": {},
   "dependencies": {
+    "cn.etetet.battle": "1.0.0",
     "cn.etetet.statesync": "3.0.11",
     "cn.etetet.packagemanager": "1.0.7",
     "cn.etetet.yiuiframework": "3.0.1",

@@ -4,7 +4,7 @@ namespace ET.Client
     /// 订阅三消Combo事件，将其转换为战斗伤害
     /// 事件结构由 match3 包定义和发布
     /// </summary>
-    [Event(SceneType.Current)]
+    [Event(SceneType.Battle)]
     public class Match3ComboDamageEventHandler : AEvent<Scene, Match3ComboDamageEvent>
     {
         protected override async ETTask Run(Scene scene, Match3ComboDamageEvent args)

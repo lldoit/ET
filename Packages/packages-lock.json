@@ -27,6 +27,16 @@
         "cn.etetet.yooassets": "2.3.6"
       }
     },
+    "cn.etetet.battle": {
+      "version": "file:cn.etetet.battle",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "cn.etetet.core": "3.0.3",
+        "cn.etetet.audio": "1.0.0",
+        "cn.etetet.match3": "1.0.0"
+      }
+    },
     "cn.etetet.console": {
       "version": "file:cn.etetet.console",
       "depth": 0,
@@ -276,6 +286,7 @@
       "depth": 0,
       "source": "embedded",
       "dependencies": {
+        "cn.etetet.battle": "1.0.0",
         "cn.etetet.statesync": "3.0.11",
         "cn.etetet.packagemanager": "1.0.7",
         "cn.etetet.yiuiframework": "3.0.1",
@@ -343,6 +354,12 @@
       "version": "file:com.kyrylokuzyk.primetween",
       "depth": 0,
       "source": "embedded",
+      "dependencies": {}
+    },
+    "com.unity.2d.sprite": {
+      "version": "1.0.0",
+      "depth": 0,
+      "source": "builtin",
       "dependencies": {}
     },
     "com.unity.ai.navigation": {

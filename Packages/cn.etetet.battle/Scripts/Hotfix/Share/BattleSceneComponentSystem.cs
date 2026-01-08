@@ -43,8 +43,9 @@ namespace ET
         {
             self.BattleState = isVictory ? 2 : 3;
             
-            // TODO: 发布战斗结束事件
-            // TODO: 显示结算界面
+            // 发布战斗结束事件，UI层可以订阅此事件显示结算界面
+            Scene scene = self.IScene as Scene;
+            EventSystem.Instance.Publish(scene, new ET.Client.BattleEndEvent { IsVictory = isVictory });
             
             await ETTask.CompletedTask;
         }

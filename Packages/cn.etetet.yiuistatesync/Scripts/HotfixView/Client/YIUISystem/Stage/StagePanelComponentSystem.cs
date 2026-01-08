@@ -41,8 +41,12 @@ namespace ET.Client
         [YIUIInvoke(StagePanelComponent.OnEventEnterMapInvoke)]
         private static async ETTask OnEventEnterMapInvoke(this StagePanelComponent self)
         {
+            // 获取root场景
+            Scene root = self.Root();
             
-            await ETTask.CompletedTask;
+            // 进入战斗场景，传入关卡ID（TODO: 实际应该传入选择的关卡ID）
+            int levelId = 1;
+            await BattleSceneHelper.EnterBattleAsync(root, levelId);
         }
         #endregion YIUIEvent结束
     }
