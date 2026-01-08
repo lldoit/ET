@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 5af883e4dbd6044cdb88cc2fa8d4dff5
+timeCreated: 1512930810
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 111083
+  packageName: Candy Match 3 Kit
+  packageVersion: 3.0.0
+  assetPath: Assets/CandyMatch3Kit/Materials/UI/StarWhite.mat
+  uploadId: 805118

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 0aa65e6ad284df24283b3b7f7ccaa646
+timeCreated: 1514395470
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 111083
+  packageName: Candy Match 3 Kit
+  packageVersion: 3.0.0
+  assetPath: Assets/CandyMatch3Kit/Prefabs/Candies/StripedVerticalBlueCandy.prefab
+  uploadId: 805118

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 169e6d08afa2745eda6e58d7e0d46572
+timeCreated: 1515429888
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 111083
+  packageName: Candy Match 3 Kit
+  packageVersion: 3.0.0
+  assetPath: Assets/CandyMatch3Kit/Animations/GameScene/GameItems/Killed.anim
+  uploadId: 805118

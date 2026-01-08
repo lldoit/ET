@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 69d4b5ccc9207c140a2098631a954d10
+timeCreated: 1515436060
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 111083
+  packageName: Candy Match 3 Kit
+  packageVersion: 3.0.0
+  assetPath: Assets/CandyMatch3Kit/Animations/GameScene/GameItems/Candy.controller
+  uploadId: 805118

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 43bdb87f6f1154288910a3fb8d09f615
+timeCreated: 1518090268
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 111083
+  packageName: Candy Match 3 Kit
+  packageVersion: 3.0.0
+  assetPath: Assets/CandyMatch3Kit/Animations/GameScene/GameItems/Chocolate_Start.anim
+  uploadId: 805118

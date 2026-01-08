@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 823fed5f457ed4a9fb834800e9aea07c
+timeCreated: 1512930802
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 111083
+  packageName: Candy Match 3 Kit
+  packageVersion: 3.0.0
+  assetPath: Assets/CandyMatch3Kit/Materials/UI/Glitter.mat
+  uploadId: 805118

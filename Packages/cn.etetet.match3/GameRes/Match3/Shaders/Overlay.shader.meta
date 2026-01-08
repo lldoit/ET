@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 89838220fc7b04ab5a4ecb4695cef3a3
+timeCreated: 1512930111
+licenseType: Store
+ShaderImporter:
+  defaultTextures: []
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 111083
+  packageName: Candy Match 3 Kit
+  packageVersion: 3.0.0
+  assetPath: Assets/CandyMatch3Kit/Shaders/Overlay.shader
+  uploadId: 805118

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 8e68ede699516644c83bb874d44a3713
+timeCreated: 1514395470
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 111083
+  packageName: Candy Match 3 Kit
+  packageVersion: 3.0.0
+  assetPath: Assets/CandyMatch3Kit/Prefabs/Candies/WrappedBlueCandy.prefab
+  uploadId: 805118

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: f107dec0ccab79d4dbc09f5b2fb8a3ed
+timeCreated: 1514395470
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 111083
+  packageName: Candy Match 3 Kit
+  packageVersion: 3.0.0
+  assetPath: Assets/CandyMatch3Kit/Prefabs/Candies/StripedVerticalRedCandy.prefab
+  uploadId: 805118

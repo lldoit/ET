@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: cc2f9008d699a6f4794d37932c243bfd
+timeCreated: 1514395470
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 111083
+  packageName: Candy Match 3 Kit
+  packageVersion: 3.0.0
+  assetPath: Assets/CandyMatch3Kit/Prefabs/Candies/StripedHorizontalRedCandy.prefab
+  uploadId: 805118

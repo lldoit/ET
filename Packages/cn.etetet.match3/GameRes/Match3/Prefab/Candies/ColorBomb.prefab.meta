@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: e46e5ffec9ee2b94faa12cf9bead29a7
+timeCreated: 1514395470
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 111083
+  packageName: Candy Match 3 Kit
+  packageVersion: 3.0.0
+  assetPath: Assets/CandyMatch3Kit/Prefabs/Candies/ColorBomb.prefab
+  uploadId: 805118

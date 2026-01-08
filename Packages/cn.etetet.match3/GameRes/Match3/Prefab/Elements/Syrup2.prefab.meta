@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 2d8e0d38ef096de43a8f9d80492ac9b0
+timeCreated: 1516474753
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 111083
+  packageName: Candy Match 3 Kit
+  packageVersion: 3.0.0
+  assetPath: Assets/CandyMatch3Kit/Prefabs/Elements/Syrup2.prefab
+  uploadId: 805118

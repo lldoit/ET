@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: a45deb2df5000ef49a068ce11d6bd058
+timeCreated: 1519121922
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 111083
+  packageName: Candy Match 3 Kit
+  packageVersion: 3.0.0
+  assetPath: Assets/CandyMatch3Kit/Prefabs/DarkBgTile.prefab
+  uploadId: 805118

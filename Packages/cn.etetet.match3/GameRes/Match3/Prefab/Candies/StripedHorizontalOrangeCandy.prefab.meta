@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: cb7f2aba8ec375a45b941c0a943e5d33
+timeCreated: 1514395470
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 111083
+  packageName: Candy Match 3 Kit
+  packageVersion: 3.0.0
+  assetPath: Assets/CandyMatch3Kit/Prefabs/Candies/StripedHorizontalOrangeCandy.prefab
+  uploadId: 805118

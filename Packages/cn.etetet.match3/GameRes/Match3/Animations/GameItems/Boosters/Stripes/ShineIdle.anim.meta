@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 22f0ba7be71be4d7cbc23181acc060c3
+timeCreated: 1515521230
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 7400000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 111083
+  packageName: Candy Match 3 Kit
+  packageVersion: 3.0.0
+  assetPath: Assets/CandyMatch3Kit/Animations/GameScene/GameItems/Boosters/Stripes/ShineIdle.anim
+  uploadId: 805118

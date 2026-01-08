@@ -1,0 +1,14 @@
+{
+    "Id": 5001,
+    "Name": "Match3",
+    "ScriptsReferences": {
+        "ModelView": [
+            "ET.YooAssets",
+            "ET.Audio"
+        ],
+        "HotfixView": [
+            "ET.YooAssets",
+            "ET.Audio"
+        ]
+    }
+}

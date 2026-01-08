@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 6dd84ed98c967418bbffeb575faabf75
+timeCreated: 1515499216
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 111083
+  packageName: Candy Match 3 Kit
+  packageVersion: 3.0.0
+  assetPath: Assets/CandyMatch3Kit/Animations/GameScene/GameItems/CandyExplodeBubble.controller
+  uploadId: 805118

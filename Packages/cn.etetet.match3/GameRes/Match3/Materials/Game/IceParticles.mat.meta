@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 5e016aa34d9e44ee7a95eff76284d494
+timeCreated: 1512930810
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 111083
+  packageName: Candy Match 3 Kit
+  packageVersion: 3.0.0
+  assetPath: Assets/CandyMatch3Kit/Materials/Game/IceParticles.mat
+  uploadId: 805118

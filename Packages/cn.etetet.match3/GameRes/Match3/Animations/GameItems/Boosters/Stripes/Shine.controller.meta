@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: d36bd32bb82e54c03bb75a933fc2e093
+timeCreated: 1515521223
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 9100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 111083
+  packageName: Candy Match 3 Kit
+  packageVersion: 3.0.0
+  assetPath: Assets/CandyMatch3Kit/Animations/GameScene/GameItems/Boosters/Stripes/Shine.controller
+  uploadId: 805118

@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 3cd7348ecf9d53240818e456980b9295
+timeCreated: 1516474753
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 100100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 111083
+  packageName: Candy Match 3 Kit
+  packageVersion: 3.0.0
+  assetPath: Assets/CandyMatch3Kit/Prefabs/Elements/Honey.prefab
+  uploadId: 805118

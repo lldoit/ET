@@ -1,0 +1,16 @@
+fileFormatVersion: 2
+guid: 66dc5cb9c08fe4dff8e5e4288d427445
+timeCreated: 1518024836
+licenseType: Store
+NativeFormatImporter:
+  mainObjectFileID: 22100000
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 111083
+  packageName: Candy Match 3 Kit
+  packageVersion: 3.0.0
+  assetPath: Assets/CandyMatch3Kit/Animations/GameScene/GameItems/Candy_Collectable.overrideController
+  uploadId: 805118
