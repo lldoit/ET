@@ -211,18 +211,8 @@ namespace ET
         {
             if (combo == null) return;
 
-            // 执行Combo逻辑
-            var affectedTiles = new System.Collections.Generic.List<Tile>();
-            combo.Resolve(self, affectedTiles);
-
-            // 爆炸受影响的瓦片
-            foreach (var tile in affectedTiles)
-            {
-                if (tile != null)
-                {
-                    await self.ExplodeTileAsync(tile, tile.X, tile.Y);
-                }
-            }
+            // 使用ComboExecutorSystem执行Combo逻辑
+            await self.ExecuteComboAsync(combo);
         }
     }
 }

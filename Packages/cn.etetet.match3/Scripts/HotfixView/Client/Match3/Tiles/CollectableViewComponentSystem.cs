@@ -40,17 +40,6 @@ namespace ET.Client
         }
 
         /// <summary>
-        /// 播放消除动画
-        /// </summary>
-        public static void PlayExplodeAnimation(this CollectableViewComponent self)
-        {
-            if (self.GameObject != null && self.GameObject.activeSelf && self.Animator != null)
-            {
-                self.Animator.SetTrigger("Kill");
-            }
-        }
-
-        /// <summary>
         /// 设置精灵
         /// </summary>
         public static void SetSprite(this CollectableViewComponent self, Sprite sprite)

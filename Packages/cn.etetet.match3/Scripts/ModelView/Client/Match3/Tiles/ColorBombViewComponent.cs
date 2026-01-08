@@ -5,7 +5,7 @@ namespace ET.Client
     /// <summary>
     /// 彩色炸弹视图组件（Unity GameObject相关）
     /// </summary>
-    [ComponentOf(typeof(ColorBombComponent))]
+    [ComponentOf(typeof(Tile))]
     public class ColorBombViewComponent : Entity, IAwake<GameObject>, IDestroy
     {
         public GameObject GameObject { get; set; }

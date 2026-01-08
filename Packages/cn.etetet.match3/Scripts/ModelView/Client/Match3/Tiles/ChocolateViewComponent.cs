@@ -5,7 +5,7 @@ namespace ET.Client
     /// <summary>
     /// 巧克力视图组件（Unity GameObject相关）
     /// </summary>
-    [ComponentOf(typeof(ChocolateComponent))]
+    [ComponentOf(typeof(Tile))]
     public class ChocolateViewComponent : Entity, IAwake<GameObject>, IDestroy
     {
         public GameObject GameObject { get; set; }

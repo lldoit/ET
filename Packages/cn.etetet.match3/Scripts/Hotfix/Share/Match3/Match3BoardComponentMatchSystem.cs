@@ -32,6 +32,14 @@ namespace ET
                 EventSystem.Instance.Publish(scene, new PlayMatchSoundEvent { MatchCount = totalTiles });
             }
 
+            // 记录消除前的分数，用于计算本次获得的分数
+            int scoreBefore = self.GameState.Score;
+            int totalTilesCleared = 0;
+            foreach (var match in matches)
+            {
+                totalTilesCleared += match.tiles.Count;
+            }
+
             // 增加连续消除计数
             self.ConsecutiveCascades++;
 
@@ -76,8 +84,18 @@ namespace ET
                     Score = self.GameState.Score,
                     CascadeCount = self.ConsecutiveCascades
                 });
+
+                // 发布战斗伤害事件（供 battle 包订阅）
+                int scoreGained = self.GameState.Score - scoreBefore;
+                EventSystem.Instance.Publish(scene, new Match3ComboDamageEvent
+                {
+                    ComboCount = self.ConsecutiveCascades,
+                    TotalTilesCleared = totalTilesCleared,
+                    ScoreGained = scoreGained
+                });
             }
         }
+
 
         /// <summary>
         /// 处理单个匹配

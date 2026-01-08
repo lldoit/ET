@@ -117,4 +117,48 @@ namespace ET
         public int CenterY;
     }
 
+    /// <summary>
+    /// 关卡UI初始化事件
+    /// 当加载新关卡时发布此事件，通知UI初始化显示
+    /// </summary>
+    public struct LevelUIInitEvent
+    {
+        /// <summary>
+        /// 关卡数据
+        /// </summary>
+        public Level Level;
+    }
+
+    /// <summary>
+    /// 目标进度变化事件
+    /// 当目标进度发生变化时发布此事件
+    /// </summary>
+    public struct GoalProgressChangedEvent
+    {
+        /// <summary>
+        /// 目标索引
+        /// </summary>
+        public int GoalIndex;
+        
+        /// <summary>
+        /// 目标类型
+        /// </summary>
+        public GoalType GoalType;
+        
+        /// <summary>
+        /// 当前完成数量
+        /// </summary>
+        public int CurrentAmount;
+        
+        /// <summary>
+        /// 目标数量
+        /// </summary>
+        public int TargetAmount;
+        
+        /// <summary>
+        /// 是否完成
+        /// </summary>
+        public bool IsCompleted;
+    }
+
 }

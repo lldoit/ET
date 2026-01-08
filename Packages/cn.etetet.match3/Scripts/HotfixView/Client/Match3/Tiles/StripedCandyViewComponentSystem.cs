@@ -29,17 +29,6 @@ namespace ET.Client
         }
 
         /// <summary>
-        /// 播放消除动画
-        /// </summary>
-        public static void PlayExplodeAnimation(this StripedCandyViewComponent self)
-        {
-            if (self.GameObject != null && self.GameObject.activeSelf && self.Animator != null)
-            {
-                self.Animator.SetTrigger("Kill");
-            }
-        }
-
-        /// <summary>
         /// 设置精灵
         /// </summary>
         public static void SetSprite(this StripedCandyViewComponent self, Sprite sprite)

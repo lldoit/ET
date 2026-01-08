@@ -5,7 +5,7 @@ namespace ET.Client
     /// <summary>
     /// 不可破坏视图组件（Unity GameObject相关）
     /// </summary>
-    [ComponentOf(typeof(UnbreakableComponent))]
+    [ComponentOf(typeof(Tile))]
     public class UnbreakableViewComponent : Entity, IAwake<GameObject>, IDestroy
     {
         public GameObject GameObject { get; set; }

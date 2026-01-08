@@ -32,11 +32,16 @@ namespace ET.Client
             var candy = tile.GetComponent<CandyComponent>();
             if (candy != null)
             {
+                // 播放Kill动画（CandyViewComponent是Tile的子组件）
+                var candyView = tile.GetComponent<CandyViewComponent>();
+                candyView?.PlayExplodeAnimation();
+                // 播放粒子特效
                 fxPool.PlayCandyExplosion(candy.Color, worldPosition);
                 return;
             }
 
-            // 条纹糖果
+
+            // 条纹糖果（CandyMatch3Kit中没有Kill动画，只有粒子特效）
             var stripedCandy = tile.GetComponent<StripedCandyComponent>();
             if (stripedCandy != null)
             {
@@ -44,7 +49,7 @@ namespace ET.Client
                 return;
             }
 
-            // 包装糖果
+            // 包装糖果（CandyMatch3Kit中没有Kill动画，只有粒子特效）
             var wrappedCandy = tile.GetComponent<WrappedCandyComponent>();
             if (wrappedCandy != null)
             {
@@ -52,7 +57,7 @@ namespace ET.Client
                 return;
             }
 
-            // 彩色炸弹
+            // 彩色炸弹（CandyMatch3Kit中没有Kill动画，只有粒子特效）
             var colorBomb = tile.GetComponent<ColorBombComponent>();
             if (colorBomb != null)
             {
@@ -63,7 +68,7 @@ namespace ET.Client
             // 元素（元素信息存储在 LevelTile 中，这里暂时跳过，需要从棋盘数据获取）
             // TODO: 如果需要播放元素特效，需要从棋盘配置中获取元素类型
 
-            // 特殊方块
+            // 特殊方块（CandyMatch3Kit中没有Kill动画，只有粒子特效）
             var specialBlock = tile.GetComponent<SpecialBlockComponent>();
             if (specialBlock != null)
             {
@@ -71,7 +76,7 @@ namespace ET.Client
                 return;
             }
 
-            // 收集物
+            // 收集物（CandyMatch3Kit中没有Kill动画，也没有粒子特效）
             var collectable = tile.GetComponent<CollectableComponent>();
             if (collectable != null)
             {
