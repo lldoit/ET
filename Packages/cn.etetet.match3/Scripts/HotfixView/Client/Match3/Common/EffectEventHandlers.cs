@@ -51,6 +51,17 @@ namespace ET.Client
             }
 
             Vector3 worldPosition = match3Board.GetTileWorldPosition(args.X, args.Y);
+            
+            // 确保创建瓦片视图（修复生成特殊糖果时的空白问题）
+            // 因为在MatchSystem中我们销毁了旧瓦片，但没有为新瓦片创建视图
+            var tile = match3Board.GetTile(args.X, args.Y);
+            if (tile != null)
+            {
+                // 注意：CreateTileView 需要本地坐标，因为它是相对于 BoardRoot 的
+                Vector3 localPosition = match3Board.GetTileLocalPosition(args.X, args.Y);
+                match3Board.CreateTileView(tile, localPosition);
+            }
+
             fxPool.PlaySpawnParticles(worldPosition);
             
             await ETTask.CompletedTask;

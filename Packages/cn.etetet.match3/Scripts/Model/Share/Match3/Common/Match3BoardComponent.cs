@@ -5,7 +5,7 @@ namespace ET
     /// <summary>
     /// 三消游戏棋盘组件（符合ET框架规范）
     /// </summary>
-    [ComponentOf]
+    [ComponentOf(typeof(Scene))]
     public class Match3BoardComponent : Entity, IAwake
     {
         /// <summary>
@@ -81,6 +81,19 @@ namespace ET
         /// <summary>
         /// 匹配提示计时器Token（用于取消计时器）
         /// </summary>
+        /// <summary>
+        /// 匹配提示计时器Token（用于取消计时器）
+        /// </summary>
         public ETCancellationToken SuggestedMatchCancelToken;
+
+        /// <summary>
+        /// 上次交换的瓦片A位置
+        /// </summary>
+        public TileDef LastSwappedTileA;
+
+        /// <summary>
+        /// 上次交换的瓦片B位置
+        /// </summary>
+        public TileDef LastSwappedTileB;
     }
 }

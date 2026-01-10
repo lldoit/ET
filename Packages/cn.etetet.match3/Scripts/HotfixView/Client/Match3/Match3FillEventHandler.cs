@@ -8,7 +8,7 @@ namespace ET.Client
     /// Match3填充事件处理器
     /// 接收填充事件，使用PrimeTween播放瓦片填充动画
     /// </summary>
-    [Event(SceneType.Current)]
+    [Event(SceneType.Battle)]
     public class Match3FillEventHandler : AEvent<Scene, Match3FillEvent>
     {
         protected override async ETTask Run(Scene scene, Match3FillEvent args)
@@ -125,6 +125,17 @@ namespace ET.Client
                     }
 
                     var tileView = tile.GetComponent<TileView>();
+                    
+                    // 如果TileView不存在，尝试创建它
+                    if (tileView == null)
+                    {
+                        // 计算初始位置（逻辑位置），稍后会覆盖为动画起始位置
+                        // 这里我们只需要一个位置来初始化GameObject，具体位置会被下落动画覆盖
+                        Vector3 tempPos = match3Board.GetTileWorldPosition(createInfo.TargetX, createInfo.TargetY);
+                        match3Board.CreateTileView(tile, tempPos);
+                        tileView = tile.GetComponent<TileView>();
+                    }
+
                     if (tileView == null || tileView.GameObject == null)
                     {
                         continue;
@@ -132,22 +143,11 @@ namespace ET.Client
 
                     // 获取目标世界坐标
                     Vector3 targetPosition = match3Board.GetTileWorldPosition(createInfo.TargetX, createInfo.TargetY);
-                    
+
                     // 计算初始位置（在屏幕上方）
-                    // 使用目标位置的X坐标，Y坐标减去numEmpties * tileHeight
-                    // 这里简化处理，假设每个格子高度可以通过两个相邻格子的Y坐标差计算
-                    Vector3 initialPosition = targetPosition;
-                    if (createInfo.TargetY > 0)
-                    {
-                        Vector3 abovePosition = match3Board.GetTileWorldPosition(createInfo.TargetX, createInfo.TargetY - 1);
-                        float tileHeight = targetPosition.y - abovePosition.y;
-                        initialPosition.y = targetPosition.y - (createInfo.TargetY - createInfo.InitialY) * tileHeight;
-                    }
-                    else
-                    {
-                        // 如果在第一行，假设格子高度为1（根据实际情况调整）
-                        initialPosition.y = targetPosition.y - (createInfo.TargetY - createInfo.InitialY);
-                    }
+                    // 直接使用 InitialX 和 InitialY 获取世界坐标
+                    // InitialY 是负数，Match3BoardViewHelper.GetTileWorldPosition 会正确处理负数坐标，返回上方的位置
+                    Vector3 initialPosition = match3Board.GetTileWorldPosition(createInfo.InitialX, createInfo.InitialY);
                     
                     // 设置初始位置
                     tileView.GameObject.transform.position = initialPosition;

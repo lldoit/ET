@@ -6,6 +6,7 @@ namespace ET
     /// 三消游戏板组件系统 - 填充策略相关
     /// </summary>
     [FriendOf(typeof(Match3BoardComponent))]
+    [FriendOf(typeof(Tile))]
     public static partial class Match3BoardComponentFillSystem
     {
         /// <summary>
@@ -35,15 +36,70 @@ namespace ET
             }
             else
             {
-                // 没有新匹配，检测可能的交换
-                self.PossibleSwaps = self.DetectPossibleSwaps();
+                // 如果没有新匹配，检查是否有待定爆炸（例如包装糖果的二次爆炸）
+                bool hasPendingExplosions = await self.ProcessPendingExplosionsAsync();
                 
-                // 如果没有可能的交换，需要重新洗牌
-                if (self.PossibleSwaps.Count == 0)
+                if (hasPendingExplosions)
                 {
-                    await self.ShuffleBoardAsync();
+                    // 如果有待定爆炸，再次应用重力
+                    await self.ApplyGravityAsync();
+                }
+                else
+                {
+                    // 没有新匹配且无待定爆炸，检测可能的交换
+                    self.PossibleSwaps = self.DetectPossibleSwaps();
+                    
+                    // 如果没有可能的交换，需要重新洗牌
+                    if (self.PossibleSwaps.Count == 0)
+                    {
+                        await self.ShuffleBoardAsync();
+                    }
                 }
             }
+        }
+
+        /// <summary>
+        /// 处理待定爆炸（包装糖果二次爆炸）
+        /// </summary>
+        private static async ETTask<bool> ProcessPendingExplosionsAsync(this Match3BoardComponent self)
+        {
+            bool hasExplosion = false;
+            int width = self.GetWidth();
+            int height = self.GetHeight();
+            var pendingTiles = new List<Tile>();
+
+            // 查找所有带有PendingExplosionComponent的瓦片
+            for (int x = 0; x < width; x++)
+            {
+                for (int y = 0; y < height; y++)
+                {
+                    var tile = self.GetTile(x, y);
+                    if (tile != null && tile.GetComponent<PendingExplosionComponent>() != null)
+                    {
+                        pendingTiles.Add(tile);
+                    }
+                }
+            }
+
+            if (pendingTiles.Count > 0)
+            {
+                hasExplosion = true;
+                
+                // 处理所有待定爆炸
+                foreach (var tile in pendingTiles)
+                {
+                    if (tile.IsDisposed) continue;
+                    
+                    // 移除标记组件
+                    tile.RemoveComponent<PendingExplosionComponent>();
+                    
+                    // 再次爆炸（这次ExplodeSpecialCandyAsync会返回true，因为PendingExplosionComponent已被移除，或者ExplodedCount已增加）
+                    // 实际上在 ExplodeTileAsync 中我们会再次调用 ExplodeSpecialCandyAsync
+                    await self.ExplodeTileAsync(tile, tile.X, tile.Y);
+                }
+            }
+            
+            return hasExplosion;
         }
 
         /// <summary>
@@ -162,16 +218,12 @@ namespace ET
             // 发布填充事件通知View层播放动画
             if (moves.Count > 0 || newTiles.Count > 0)
             {
-                Scene scene = self.Root() as Scene;
-                if (scene != null)
+                EventSystem.Instance.Publish(self.Scene(), new Match3FillEvent
                 {
-                    EventSystem.Instance.Publish(scene, new Match3FillEvent
-                    {
-                        Moves = moves,
-                        NewTiles = newTiles,
-                        Duration = 0.5f // 动画持续时间0.5秒，对应CandyMatch3Kit的设置
-                    });
-                }
+                    Moves = moves,
+                    NewTiles = newTiles,
+                    Duration = 0.5f // 动画持续时间0.5秒，对应CandyMatch3Kit的设置
+                });
             }
         }
 
@@ -311,16 +363,12 @@ namespace ET
             // 发布填充事件通知View层播放动画
             if (moves.Count > 0 || newTiles.Count > 0)
             {
-                Scene scene = self.Root() as Scene;
-                if (scene != null)
+                EventSystem.Instance.Publish(self.Scene(), new Match3FillEvent
                 {
-                    EventSystem.Instance.Publish(scene, new Match3FillEvent
-                    {
-                        Moves = moves,
-                        NewTiles = newTiles,
-                        Duration = 0.5f // 动画持续时间0.5秒
-                    });
-                }
+                    Moves = moves,
+                    NewTiles = newTiles,
+                    Duration = 0.5f // 动画持续时间0.5秒
+                });
             }
         }
 
@@ -402,9 +450,6 @@ namespace ET
             // 等待2秒（参考CandyMatch3Kit）
             await self.Root().GetComponent<TimerComponent>().WaitAsync(2000);
             
-            // 发布洗牌开始事件（可用于显示提示弹窗）
-            Scene scene = self.Root() as Scene;
-            
             // 遍历所有瓦片，替换普通糖果
             for (int j = 0; j < height; j++)
             {
@@ -452,16 +497,16 @@ namespace ET
             }
             
             // 发布洗牌动画事件
-            if (scene != null && shuffleMoves.Count > 0)
+            if (shuffleMoves.Count > 0)
             {
-                EventSystem.Instance.Publish(scene, new Match3ShuffleEvent
+                EventSystem.Instance.Publish(self.Scene(), new Match3ShuffleEvent
                 {
                     Moves = shuffleMoves,
                     Duration = 0.5f
                 });
                 
                 // 播放洗牌音效
-                EventSystem.Instance.Publish(scene, new PlaySoundEvent { SoundType = "Shuffle" });
+                EventSystem.Instance.Publish(self.Scene(), new PlaySoundEvent { SoundType = "Shuffle" });
             }
             
             // 等待动画完成

@@ -12,8 +12,7 @@ namespace ET.Client
             // 处理退出战斗确认
             if (args.Source == BattlePanelComponentSystem.ConfirmSource_ExitBattle)
             {
-                Scene root = scene.Root();
-                await BattleSceneHelper.ExitBattleAsync(root);
+                await BattleSceneHelper.ExitBattleAsync(scene.Root());
             }
         }
     }

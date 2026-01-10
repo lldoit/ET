@@ -27,8 +27,8 @@ namespace ET
             self.LevelId = levelId;
             self.BattleState = 1; // 进行中
             
+            // 注意：三消棋盘已在 BattleSceneHelper.InitializeMatch3BoardAsync 中初始化
             // TODO: 初始化敌人
-            // TODO: 初始化三消棋盘
             // TODO: 发布战斗开始事件
             
             await ETTask.CompletedTask;

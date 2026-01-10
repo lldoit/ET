@@ -22,10 +22,9 @@ namespace ET
                     var tile = board.GetTile(i, j);
                     if (tile != null)
                     {
-                        var candy = tile.GetComponent<CandyComponent>();
-                        if (candy != null)
+                        var color = tile.GetColor();
+                        if (color.HasValue)
                         {
-                            var color = candy.GetColor();
                             
                             // F型1: 2x2方块在顶部，下方延伸在左侧
                             // X X
@@ -40,15 +39,15 @@ namespace ET
                                 
                                 if (tileRight != null && tileBottom != null && tileBottomRight != null && tileBottomLeft != null)
                                 {
-                                    var candyRight = tileRight.GetComponent<CandyComponent>();
-                                    var candyBottom = tileBottom.GetComponent<CandyComponent>();
-                                    var candyBottomRight = tileBottomRight.GetComponent<CandyComponent>();
-                                    var candyBottomLeft = tileBottomLeft.GetComponent<CandyComponent>();
+                                    var candyRight = tileRight.GetColor();
+                                    var candyBottom = tileBottom.GetColor();
+                                    var candyBottomRight = tileBottomRight.GetColor();
+                                    var candyBottomLeft = tileBottomLeft.GetColor();
                                     
-                                    if (candyRight != null && candyRight.GetColor() == color &&
-                                        candyBottom != null && candyBottom.GetColor() == color &&
-                                        candyBottomRight != null && candyBottomRight.GetColor() == color &&
-                                        candyBottomLeft != null && candyBottomLeft.GetColor() == color)
+                                    if (candyRight.HasValue && candyRight.Value == color.Value &&
+                                        candyBottom.HasValue && candyBottom.Value == color.Value &&
+                                        candyBottomRight.HasValue && candyBottomRight.Value == color.Value &&
+                                        candyBottomLeft.HasValue && candyBottomLeft.Value == color.Value)
                                     {
                                         var match = new Match();
                                         match.type = MatchType.FShaped;
@@ -58,7 +57,7 @@ namespace ET
                                         match.AddTile(new TileDef(i + 1, j + 1));
                                         match.AddTile(new TileDef(i, j + 2));
                                         
-                                        ExtendVertical(board, match, i, j + 2, color, height, true);
+                                        ExtendVertical(board, match, i, j + 2, color.Value, height, true);
                                         matches.Add(match);
                                     }
                                 }
@@ -95,7 +94,7 @@ namespace ET
                                         match.AddTile(new TileDef(i + 1, j + 1));
                                         match.AddTile(new TileDef(i + 1, j + 2));
                                         
-                                        ExtendVertical(board, match, i + 1, j + 2, color, height, true);
+                                        ExtendVertical(board, match, i + 1, j + 2, color.Value, height, true);
                                         matches.Add(match);
                                     }
                                 }
@@ -132,7 +131,7 @@ namespace ET
                                         match.AddTile(new TileDef(i, j + 1));
                                         match.AddTile(new TileDef(i + 1, j + 1));
                                         
-                                        ExtendVertical(board, match, i, j - 1, color, height, false);
+                                        ExtendVertical(board, match, i, j - 1, color.Value, height, false);
                                         matches.Add(match);
                                     }
                                 }
@@ -169,7 +168,7 @@ namespace ET
                                         match.AddTile(new TileDef(i, j + 1));
                                         match.AddTile(new TileDef(i + 1, j + 1));
                                         
-                                        ExtendVertical(board, match, i + 1, j - 1, color, height, false);
+                                        ExtendVertical(board, match, i + 1, j - 1, color.Value, height, false);
                                         matches.Add(match);
                                     }
                                 }
@@ -205,7 +204,7 @@ namespace ET
                                         match.AddTile(new TileDef(i, j + 1));
                                         match.AddTile(new TileDef(i + 1, j + 1));
                                         
-                                        ExtendHorizontal(board, match, i + 2, j, color, width, true);
+                                        ExtendHorizontal(board, match, i + 2, j, color.Value, width, true);
                                         matches.Add(match);
                                     }
                                 }
@@ -241,7 +240,7 @@ namespace ET
                                         match.AddTile(new TileDef(i + 1, j + 1));
                                         match.AddTile(new TileDef(i + 2, j + 1));
                                         
-                                        ExtendHorizontal(board, match, i + 2, j + 1, color, width, true);
+                                        ExtendHorizontal(board, match, i + 2, j + 1, color.Value, width, true);
                                         matches.Add(match);
                                     }
                                 }
@@ -277,7 +276,7 @@ namespace ET
                                         match.AddTile(new TileDef(i - 1, j + 1));
                                         match.AddTile(new TileDef(i, j + 1));
                                         
-                                        ExtendHorizontal(board, match, i - 2, j, color, width, false);
+                                        ExtendHorizontal(board, match, i - 2, j, color.Value, width, false);
                                         matches.Add(match);
                                     }
                                 }
@@ -313,7 +312,7 @@ namespace ET
                                         match.AddTile(new TileDef(i - 1, j + 1));
                                         match.AddTile(new TileDef(i, j + 1));
                                         
-                                        ExtendHorizontal(board, match, i - 2, j + 1, color, width, false);
+                                        ExtendHorizontal(board, match, i - 2, j + 1, color.Value, width, false);
                                         matches.Add(match);
                                     }
                                 }
@@ -326,7 +325,7 @@ namespace ET
             return matches;
         }
 
-        private void ExtendHorizontal(Match3BoardComponent board, Match match, int x, int y, CandyColor color, int width, bool extendRight)
+        private void ExtendHorizontal(Match3BoardComponent board, Match match, int x, int y, CandyColor targetColor, int width, bool extendRight)
         {
             if (extendRight)
             {
@@ -338,8 +337,8 @@ namespace ET
                     {
                         break;
                     }
-                    var candy = tile.GetComponent<CandyComponent>();
-                    if (candy == null || candy.GetColor() != color)
+                    var colorFound = tile.GetColor();
+                    if (!colorFound.HasValue || colorFound.Value != targetColor)
                     {
                         break;
                     }
@@ -357,8 +356,8 @@ namespace ET
                     {
                         break;
                     }
-                    var candy = tile.GetComponent<CandyComponent>();
-                    if (candy == null || candy.GetColor() != color)
+                    var colorFound = tile.GetColor();
+                    if (!colorFound.HasValue || colorFound.Value != targetColor)
                     {
                         break;
                     }
@@ -368,7 +367,7 @@ namespace ET
             }
         }
 
-        private void ExtendVertical(Match3BoardComponent board, Match match, int x, int y, CandyColor color, int height, bool extendDown)
+        private void ExtendVertical(Match3BoardComponent board, Match match, int x, int y, CandyColor targetColor, int height, bool extendDown)
         {
             if (extendDown)
             {
@@ -380,8 +379,8 @@ namespace ET
                     {
                         break;
                     }
-                    var candy = tile.GetComponent<CandyComponent>();
-                    if (candy == null || candy.GetColor() != color)
+                    var colorFound = tile.GetColor();
+                    if (!colorFound.HasValue || colorFound.Value != targetColor)
                     {
                         break;
                     }
@@ -399,8 +398,8 @@ namespace ET
                     {
                         break;
                     }
-                    var candy = tile.GetComponent<CandyComponent>();
-                    if (candy == null || candy.GetColor() != color)
+                    var colorFound = tile.GetColor();
+                    if (!colorFound.HasValue || colorFound.Value != targetColor)
                     {
                         break;
                     }

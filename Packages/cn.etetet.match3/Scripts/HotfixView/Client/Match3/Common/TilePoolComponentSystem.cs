@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using YooAsset;
@@ -22,10 +23,32 @@ namespace ET.Client
             poolRootObj.transform.SetParent(null);
             self.PoolRoot = poolRootObj.transform;
             
-            // 创建棋盘根节点
+            // 创建棋盘根节点（在世界空间独立渲染，位置由 SetBoardRootPosition 设置）
             var boardRootObj = new GameObject("BoardRoot");
             boardRootObj.transform.SetParent(null);
+            boardRootObj.transform.position = Vector3.zero;
+            boardRootObj.transform.localScale = Vector3.one;
             self.BoardRoot = boardRootObj.transform;
+        }
+        
+        /// <summary>
+        /// 设置棋盘根节点的世界坐标位置（不作为子节点）
+        /// 用于将 BoardRoot 定位到 UI 元素的世界坐标，同时保持独立渲染
+        /// </summary>
+        /// <param name="worldPosition">世界坐标位置</param>
+        /// <param name="scale">缩放比例（默认 0.5）</param>
+        public static void SetBoardRootPosition(this TilePoolComponent self, Vector3 worldPosition, float scale = 0.5f)
+        {
+            if (self.BoardRoot == null)
+            {
+                Log.Error("[TilePool] BoardRoot 未初始化");
+                return;
+            }
+            
+            self.BoardRoot.position = worldPosition;
+            self.BoardRoot.localScale = new Vector3(scale, scale, scale);
+            
+            Log.Info($"[TilePool] BoardRoot 位置: {worldPosition}, 缩放: {scale}");
         }
 
         [EntitySystem]
@@ -103,28 +126,28 @@ namespace ET.Client
             self.YellowCandyPrefab = await LoadPrefabAsync("YellowCandy");
             
             // 加载条纹糖果 Prefab (水平)
-            self.BlueHorizontalStripedPrefab = await LoadPrefabAsync("BlueHorizontalStriped");
-            self.GreenHorizontalStripedPrefab = await LoadPrefabAsync("GreenHorizontalStriped");
-            self.OrangeHorizontalStripedPrefab = await LoadPrefabAsync("OrangeHorizontalStriped");
-            self.PurpleHorizontalStripedPrefab = await LoadPrefabAsync("PurpleHorizontalStriped");
-            self.RedHorizontalStripedPrefab = await LoadPrefabAsync("RedHorizontalStriped");
-            self.YellowHorizontalStripedPrefab = await LoadPrefabAsync("YellowHorizontalStriped");
+            self.BlueHorizontalStripedPrefab = await LoadPrefabAsync("StripedHorizontalBlueCandy");
+            self.GreenHorizontalStripedPrefab = await LoadPrefabAsync("StripedHorizontalGreenCandy");
+            self.OrangeHorizontalStripedPrefab = await LoadPrefabAsync("StripedHorizontalOrangeCandy");
+            self.PurpleHorizontalStripedPrefab = await LoadPrefabAsync("StripedHorizontalPurpleCandy");
+            self.RedHorizontalStripedPrefab = await LoadPrefabAsync("StripedHorizontalRedCandy");
+            self.YellowHorizontalStripedPrefab = await LoadPrefabAsync("StripedHorizontalYellowCandy");
             
             // 加载条纹糖果 Prefab (垂直)
-            self.BlueVerticalStripedPrefab = await LoadPrefabAsync("BlueVerticalStriped");
-            self.GreenVerticalStripedPrefab = await LoadPrefabAsync("GreenVerticalStriped");
-            self.OrangeVerticalStripedPrefab = await LoadPrefabAsync("OrangeVerticalStriped");
-            self.PurpleVerticalStripedPrefab = await LoadPrefabAsync("PurpleVerticalStriped");
-            self.RedVerticalStripedPrefab = await LoadPrefabAsync("RedVerticalStriped");
-            self.YellowVerticalStripedPrefab = await LoadPrefabAsync("YellowVerticalStriped");
+            self.BlueVerticalStripedPrefab = await LoadPrefabAsync("StripedVerticalBlueCandy");
+            self.GreenVerticalStripedPrefab = await LoadPrefabAsync("StripedVerticalGreenCandy");
+            self.OrangeVerticalStripedPrefab = await LoadPrefabAsync("StripedVerticalOrangeCandy");
+            self.PurpleVerticalStripedPrefab = await LoadPrefabAsync("StripedVerticalPurpleCandy");
+            self.RedVerticalStripedPrefab = await LoadPrefabAsync("StripedVerticalRedCandy");
+            self.YellowVerticalStripedPrefab = await LoadPrefabAsync("StripedVerticalYellowCandy");
             
             // 加载包装糖果 Prefab
-            self.BlueWrappedPrefab = await LoadPrefabAsync("BlueWrapped");
-            self.GreenWrappedPrefab = await LoadPrefabAsync("GreenWrapped");
-            self.OrangeWrappedPrefab = await LoadPrefabAsync("OrangeWrapped");
-            self.PurpleWrappedPrefab = await LoadPrefabAsync("PurpleWrapped");
-            self.RedWrappedPrefab = await LoadPrefabAsync("RedWrapped");
-            self.YellowWrappedPrefab = await LoadPrefabAsync("YellowWrapped");
+            self.BlueWrappedPrefab = await LoadPrefabAsync("WrappedBlueCandy");
+            self.GreenWrappedPrefab = await LoadPrefabAsync("WrappedGreenCandy");
+            self.OrangeWrappedPrefab = await LoadPrefabAsync("WrappedOrangeCandy");
+            self.PurpleWrappedPrefab = await LoadPrefabAsync("WrappedPurpleCandy");
+            self.RedWrappedPrefab = await LoadPrefabAsync("WrappedRedCandy");
+            self.YellowWrappedPrefab = await LoadPrefabAsync("WrappedYellowCandy");
             
             // 加载背景瓦片 Prefab
             self.LightBgTilePrefab = await LoadPrefabAsync("LightBgTile");
@@ -226,7 +249,7 @@ namespace ET.Client
             var tileObj = self.GetTile(prefab);
             if (tileObj != null)
             {
-                tileObj.transform.position = position;
+                tileObj.transform.localPosition = position;
             }
             return tileObj;
         }
@@ -242,7 +265,7 @@ namespace ET.Client
             var tileObj = self.GetTile(prefab);
             if (tileObj != null)
             {
-                tileObj.transform.position = position;
+                tileObj.transform.localPosition = position;
             }
             return tileObj;
         }
@@ -333,7 +356,7 @@ namespace ET.Client
             var tileObj = self.GetTile(prefab);
             if (tileObj != null)
             {
-                tileObj.transform.position = position;
+                tileObj.transform.localPosition = position;
             }
             return tileObj;
         }
@@ -347,7 +370,7 @@ namespace ET.Client
             var tileObj = self.GetTile(prefab);
             if (tileObj != null)
             {
-                tileObj.transform.position = position;
+                tileObj.transform.localPosition = position;
             }
             return tileObj;
         }
@@ -360,7 +383,7 @@ namespace ET.Client
             var tileObj = self.GetTile(self.ColorBombPrefab);
             if (tileObj != null)
             {
-                tileObj.transform.position = position;
+                tileObj.transform.localPosition = position;
             }
             return tileObj;
         }
@@ -374,7 +397,7 @@ namespace ET.Client
             var tileObj = self.GetTile(prefab);
             if (tileObj != null)
             {
-                tileObj.transform.position = position;
+                tileObj.transform.localPosition = position;
             }
             return tileObj;
         }
@@ -388,7 +411,7 @@ namespace ET.Client
             var tileObj = self.GetTile(prefab);
             if (tileObj != null)
             {
-                tileObj.transform.position = position;
+                tileObj.transform.localPosition = position;
             }
             return tileObj;
         }

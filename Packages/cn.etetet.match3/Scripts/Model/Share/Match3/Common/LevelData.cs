@@ -7,7 +7,6 @@ namespace ET
     /// 关卡JSON序列化包装类（运行时版本）
     /// 用于JsonUtility序列化struct
     /// </summary>
-    [Serializable]
     [EnableClass]
     public class LevelData
     {

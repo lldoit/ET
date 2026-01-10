@@ -121,6 +121,160 @@ namespace ET.Client
             
             return soundComp;
         }
+        
+        #region 背景音乐
+        
+        /// <summary>
+        /// 播放主菜单音乐
+        /// </summary>
+        public static async ETTask PlayMainMenuMusic(Scene scene)
+        {
+            SoundComponent soundComp = scene?.GetComponent<SoundComponent>();
+            if (soundComp != null)
+            {
+                await soundComp.PlayMusicWithFade(AudioSoundType.BGM_MainMenu, 
+                    fadeOutDuration: 1.0f, 
+                    fadeInDuration: 2.0f);
+            }
+        }
+        
+        /// <summary>
+        /// 播放游戏音乐
+        /// </summary>
+        public static async ETTask PlayGameMusic(Scene scene)
+        {
+            SoundComponent soundComp = scene?.GetComponent<SoundComponent>();
+            if (soundComp != null)
+            {
+                await soundComp.PlayMusicWithFade(AudioSoundType.BGM_Game, 
+                    fadeOutDuration: 1.0f, 
+                    fadeInDuration: 1.5f);
+            }
+        }
+        
+        /// <summary>
+        /// 播放胜利音乐
+        /// </summary>
+        public static async ETTask PlayVictoryMusic(Scene scene)
+        {
+            SoundComponent soundComp = scene?.GetComponent<SoundComponent>();
+            if (soundComp != null)
+            {
+                await soundComp.PlayMusicWithFade(AudioSoundType.BGM_Victory, 
+                    fadeOutDuration: 0.5f, 
+                    fadeInDuration: 2.0f, 
+                    loop: false);
+            }
+        }
+        
+        /// <summary>
+        /// 播放失败音乐
+        /// </summary>
+        public static async ETTask PlayDefeatMusic(Scene scene)
+        {
+            SoundComponent soundComp = scene?.GetComponent<SoundComponent>();
+            if (soundComp != null)
+            {
+                await soundComp.PlayMusicWithFade(AudioSoundType.BGM_Defeat, 
+                    fadeOutDuration: 0.5f, 
+                    fadeInDuration: 1.5f, 
+                    loop: false);
+            }
+        }
+        
+        /// <summary>
+        /// 停止音乐（带淡出）
+        /// </summary>
+        public static async ETTask StopMusic(Scene scene)
+        {
+            SoundComponent soundComp = scene?.GetComponent<SoundComponent>();
+            if (soundComp != null)
+            {
+                await soundComp.StopMusicWithFade(1.0f);
+            }
+        }
+        
+        /// <summary>
+        /// 暂停音乐
+        /// </summary>
+        public static void PauseMusic(Scene scene)
+        {
+            SoundComponent soundComp = scene?.GetComponent<SoundComponent>();
+            soundComp?.PauseMusic();
+        }
+        
+        /// <summary>
+        /// 恢复音乐
+        /// </summary>
+        public static void ResumeMusic(Scene scene)
+        {
+            SoundComponent soundComp = scene?.GetComponent<SoundComponent>();
+            soundComp?.ResumeMusic();
+        }
+        
+        #endregion
+        
+        #region UI音效
+        
+        /// <summary>
+        /// 播放按钮点击音效
+        /// </summary>
+        public static void PlayButtonClick(Scene scene)
+        {
+            SoundComponent soundComp = scene?.GetComponent<SoundComponent>();
+            soundComp?.PlaySound(AudioSoundType.SFX_ButtonClick).NoContext();
+        }
+        
+        /// <summary>
+        /// 播放面板打开音效
+        /// </summary>
+        public static void PlayPanelOpen(Scene scene)
+        {
+            SoundComponent soundComp = scene?.GetComponent<SoundComponent>();
+            soundComp?.PlaySound(AudioSoundType.SFX_PanelOpen).NoContext();
+        }
+        
+        /// <summary>
+        /// 播放面板关闭音效
+        /// </summary>
+        public static void PlayPanelClose(Scene scene)
+        {
+            SoundComponent soundComp = scene?.GetComponent<SoundComponent>();
+            soundComp?.PlaySound(AudioSoundType.SFX_PanelClose).NoContext();
+        }
+        
+        #endregion
+        
+        #region 音量控制
+        
+        /// <summary>
+        /// 设置音乐音量
+        /// </summary>
+        public static void SetMusicVolume(Scene scene, float volume)
+        {
+            SoundComponent soundComp = scene?.GetComponent<SoundComponent>();
+            soundComp?.SetMusicVolume(volume);
+        }
+        
+        /// <summary>
+        /// 设置音效音量
+        /// </summary>
+        public static void SetSoundVolume(Scene scene, float volume)
+        {
+            SoundComponent soundComp = scene?.GetComponent<SoundComponent>();
+            soundComp?.SetSoundVolume(volume);
+        }
+        
+        /// <summary>
+        /// 停止所有音效
+        /// </summary>
+        public static void StopAllSounds(Scene scene)
+        {
+            SoundComponent soundComp = scene?.GetComponent<SoundComponent>();
+            soundComp?.StopAllSounds();
+        }
+        
+        #endregion
     }
 }
 

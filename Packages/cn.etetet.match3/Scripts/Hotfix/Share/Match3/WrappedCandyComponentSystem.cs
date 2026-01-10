@@ -10,6 +10,13 @@ namespace ET
         private static void Awake(this WrappedCandyComponent self, CandyColor color)
         {
             self.Color = color;
+            self.ExplodedCount = 0;
+        }
+
+        [EntitySystem]
+        private static void Destroy(this WrappedCandyComponent self)
+        {
+            self.ExplodedCount = 0;
         }
 
         /// <summary>

@@ -1,27 +1,16 @@
 namespace ET.Client
 {
     /// <summary>
-    /// 三消游戏音效类型
+    /// 三消游戏专属音效类型
+    /// 背景音乐和UI通用音效请使用 AudioSoundType
     /// </summary>
     public static class Match3SoundType
     {
-        // 背景音乐
-        public const string BGM_MainMenu = "Audio_BGM_Match3_MainMenu";
-        public const string BGM_Game = "Audio_BGM_Match3_Game";
-        public const string BGM_Victory = "Audio_BGM_Match3_Victory";
-        public const string BGM_Defeat = "Audio_BGM_Match3_Defeat";
-        
-        // UI音效
-        public const string SFX_ButtonClick = "Audio_SFX_Match3_ButtonClick";
-        public const string SFX_PanelOpen = "Audio_SFX_Match3_PanelOpen";
-        public const string SFX_PanelClose = "Audio_SFX_Match3_PanelClose";
-        
         // 游戏音效
-        public const string SFX_TileSwap = "Audio_SFX_Match3_TileSwap";
         public const string SFX_TileSwapFailed = "Audio_SFX_Match3_TileSwapFailed";
-        public const string SFX_Match3 = "Audio_SFX_Match3_Match3";
-        public const string SFX_Match4 = "Audio_SFX_Match3_Match4";
-        public const string SFX_Match5 = "Audio_SFX_Match3_Match5";
+        public const string SFX_Match3 = "Audio_SFX_Match3_Match";
+        public const string SFX_Match4 = "Audio_SFX_Match3_Match";
+        public const string SFX_Match5 = "Audio_SFX_Match3_Match";
         public const string SFX_MatchSpecial = "Audio_SFX_Match3_MatchSpecial";
         
         // 特殊糖果音效
@@ -31,11 +20,11 @@ namespace ET.Client
         public const string SFX_SpecialCandyCreate = "Audio_SFX_Match3_SpecialCandyCreate";
         
         // Combo音效
-        public const string SFX_Combo1 = "Audio_SFX_Match3_Combo1";
-        public const string SFX_Combo2 = "Audio_SFX_Match3_Combo2";
-        public const string SFX_Combo3 = "Audio_SFX_Match3_Combo3";
-        public const string SFX_Combo4 = "Audio_SFX_Match3_Combo4";
-        public const string SFX_Combo5Plus = "Audio_SFX_Match3_Combo5Plus";
+        public const string SFX_Combo1 = "Audio_SFX_Match3_Combo";
+        public const string SFX_Combo2 = "Audio_SFX_Match3_Combo";
+        public const string SFX_Combo3 = "Audio_SFX_Match3_Combo";
+        public const string SFX_Combo4 = "Audio_SFX_Match3_Combo";
+        public const string SFX_Combo5Plus = "Audio_SFX_Match3_Combo";
         
         // 道具音效
         public const string SFX_BoosterLollipop = "Audio_SFX_Match3_BoosterLollipop";

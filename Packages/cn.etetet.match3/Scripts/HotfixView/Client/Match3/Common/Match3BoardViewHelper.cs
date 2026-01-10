@@ -9,8 +9,18 @@ namespace ET.Client
     [FriendOf(typeof(CandyComponent))]
     [FriendOf(typeof(StripedCandyComponent))]
     [FriendOf(typeof(SpecialBlockComponent))]
+    [FriendOf(typeof(Match3BoardComponent))]
+    [FriendOf(typeof(TilePoolComponent))]
+    [FriendOf(typeof(CollectableComponent))]
+    [FriendOf(typeof(WrappedCandyComponent))]
     public static class Match3BoardViewHelper
     {
+        // 瓦片尺寸常量 (与InitSystem保持一致，或者应该统一管理)
+        public const float TileWidth = 1.0f;
+        public const float TileHeight = 1.0f;
+        public const float HorizontalSpacing = 0.0f;
+        public const float VerticalSpacing = 0.0f;
+
         /// <summary>
         /// 播放瓦片爆炸特效
         /// </summary>
@@ -24,7 +34,7 @@ namespace ET.Client
             var fxPool = self.GetComponent<FxPoolComponent>();
             if (fxPool == null)
             {
-                Log.Warning("FxPoolComponent 未找到，无法播放特效");
+                // Log.Warning("FxPoolComponent 未找到，无法播放特效"); // Suppress warning if missing
                 return;
             }
 
@@ -96,23 +106,141 @@ namespace ET.Client
 
         /// <summary>
         /// 获取瓦片的世界坐标位置
+        /// 严格基于棋盘网格计算，不依赖TileObject当前的位置
+        /// </summary>
+        /// <summary>
+        /// 获取瓦片的本地坐标位置
+        /// </summary>
+        public static Vector3 GetTileLocalPosition(this Match3BoardComponent self, int x, int y)
+        {
+            int levelWidth = self.Level.Width > 0 ? self.Level.Width : 9;
+            int levelHeight = self.Level.Height > 0 ? self.Level.Height : 9;
+            
+            // 尝试获取实际尺寸（如果有Prefab）
+            float currentTileWidth = TileWidth;
+            float currentTileHeight = TileHeight;
+
+            var tilePool = self.Scene().GetComponent<TilePoolComponent>();
+            if (tilePool != null && tilePool.LightBgTilePrefab != null)
+            {
+                 var sr = tilePool.LightBgTilePrefab.GetComponent<SpriteRenderer>();
+                 if (sr != null)
+                 {
+                     currentTileWidth = sr.bounds.size.x;
+                     currentTileHeight = sr.bounds.size.y;
+                 }
+            }
+            
+            float totalWidth = (levelWidth - 1) * (currentTileWidth + HorizontalSpacing);
+            float totalHeight = (levelHeight - 1) * (currentTileHeight + VerticalSpacing);
+            
+            float posX = x * (currentTileWidth + HorizontalSpacing) - totalWidth / 2;
+            float posY = -y * (currentTileHeight + VerticalSpacing) + totalHeight / 2;
+            
+            return new Vector3(posX, posY, 0);
+        }
+
+        /// <summary>
+        /// 获取瓦片的世界坐标位置
+        /// 严格基于棋盘网格计算，不依赖TileObject当前的位置
         /// </summary>
         public static Vector3 GetTileWorldPosition(this Match3BoardComponent self, int x, int y)
         {
-            // 从 TileView 获取世界坐标
-            var tile = self.GetTile(x, y);
-            if (tile != null)
+            Vector3 localPos = self.GetTileLocalPosition(x, y);
+            
+            var tilePool = self.Scene().GetComponent<TilePoolComponent>();
+            
+            // 加上 BoardRoot 的世界坐标偏移
+            if (tilePool != null && tilePool.BoardRoot != null)
             {
-                var tileView = tile.GetComponent<TileView>();
-                if (tileView != null && tileView.GameObject != null)
+                return tilePool.BoardRoot.TransformPoint(localPos);
+            }
+            
+            return localPos;
+        }
+
+        /// <summary>
+        /// 为瓦片创建视图（如果需要）
+        /// </summary>
+        public static void CreateTileView(this Match3BoardComponent self, Tile tile, Vector3 position)
+        {
+            if (tile == null) return;
+            
+            // 检查是否已有TileView
+            if (tile.GetComponent<TileView>() != null) return;
+
+            var tilePool = self.Scene().GetComponent<TilePoolComponent>();
+            if (tilePool == null) return;
+
+            GameObject tileObj = null;
+            
+            // 1. 条纹糖果
+            var stripedCandy = tile.GetComponent<StripedCandyComponent>();
+            if (stripedCandy != null)
+            {
+                tileObj = tilePool.CreateStripedCandyView(stripedCandy.Color, stripedCandy.Direction, position);
+            }
+            
+            // 2. 包装糖果
+            if (tileObj == null)
+            {
+                var wrappedCandy = tile.GetComponent<WrappedCandyComponent>();
+                if (wrappedCandy != null)
                 {
-                    return tileView.GameObject.transform.position;
+                    Log.Info($"[Match3View] Found WrappedCandyComponent. Creating view for Color: {wrappedCandy.Color} at {position}");
+                    tileObj = tilePool.CreateWrappedCandyView(wrappedCandy.Color, position);
+                    if (tileObj == null)
+                    {
+                        Log.Error($"[Match3View] Failed to create WrappedCandyView for Color: {wrappedCandy.Color}. Check TilePool prefabs.");
+                    }
                 }
             }
-
-            // 如果没有TileView，使用棋盘坐标计算
-            // 假设每个格子是1单位，棋盘从(0,0)开始
-            return new Vector3(x, y, 0);
+            
+            // 3. 彩色炸弹
+            if (tileObj == null)
+            {
+                var colorBomb = tile.GetComponent<ColorBombComponent>();
+                if (colorBomb != null)
+                {
+                    tileObj = tilePool.CreateColorBombView(position);
+                }
+            }
+            
+            // 4. 普通糖果
+            if (tileObj == null)
+            {
+                var candy = tile.GetComponent<CandyComponent>();
+                if (candy != null)
+                {
+                    tileObj = tilePool.CreateCandyView(candy.Color, position);
+                }
+            }
+            
+            // 5. 特殊方块
+            if (tileObj == null)
+            {
+                var specialBlock = tile.GetComponent<SpecialBlockComponent>();
+                if (specialBlock != null)
+                {
+                    tileObj = tilePool.CreateSpecialBlockView(specialBlock.Type, position);
+                }
+            }
+            
+            // 6. 收集物
+            if (tileObj == null)
+            {
+                var collectable = tile.GetComponent<CollectableComponent>();
+                if (collectable != null)
+                {
+                    tileObj = tilePool.CreateCollectableView(collectable.Type, position);
+                }
+            }
+            
+            // 创建 TileView 组件
+            if (tileObj != null)
+            {
+                tile.AddComponent<TileView, GameObject>(tileObj);
+            }
         }
 
         /// <summary>
@@ -144,14 +272,10 @@ namespace ET.Client
             if (complimentType.HasValue)
             {
                 // 发布表扬事件，由UI层处理显示
-                Scene scene = self.Root() as Scene;
-                if (scene != null)
-                {
-                    EventSystem.Instance.Publish(scene, new ShowComplimentEvent 
-                    { 
-                        ComplimentType = complimentType.Value 
-                    });
-                }
+                EventSystem.Instance.Publish(self.Scene(), new ShowComplimentEvent 
+                { 
+                    ComplimentType = complimentType.Value 
+                });
             }
         }
 
@@ -170,7 +294,7 @@ namespace ET.Client
             var fxPool = self.GetComponent<FxPoolComponent>();
             if (fxPool == null)
             {
-                Log.Warning("FxPoolComponent 未找到，无法播放元素特效");
+                // Log.Warning("FxPoolComponent 未找到，无法播放元素特效");
                 return;
             }
 

@@ -31,8 +31,8 @@ namespace ET.Client
         {
             Log.Info($"[Match3BoardView] 开始初始化棋盘视图 - 宽度:{level.Width}, 高度:{level.Height}");
             
-            // 获取 TilePoolComponent
-            var tilePool = board.Root().GetComponent<TilePoolComponent>();
+            // 获取 TilePoolComponent（TilePoolComponent 被添加到 Scene 上）
+            var tilePool = board.Scene().GetComponent<TilePoolComponent>();
             if (tilePool == null)
             {
                 Log.Error("[Match3BoardView] TilePoolComponent 不存在，请先添加组件");
@@ -44,6 +44,16 @@ namespace ET.Client
             {
                 await tilePool.InitializeAsync();
             }
+
+            // 获取或添加 FxPoolComponent (特效池)
+            var fxPool = board.GetComponent<FxPoolComponent>();
+            if (fxPool == null)
+            {
+                fxPool = board.AddComponent<FxPoolComponent>();
+            }
+            
+            // 初始化特效池
+            await fxPool.InitializeAsync();
             
             // 清除现有瓦片
             board.Clear();
@@ -64,6 +74,20 @@ namespace ET.Client
                 }
             }
             
+            // 从 BgTile Prefab 获取实际瓦片尺寸
+            float tileW = TileWidth;
+            float tileH = TileHeight;
+            if (tilePool.LightBgTilePrefab != null)
+            {
+                var spriteRenderer = tilePool.LightBgTilePrefab.GetComponent<SpriteRenderer>();
+                if (spriteRenderer != null)
+                {
+                    tileW = spriteRenderer.bounds.size.x;
+                    tileH = spriteRenderer.bounds.size.y;
+                    Log.Info($"[Match3BoardView] 从 BgTile 获取实际尺寸: {tileW} x {tileH}");
+                }
+            }
+            
             // 1. 遍历关卡瓦片，创建游戏瓦片和视图
             for (int y = 0; y < level.Height; y++)
             {
@@ -77,8 +101,8 @@ namespace ET.Client
                         continue;
                     }
                     
-                    // 计算瓦片位置
-                    var position = GetTileCenteredPosition(x, y, level.Width, level.Height);
+                    // 使用实际尺寸计算瓦片位置
+                    var position = GetTileCenteredPositionWithSize(x, y, level.Width, level.Height, tileW, tileH);
                     
                     // 创建背景瓦片
                     tilePool.CreateBgTile(x, y, position);
@@ -90,7 +114,7 @@ namespace ET.Client
                         board.SetTile(x, y, tile);
                         
                         // 创建瓦片视图
-                        CreateTileViewForTile(tile, tilePool, position);
+                        board.CreateTileView(tile, position);
                         
                         // 处理收集物
                         var collectable = tile.GetComponent<CollectableComponent>();
@@ -112,86 +136,7 @@ namespace ET.Client
             Log.Info($"[Match3BoardView] 棋盘视图初始化完成 - 可能交换数:{board.PossibleSwaps.Count}");
         }
 
-        /// <summary>
-        /// 为瓦片创建视图
-        /// </summary>
-        private static void CreateTileViewForTile(Tile tile, TilePoolComponent tilePool, Vector3 position)
-        {
-            if (tile == null) return;
-            
-            GameObject tileObj = null;
-            
-            // 1. 条纹糖果（优先级高于普通糖果，因为继承自 Candy）
-            var stripedCandy = tile.GetComponent<StripedCandyComponent>();
-            if (stripedCandy != null)
-            {
-                var candy = tile.GetComponent<CandyComponent>();
-                if (candy != null)
-                {
-                    tileObj = tilePool.CreateStripedCandyView(candy.Color, stripedCandy.Direction, position);
-                }
-            }
-            
-            // 2. 包装糖果
-            if (tileObj == null)
-            {
-                var wrappedCandy = tile.GetComponent<WrappedCandyComponent>();
-                if (wrappedCandy != null)
-                {
-                    var candy = tile.GetComponent<CandyComponent>();
-                    if (candy != null)
-                    {
-                        tileObj = tilePool.CreateWrappedCandyView(candy.Color, position);
-                    }
-                }
-            }
-            
-            // 3. 彩色炸弹
-            if (tileObj == null)
-            {
-                var colorBomb = tile.GetComponent<ColorBombComponent>();
-                if (colorBomb != null)
-                {
-                    tileObj = tilePool.CreateColorBombView(position);
-                }
-            }
-            
-            // 4. 普通糖果
-            if (tileObj == null)
-            {
-                var candy = tile.GetComponent<CandyComponent>();
-                if (candy != null)
-                {
-                    tileObj = tilePool.CreateCandyView(candy.Color, position);
-                }
-            }
-            
-            // 5. 特殊方块
-            if (tileObj == null)
-            {
-                var specialBlock = tile.GetComponent<SpecialBlockComponent>();
-                if (specialBlock != null)
-                {
-                    tileObj = tilePool.CreateSpecialBlockView(specialBlock.Type, position);
-                }
-            }
-            
-            // 6. 收集物
-            if (tileObj == null)
-            {
-                var collectable = tile.GetComponent<CollectableComponent>();
-                if (collectable != null)
-                {
-                    tileObj = tilePool.CreateCollectableView(collectable.Type, position);
-                }
-            }
-            
-            // 创建 TileView 组件
-            if (tileObj != null)
-            {
-                tile.AddComponent<TileView, GameObject>(tileObj);
-            }
-        }
+
 
 
         /// <summary>
@@ -240,6 +185,20 @@ namespace ET.Client
             
             float posX = x * (TileWidth + HorizontalSpacing) - totalWidth / 2;
             float posY = -y * (TileHeight + VerticalSpacing) + totalHeight / 2;
+            
+            return new Vector3(posX, posY, 0);
+        }
+        
+        /// <summary>
+        /// 获取瓦片居中后的位置（使用动态尺寸）
+        /// </summary>
+        public static Vector3 GetTileCenteredPositionWithSize(int x, int y, int width, int height, float tileW, float tileH)
+        {
+            float totalWidth = (width - 1) * (tileW + HorizontalSpacing);
+            float totalHeight = (height - 1) * (tileH + VerticalSpacing);
+            
+            float posX = x * (tileW + HorizontalSpacing) - totalWidth / 2;
+            float posY = -y * (tileH + VerticalSpacing) + totalHeight / 2;
             
             return new Vector3(posX, posY, 0);
         }

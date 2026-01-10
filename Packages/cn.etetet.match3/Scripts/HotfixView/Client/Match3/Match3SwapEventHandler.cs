@@ -7,7 +7,7 @@ namespace ET.Client
     /// Match3瓦片交换动画事件处理器
     /// 使用PrimeTween播放两个瓦片的交换动画
     /// </summary>
-    [Event(SceneType.Current)]
+    [Event(SceneType.Battle)]
     public class Match3SwapEventHandler : AEvent<Scene, Match3SwapEvent>
     {
         protected override async ETTask Run(Scene scene, Match3SwapEvent args)
