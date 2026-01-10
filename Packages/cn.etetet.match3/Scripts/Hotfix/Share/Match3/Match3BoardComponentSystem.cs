@@ -7,15 +7,8 @@ namespace ET
     /// </summary>
     [FriendOf(typeof(Match3BoardComponent))]
     [FriendOf(typeof(Tile))]
-    [EntitySystemOf(typeof(Match3BoardComponent))]
     public static partial class Match3BoardComponentSystem
     {
-        [EntitySystem]
-        private static void Awake(this Match3BoardComponent self)
-        {
-            GameStateSystem.Reset(ref self.GameState);
-        }
-
         /// <summary>
         /// 获取指定位置的瓦片
         /// </summary>
@@ -66,7 +59,6 @@ namespace ET
             GameStateSystem.Reset(ref self.GameState);
             self.CurrentLimit = level.Limit;
         }
-
 
         /// <summary>
         /// 获取关卡宽度
@@ -169,7 +161,8 @@ namespace ET
         {
             return t.GetComponent<CandyComponent>() != null || 
                    t.GetComponent<StripedCandyComponent>() != null || 
-                   t.GetComponent<WrappedCandyComponent>() != null;
+                   t.GetComponent<WrappedCandyComponent>() != null ||
+                   t.GetComponent<SkillCandyComponent>() != null;
         }
 
         /// <summary>

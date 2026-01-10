@@ -46,19 +46,19 @@ namespace ET
                     if (specialCandyType >= 0 && specialCandyType <= (int)SpecialCandyType.YellowCandyHorizontalStriped)
                     {
                         var color = (CandyColor)(specialCandyType % 6);
-                        tile.AddComponent<StripedCandyComponent, CandyColor, StripeDirection>(color, StripeDirection.Horizontal);
+                        tile.AddComponent<SkillCandyComponent, CandyColor>(color);
                     }
                     // 纵向条纹糖果 (6-11)
                     else if (specialCandyType <= (int)SpecialCandyType.YellowCandyVerticalStriped)
                     {
                         var color = (CandyColor)(specialCandyType % 6);
-                        tile.AddComponent<StripedCandyComponent, CandyColor, StripeDirection>(color, StripeDirection.Vertical);
+                        tile.AddComponent<SkillCandyComponent, CandyColor>(color);
                     }
                     // 包装糖果 (12-17)
                     else if (specialCandyType <= (int)SpecialCandyType.YellowCandyWrapped)
                     {
                         var color = (CandyColor)(specialCandyType % 6);
-                        tile.AddComponent<WrappedCandyComponent, CandyColor>(color);
+                        tile.AddComponent<SkillCandyComponent, CandyColor>(color);
                     }
                     // 彩色炸弹 (18)
                     else
@@ -168,30 +168,37 @@ namespace ET
         /// <summary>
         /// 创建横向条纹糖果
         /// </summary>
+        /// <summary>
+        /// 创建横向条纹糖果 (替换为技能糖果)
+        /// </summary>
         public static Tile CreateHorizontalStripedTile(this Match3BoardComponent self, int x, int y, CandyColor color)
         {
-            var tile = self.AddChild<Tile, int, int>(x, y);
-            tile.AddComponent<StripedCandyComponent, CandyColor, StripeDirection>(color, StripeDirection.Horizontal);
-            return tile;
+            return self.CreateSkillCandyTile(x, y, color);
         }
 
         /// <summary>
-        /// 创建纵向条纹糖果
+        /// 创建纵向条纹糖果 (替换为技能糖果)
         /// </summary>
         public static Tile CreateVerticalStripedTile(this Match3BoardComponent self, int x, int y, CandyColor color)
         {
-            var tile = self.AddChild<Tile, int, int>(x, y);
-            tile.AddComponent<StripedCandyComponent, CandyColor, StripeDirection>(color, StripeDirection.Vertical);
-            return tile;
+            return self.CreateSkillCandyTile(x, y, color);
         }
 
         /// <summary>
-        /// 创建包装糖果
+        /// 创建包装糖果 (替换为技能糖果)
         /// </summary>
         public static Tile CreateWrappedTile(this Match3BoardComponent self, int x, int y, CandyColor color)
         {
+            return self.CreateSkillCandyTile(x, y, color);
+        }
+
+        /// <summary>
+        /// 创建技能糖果
+        /// </summary>
+        public static Tile CreateSkillCandyTile(this Match3BoardComponent self, int x, int y, CandyColor color)
+        {
             var tile = self.AddChild<Tile, int, int>(x, y);
-            tile.AddComponent<WrappedCandyComponent, CandyColor>(color);
+            tile.AddComponent<SkillCandyComponent, CandyColor>(color);
             return tile;
         }
 

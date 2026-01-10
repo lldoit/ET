@@ -6,7 +6,7 @@ namespace ET
     /// 三消游戏棋盘组件（符合ET框架规范）
     /// </summary>
     [ComponentOf(typeof(Scene))]
-    public class Match3BoardComponent : Entity, IAwake
+    public class Match3BoardComponent : Entity, IAwake, IUpdate
     {
         /// <summary>
         /// 当前关卡数据
@@ -79,12 +79,9 @@ namespace ET
         public List<TileDef> SuggestedMatchTiles = new List<TileDef>();
         
         /// <summary>
-        /// 匹配提示计时器Token（用于取消计时器）
+        /// 上次操作时间（毫秒）
         /// </summary>
-        /// <summary>
-        /// 匹配提示计时器Token（用于取消计时器）
-        /// </summary>
-        public ETCancellationToken SuggestedMatchCancelToken;
+        public long LastMoveTime;
 
         /// <summary>
         /// 上次交换的瓦片A位置

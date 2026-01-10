@@ -190,7 +190,7 @@
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "YellowCandy",
+            "CandyType": "BlueCandy",
             "SpecialCandyType": "BlueCandyHorizontalStriped",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"

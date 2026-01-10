@@ -7,6 +7,7 @@ namespace ET
     [FriendOf(typeof(CandyComponent))]
     [FriendOf(typeof(StripedCandyComponent))]
     [FriendOf(typeof(WrappedCandyComponent))]
+    [FriendOf(typeof(SkillCandyComponent))]
     [EntitySystemOf(typeof(Tile))]
     public static partial class TileSystem
     {
@@ -63,6 +64,9 @@ namespace ET
 
             var wrapped = self.GetComponent<WrappedCandyComponent>();
             if (wrapped != null) return wrapped.Color;
+
+            var skill = self.GetComponent<SkillCandyComponent>();
+            if (skill != null) return skill.Color;
 
             return null;
         }

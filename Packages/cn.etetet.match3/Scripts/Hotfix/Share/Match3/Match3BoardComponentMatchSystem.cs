@@ -9,6 +9,7 @@ namespace ET
     [FriendOf(typeof(Match3BoardComponent))]
     [FriendOf(typeof(Tile))]
     [FriendOf(typeof(WrappedCandyComponent))]
+    [FriendOf(typeof(SkillCandyComponent))]
     public static partial class Match3BoardComponentMatchSystem
     {
         /// <summary>
@@ -143,20 +144,9 @@ namespace ET
                     break;
 
                 case MatchType.Square:
-                    // 生成包装糖果
-                    if (specialColor.HasValue)
-                    {
-                        Log.Info($"[Match3] Processing Square Match. Creating Wrapped Candy at ({specialTilePos.x}, {specialTilePos.y}) Color: {specialColor.Value}");
-                        specialTile = self.CreateWrappedTile(specialTilePos.x, specialTilePos.y, specialColor.Value);
-                    }
-                    else
-                    {
-                        Log.Warning($"[Match3] Square Match at ({specialTilePos.x}, {specialTilePos.y}) but SpecialColor is NULL/Invalid.");
-                    }
-                    break;
-
                 case MatchType.TShaped:
                 case MatchType.LShaped:
+                case MatchType.FShaped:
                     // 生成包装糖果
                     if (specialColor.HasValue)
                     {
@@ -267,6 +257,7 @@ namespace ET
             bool shouldDispose = true;
             if (tile.GetComponent<StripedCandyComponent>() != null || 
                 tile.GetComponent<WrappedCandyComponent>() != null || 
+                tile.GetComponent<SkillCandyComponent>() != null ||
                 tile.GetComponent<ColorBombComponent>() != null)
             {
                 shouldDispose = await self.ExplodeSpecialCandyAsync(tile, x, y, visited);
@@ -338,6 +329,15 @@ namespace ET
                 return;
             }
 
+            // 技能糖果
+            var skillCandy = tile.GetComponent<SkillCandyComponent>();
+            if (skillCandy != null)
+            {
+                GameStateSystem.AddCandy(ref self.GameState, skillCandy.GetColor());
+                GameStateSystem.AddScore(ref self.GameState, 60 * self.ConsecutiveCascades);
+                return;
+            }
+
             // 包装糖果
             var wrappedCandy = tile.GetComponent<WrappedCandyComponent>();
             if (wrappedCandy != null)
@@ -403,6 +403,19 @@ namespace ET
                 {
                     await self.ExplodeColumnAsync(x, visited);
                 }
+                return true;
+            }
+
+            // 技能糖果
+            var skillCandy = tile.GetComponent<SkillCandyComponent>();
+            if (skillCandy != null)
+            {
+                EventSystem.Instance.Publish(self.Scene(), new PlaySkillCandyEffectEvent
+                {
+                    X = x,
+                    Y = y,
+                    Color = skillCandy.GetColor()
+                });
                 return true;
             }
 
@@ -560,6 +573,14 @@ namespace ET
                             if (wrapped != null && wrapped.GetColor() == targetColor)
                             {
                                 tilesToExplode.Add(tile);
+                            }
+                            else
+                            {
+                                var skill = tile.GetComponent<SkillCandyComponent>();
+                                if (skill != null && skill.GetColor() == targetColor)
+                                {
+                                    tilesToExplode.Add(tile);
+                                }
                             }
                         }
                     }

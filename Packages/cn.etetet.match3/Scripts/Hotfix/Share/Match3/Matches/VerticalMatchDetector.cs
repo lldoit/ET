@@ -58,6 +58,20 @@ namespace ET
                                         }
                                     } while (j < height);
 
+                                    // 根据匹配长度设置类型
+                                    if (matchLength >= 5)
+                                    {
+                                        match.type = MatchType.FivePlus;
+                                    }
+                                    else if (matchLength == 4)
+                                    {
+                                        match.type = MatchType.FourVertical;
+                                    }
+                                    else
+                                    {
+                                        match.type = MatchType.ThreeVertical;
+                                    }
+
                                     matches.Add(match);
                                     continue;
                                 }

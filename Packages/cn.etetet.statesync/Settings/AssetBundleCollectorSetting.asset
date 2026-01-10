@@ -211,7 +211,7 @@ MonoBehaviour:
       - CollectPath: Packages/cn.etetet.match3/GameRes/Match3/Levels
         CollectorGUID: c80bf2e82417560469ef746a974df6b0
         CollectorType: 0
-        AddressRuleName: AddressByFileName
+        AddressRuleName: AddressByFolderAndFileName
         PackRuleName: PackDirectory
         FilterRuleName: CollectAll
         AssetTags: 
@@ -226,6 +226,14 @@ MonoBehaviour:
         UserData: 
       - CollectPath: Packages/cn.etetet.match3/GameRes/Match3/Prefab
         CollectorGUID: 5dfe1e38747e43c4a88122252bece428
+        CollectorType: 0
+        AddressRuleName: AddressByFileName
+        PackRuleName: PackDirectory
+        FilterRuleName: CollectAll
+        AssetTags: 
+        UserData: 
+      - CollectPath: Packages/cn.etetet.match3/GameRes/Match3/Sounds
+        CollectorGUID: e58c289514ac8ad4aa7f596475e5aeb9
         CollectorType: 0
         AddressRuleName: AddressByFileName
         PackRuleName: PackDirectory

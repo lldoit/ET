@@ -13,6 +13,7 @@ namespace ET.Client
     [FriendOf(typeof(TilePoolComponent))]
     [FriendOf(typeof(CollectableComponent))]
     [FriendOf(typeof(WrappedCandyComponent))]
+    [FriendOf(typeof(SkillCandyComponent))]
     public static class Match3BoardViewHelper
     {
         // 瓦片尺寸常量 (与InitSystem保持一致，或者应该统一管理)
@@ -63,6 +64,16 @@ namespace ET.Client
             var wrappedCandy = tile.GetComponent<WrappedCandyComponent>();
             if (wrappedCandy != null)
             {
+                fxPool.PlayWrappedCandyExplosion(worldPosition);
+                return;
+            }
+
+            // 技能糖果
+            var skillCandy = tile.GetComponent<SkillCandyComponent>();
+            if (skillCandy != null)
+            {
+                var skillView = tile.GetComponent<SkillCandyViewComponent>();
+                skillView?.PlayExplodeAnimation();
                 fxPool.PlayWrappedCandyExplosion(worldPosition);
                 return;
             }
@@ -192,6 +203,20 @@ namespace ET.Client
                     if (tileObj == null)
                     {
                         Log.Error($"[Match3View] Failed to create WrappedCandyView for Color: {wrappedCandy.Color}. Check TilePool prefabs.");
+                    }
+                }
+            }
+
+            // 技能糖果
+            if (tileObj == null)
+            {
+                var skillCandy = tile.GetComponent<SkillCandyComponent>();
+                if (skillCandy != null)
+                {
+                    tileObj = tilePool.CreateWrappedCandyView(skillCandy.Color, position);
+                    if (tileObj != null)
+                    {
+                        tile.AddComponent<SkillCandyViewComponent, GameObject>(tileObj);
                     }
                 }
             }

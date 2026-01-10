@@ -16,13 +16,11 @@ namespace ET
         {
             // 清除匹配提示并停止计时器
             self.ClearSuggestedMatch();
-            self.StopSuggestedMatchTimer();
+            self.LastMoveTime = TimeInfo.Instance.ClientNow();
             
             // 检查输入是否锁定
             if (self.InputLocked || self.CurrentlySwapping || self.CurrentlyAwarding)
             {
-                // 重启匹配提示计时器
-                _ = self.StartSuggestedMatchTimerAsync();
                 return false;
             }
 
@@ -70,9 +68,6 @@ namespace ET
                 // 应用填充
                 await self.ApplyFillStrategyAsync();
                 
-                // 重启匹配提示计时器
-                _ = self.StartSuggestedMatchTimerAsync();
-                
                 return true;
             }
 
@@ -101,9 +96,6 @@ namespace ET
                 
                 self.CurrentlySwapping = false;
                 
-                // 重启匹配提示计时器
-                _ = self.StartSuggestedMatchTimerAsync();
-                
                 return true;
             }
             else
@@ -113,9 +105,6 @@ namespace ET
                 // 没有匹配，交换回来
                 await self.SwapTilesWithAnimationAsync(x2, y2, x1, y1);
                 self.CurrentlySwapping = false;
-                
-                // 重启匹配提示计时器
-                _ = self.StartSuggestedMatchTimerAsync();
                 
                 return false;
             }
