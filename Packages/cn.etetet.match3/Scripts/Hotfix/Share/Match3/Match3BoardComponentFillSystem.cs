@@ -36,71 +36,18 @@ namespace ET
             }
             else
             {
-                // 如果没有新匹配，检查是否有待定爆炸（例如包装糖果的二次爆炸）
-                bool hasPendingExplosions = await self.ProcessPendingExplosionsAsync();
+                // 如果没有新匹配，检测可能的交换
+                self.PossibleSwaps = self.DetectPossibleSwaps();
                 
-                if (hasPendingExplosions)
+                // 如果没有可能的交换，需要重新洗牌
+                if (self.PossibleSwaps.Count == 0)
                 {
-                    // 如果有待定爆炸，再次应用重力
-                    await self.ApplyGravityAsync();
-                }
-                else
-                {
-                    // 没有新匹配且无待定爆炸，检测可能的交换
-                    self.PossibleSwaps = self.DetectPossibleSwaps();
-                    
-                    // 如果没有可能的交换，需要重新洗牌
-                    if (self.PossibleSwaps.Count == 0)
-                    {
-                        await self.ShuffleBoardAsync();
-                    }
+                    await self.ShuffleBoardAsync();
                 }
             }
         }
 
-        /// <summary>
-        /// 处理待定爆炸（包装糖果二次爆炸）
-        /// </summary>
-        private static async ETTask<bool> ProcessPendingExplosionsAsync(this Match3BoardComponent self)
-        {
-            bool hasExplosion = false;
-            int width = self.GetWidth();
-            int height = self.GetHeight();
-            var pendingTiles = new List<Tile>();
 
-            // 查找所有带有PendingExplosionComponent的瓦片
-            for (int x = 0; x < width; x++)
-            {
-                for (int y = 0; y < height; y++)
-                {
-                    var tile = self.GetTile(x, y);
-                    if (tile != null && tile.GetComponent<PendingExplosionComponent>() != null)
-                    {
-                        pendingTiles.Add(tile);
-                    }
-                }
-            }
-
-            if (pendingTiles.Count > 0)
-            {
-                hasExplosion = true;
-                
-                // 处理所有待定爆炸
-                foreach (var tile in pendingTiles)
-                {
-                    if (tile.IsDisposed) continue;
-                    
-                    // 移除标记组件
-                    tile.RemoveComponent<PendingExplosionComponent>();
-                    
-                    // 再次爆炸（这次ExplodeSpecialCandyAsync会返回true，因为PendingExplosionComponent已被移除，或者ExplodedCount已增加）
-                    // 实际上在 ExplodeTileAsync 中我们会再次调用 ExplodeSpecialCandyAsync
-                    await self.ExplodeTileAsync(tile, tile.X, tile.Y);
-                }
-            }
-            
-            return hasExplosion;
-        }
 
         /// <summary>
         /// 应用重力填充内部逻辑
