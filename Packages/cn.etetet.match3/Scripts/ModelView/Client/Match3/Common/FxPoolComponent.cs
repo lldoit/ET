@@ -21,15 +21,9 @@ namespace ET.Client
         public GameObject YellowCandyExplosion;
 
         /// <summary>
-        /// 条纹糖果爆炸特效
+        /// 技能糖果爆炸特效
         /// </summary>
-        public GameObject HorizontalStripedCandyExplosion;
-        public GameObject VerticalStripedCandyExplosion;
-
-        /// <summary>
-        /// 包装糖果爆炸特效
-        /// </summary>
-        public GameObject WrappedCandyExplosion;
+        public GameObject SkillCandyExplosion;
 
         /// <summary>
         /// 彩色炸弹爆炸特效

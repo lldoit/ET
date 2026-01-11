@@ -16,7 +16,7 @@ namespace ET.Client
         {
             // 初始化对象池字典
             self.EffectPools = new Dictionary<GameObject, Queue<GameObject>>();
-            
+
             // 创建特效对象池根节点
             var poolRootObj = new GameObject("FxPoolRoot");
             poolRootObj.transform.SetParent(null);
@@ -58,7 +58,7 @@ namespace ET.Client
         {
             self.TotalCreated = 0;
             var resourcePackage = YooAssets.GetPackage("DefaultPackage");
-            
+
             // 辅助方法：加载GameObject资源
             async ETTask<GameObject> LoadPrefabAsync(string location)
             {
@@ -76,12 +76,8 @@ namespace ET.Client
             self.RedCandyExplosion = await LoadPrefabAsync("RedCandyMatchParticles");
             self.YellowCandyExplosion = await LoadPrefabAsync("YellowCandyMatchParticles");
 
-            // 加载条纹糖果爆炸特效
-            self.HorizontalStripedCandyExplosion = await LoadPrefabAsync("HorizontalStripes");
-            self.VerticalStripedCandyExplosion = await LoadPrefabAsync("VerticalStripes");
-
-            // 加载包装糖果爆炸特效
-            self.WrappedCandyExplosion = await LoadPrefabAsync("WrappedCandyParticles");
+            // 加载技能糖果爆炸特效
+            self.SkillCandyExplosion = await LoadPrefabAsync("SkillCandyParticles");
 
             // 加载彩色炸弹爆炸特效
             self.ColorBombExplosion = await LoadPrefabAsync("ColorBombParticles");
@@ -109,7 +105,7 @@ namespace ET.Client
             }
 
             // 注意：ComplimentText 建议使用 YIUI Tips 系统实现，而非粒子特效
-            
+
             // 预热常用特效
             self.WarmUp(self.RedCandyExplosion, 5);
             self.WarmUp(self.BlueCandyExplosion, 5);
@@ -160,13 +156,11 @@ namespace ET.Client
         }
 
         /// <summary>
-        /// 获取条纹糖果爆炸特效预制件
+        /// 获取技能糖果爆炸特效预制件
         /// </summary>
-        public static GameObject GetStripedCandyExplosionPrefab(this FxPoolComponent self, StripeDirection direction)
+        public static GameObject GetSkillCandyExplosionPrefab(this FxPoolComponent self)
         {
-            return direction == StripeDirection.Horizontal 
-                ? self.HorizontalStripedCandyExplosion 
-                : self.VerticalStripedCandyExplosion;
+            return self.SkillCandyExplosion;
         }
 
         /// <summary>
@@ -225,7 +219,7 @@ namespace ET.Client
         private static async ETTask ScheduleReturnEffect(this FxPoolComponent self, GameObject effectObj, GameObject prefab, float delay)
         {
             await self.Root().GetComponent<TimerComponent>().WaitAsync((long)(delay * 1000));
-            
+
             if (effectObj != null && effectObj.activeSelf)
             {
                 // 停止粒子系统
@@ -235,7 +229,7 @@ namespace ET.Client
                     ps.Stop();
                     ps.Clear();
                 }
-                
+
                 self.ReturnEffect(effectObj, prefab);
             }
         }
@@ -270,20 +264,12 @@ namespace ET.Client
         }
 
         /// <summary>
-        /// 播放条纹糖果爆炸特效
+        /// 播放技能糖果爆炸特效
         /// </summary>
-        public static GameObject PlayStripedCandyExplosion(this FxPoolComponent self, StripeDirection direction, Vector3 position)
+        public static GameObject PlaySkillCandyExplosion(this FxPoolComponent self, Vector3 position)
         {
-            var prefab = self.GetStripedCandyExplosionPrefab(direction);
+            var prefab = self.GetSkillCandyExplosionPrefab();
             return self.PlayEffect(prefab, position);
-        }
-
-        /// <summary>
-        /// 播放包装糖果爆炸特效
-        /// </summary>
-        public static GameObject PlayWrappedCandyExplosion(this FxPoolComponent self, Vector3 position)
-        {
-            return self.PlayEffect(self.WrappedCandyExplosion, position);
         }
 
         /// <summary>
@@ -345,7 +331,7 @@ namespace ET.Client
             }
 
             var effectObj = self.PlayEffect(self.SpawnParticles, position);
-            
+
             // 播放所有子粒子系统
             if (effectObj != null)
             {
@@ -379,7 +365,7 @@ namespace ET.Client
             {
                 return ComplimentType.Good;
             }
-            
+
             return null;
         }
 
@@ -397,7 +383,7 @@ namespace ET.Client
         private static float GetParticleDuration(this FxPoolComponent self, GameObject effectObj)
         {
             if (effectObj == null) return 2.0f;
-            
+
             float maxDuration = 0f;
             var particleSystems = effectObj.GetComponentsInChildren<ParticleSystem>();
             foreach (var ps in particleSystems)
@@ -409,7 +395,7 @@ namespace ET.Client
                     maxDuration = duration;
                 }
             }
-            
+
             return maxDuration > 0 ? maxDuration : 2.0f; // 默认2秒
         }
 
@@ -426,7 +412,7 @@ namespace ET.Client
                     pooledCount += pool.Count;
                 }
             }
-            
+
             return $"Total Created: {self.TotalCreated}, Pooled: {pooledCount}, Active: {self.TotalCreated - pooledCount}";
         }
     }

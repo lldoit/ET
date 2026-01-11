@@ -8,9 +8,9 @@ namespace ET
     /// </summary>
     [FriendOf(typeof(Match3BoardComponent))]
     [FriendOf(typeof(Tile))]
-    [FriendOf(typeof(WrappedCandyComponent))]
     [FriendOf(typeof(SkillCandyComponent))]
     public static partial class Match3BoardComponentMatchSystem
+
     {
         /// <summary>
         /// 处理匹配（消除并生成特殊糖果）
@@ -62,9 +62,9 @@ namespace ET
 
                 if (complimentType.HasValue)
                 {
-                    EventSystem.Instance.Publish(self.Scene(), new ShowComplimentEvent 
-                    { 
-                        ComplimentType = complimentType.Value 
+                    EventSystem.Instance.Publish(self.Scene(), new ShowComplimentEvent
+                    {
+                        ComplimentType = complimentType.Value
                     });
                 }
             }
@@ -169,7 +169,7 @@ namespace ET
                 }
 
                 self.SetTile(specialTilePos.x, specialTilePos.y, specialTile);
-                
+
                 // 播放生成特效（通过事件通知HotfixView层）
                 EventSystem.Instance.Publish(self.Scene(), new PlaySpawnEffectEvent
                 {
@@ -224,7 +224,7 @@ namespace ET
             // 根据瓦片类型播放不同音效
             var chocolateComp = tile.GetComponent<ChocolateComponent>();
             var marshmallowComp = tile.GetComponent<MarshmallowComponent>();
-                
+
             if (chocolateComp != null)
             {
                 EventSystem.Instance.Publish(self.Scene(), new PlaySoundEvent { SoundType = "ChocolateBreak" });
@@ -259,7 +259,7 @@ namespace ET
                 X = x,
                 Y = y
             });
-            
+
             if (shouldDispose)
             {
                 self.SetTile(x, y, null);
@@ -318,7 +318,7 @@ namespace ET
             {
                 GameStateSystem.AddSpecialBlock(ref self.GameState, specialBlock.GetBlockType());
                 GameStateSystem.AddScore(ref self.GameState, 20 * self.ConsecutiveCascades);
-                
+
                 // 如果是巧克力，标记已炸毁
                 if (tile.GetComponent<ChocolateComponent>() != null)
                 {
@@ -351,7 +351,7 @@ namespace ET
                 });
                 return true;
             }
-            
+
             await ETTask.CompletedTask;
 
             return true;
@@ -367,7 +367,7 @@ namespace ET
 
             var type = levelTile.ElementType;
             bool cleared = false;
-            
+
             // 检查蜂蜜
             if (type == ElementType.Honey)
             {
@@ -390,18 +390,18 @@ namespace ET
                 GameStateSystem.AddElement(ref self.GameState, ElementType.Syrup2);
                 GameStateSystem.AddScore(ref self.GameState, 20);
                 EventSystem.Instance.Publish(self.Scene(), new PlaySoundEvent { SoundType = "Syrup" });
-                
+
                 // 降级为Syrup1
                 var newTile = levelTile;
                 newTile.ElementType = ElementType.Syrup1;
                 self.SetLevelTile(x, y, newTile);
-                
+
                 // 播放爆炸特效
-                EventSystem.Instance.Publish(self.Scene(), new PlayElementExplosionEvent 
-                { 
-                    ElementType = ElementType.Syrup2, 
-                    X = x, 
-                    Y = y 
+                EventSystem.Instance.Publish(self.Scene(), new PlayElementExplosionEvent
+                {
+                    ElementType = ElementType.Syrup2,
+                    X = x,
+                    Y = y
                 });
                 return;
             }
@@ -422,11 +422,11 @@ namespace ET
                 self.SetLevelTile(x, y, newTile);
 
                 // 播放爆炸特效
-                EventSystem.Instance.Publish(self.Scene(), new PlayElementExplosionEvent 
-                { 
-                    ElementType = type, 
-                    X = x, 
-                    Y = y 
+                EventSystem.Instance.Publish(self.Scene(), new PlayElementExplosionEvent
+                {
+                    ElementType = type,
+                    X = x,
+                    Y = y
                 });
             }
         }
@@ -437,10 +437,10 @@ namespace ET
         public static void DestroySpecialBlocks(this Match3BoardComponent self, Tile tile)
         {
             if (tile == null) return;
-            
+
             int x = tile.X;
             int y = tile.Y;
-            
+
             // 检查上下左右四个邻居
             var neighbors = new List<Tile>
             {
@@ -449,12 +449,12 @@ namespace ET
                 self.GetTile(x, y + 1),
                 self.GetTile(x, y - 1)
             };
-            
+
             foreach (var neighbor in neighbors)
             {
                 self.DestroySpecialBlockInternal(neighbor);
             }
-            
+
             // 同时也尝试销毁自己（如果自己是特殊方块的话，虽然ExplodeTile通常处理自己，但这里为了保险）
             // 注意：ExplodeTileAsync主要处理Candy，如果Tile本身是SpecialBlock，它可能没有CandyComponent
             // 但是SpecialBlock通常是独立的Tile类型。
@@ -466,7 +466,7 @@ namespace ET
         private static void DestroySpecialBlockInternal(this Match3BoardComponent self, Tile tile)
         {
             if (tile == null || tile.IsDisposed) return;
-            
+
             // 检查是否有SpecialBlockComponent
             var specialBlock = tile.GetComponent<SpecialBlockComponent>();
             if (specialBlock != null) // 还需要检查是否可破坏 Destructable? SpecialBlockComponent应该有属性
@@ -474,13 +474,13 @@ namespace ET
                 // 这里假设所有SpecialBlockComponent都是可破坏的，或者组件内有IsDestructable属性
                 // 参考CandyMatch3Kit: tile.GetComponent<SpecialBlock>().destructable
                 // 由于我看不到SpecialBlockComponent的具体定义，假设它是可破坏的
-                
+
                 var type = specialBlock.GetBlockType();
-                
+
                 // 更新分数和状态
                 GameStateSystem.AddSpecialBlock(ref self.GameState, type);
                 GameStateSystem.AddScore(ref self.GameState, 20); // 假设分数
-                
+
                 // 播放特效
                 EventSystem.Instance.Publish(self.Scene(), new PlaySpecialBlockExplosionEvent
                 {
@@ -488,7 +488,7 @@ namespace ET
                     X = tile.X,
                     Y = tile.Y
                 });
-                
+
                 // 播放音效
                 if (tile.GetComponent<ChocolateComponent>() != null)
                 {

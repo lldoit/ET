@@ -103,7 +103,7 @@ namespace ET
                         // 包含ColorBomb的特殊处理，允许ColorBomb参与交换
                         if (rightTile != null)
                         {
-                            if (self.IsColorBombSwap(tile, rightTile) || 
+                            if (self.IsColorBombSwap(tile, rightTile) ||
                                 (tile.GetComponent<SpecialBlockComponent>() == null && rightTile.GetComponent<SpecialBlockComponent>() == null && self.WouldCreateMatch(x, y, x + 1, y)))
                             {
                                 possibleSwaps.Add(new SwapInfo(
@@ -120,7 +120,7 @@ namespace ET
                         var bottomTile = self.GetTile(x, y + 1);
                         if (bottomTile != null)
                         {
-                            if (self.IsColorBombSwap(tile, bottomTile) || 
+                            if (self.IsColorBombSwap(tile, bottomTile) ||
                                 (tile.GetComponent<SpecialBlockComponent>() == null && bottomTile.GetComponent<SpecialBlockComponent>() == null && self.WouldCreateMatch(x, y, x, y + 1)))
                             {
                                 possibleSwaps.Add(new SwapInfo(
@@ -135,35 +135,34 @@ namespace ET
 
             return possibleSwaps;
         }
-        
+
         /// <summary>
         /// 检查是否是有效的彩色炸弹交换
         /// </summary>
         private static bool IsColorBombSwap(this Match3BoardComponent self, Tile t1, Tile t2)
         {
             if (t1 == null || t2 == null) return false;
-            
+
             bool t1IsBomb = t1.GetComponent<ColorBombComponent>() != null;
             bool t2IsBomb = t2.GetComponent<ColorBombComponent>() != null;
 
             if (t1IsBomb && t2IsBomb) return true; // Bomb + Bomb
-            
+
             if (t1IsBomb) return IsValidColorBombTarget(t2);
             if (t2IsBomb) return IsValidColorBombTarget(t1);
-            
+
             return false;
         }
 
         /// <summary>
-        /// 检查是否是合法的彩色炸弹目标（普通糖果、条纹、包装等）
+        /// 检查是否是合法的彩色炸弹目标（普通糖果、技能糖果等）
         /// </summary>
         private static bool IsValidColorBombTarget(Tile t)
         {
-            return t.GetComponent<CandyComponent>() != null || 
-                   t.GetComponent<StripedCandyComponent>() != null || 
-                   t.GetComponent<WrappedCandyComponent>() != null ||
+            return t.GetComponent<CandyComponent>() != null ||
                    t.GetComponent<SkillCandyComponent>() != null;
         }
+
 
         /// <summary>
         /// 检查交换后是否会产生匹配
@@ -189,7 +188,7 @@ namespace ET
                 {
                     foreach (var tileDef in match.tiles)
                     {
-                        if ((tileDef.x == x1 && tileDef.y == y1) || 
+                        if ((tileDef.x == x1 && tileDef.y == y1) ||
                             (tileDef.x == x2 && tileDef.y == y2))
                         {
                             hasMatch = true;
@@ -220,7 +219,7 @@ namespace ET
 
             // 过滤掉不适合作为提示的交换
             var filteredSwaps = self.GetFilteredPossibleSwaps();
-            
+
             if (filteredSwaps.Count > 0)
             {
                 int randomIndex = RandomGenerator.RandomNumber(0, filteredSwaps.Count);
@@ -229,7 +228,7 @@ namespace ET
 
             return null;
         }
-        
+
         /// <summary>
         /// 获取过滤后的可能交换列表（排除被冰覆盖和特殊方块的交换）
         /// 参照CandyMatch3Kit.HighlightRandomMatch的过滤逻辑
@@ -237,49 +236,49 @@ namespace ET
         public static List<SwapInfo> GetFilteredPossibleSwaps(this Match3BoardComponent self)
         {
             var filteredSwaps = new List<SwapInfo>();
-            
+
             foreach (var swap in self.PossibleSwaps)
             {
                 // 获取关卡瓦片数据
                 var levelTileA = self.GetLevelTile(swap.TileAX, swap.TileAY);
                 var levelTileB = self.GetLevelTile(swap.TileBX, swap.TileBY);
-                
+
                 // 检查是否被冰覆盖
                 bool isIceA = levelTileA.TileType != LevelTileType.Empty && levelTileA.ElementType == ElementType.Ice;
                 bool isIceB = levelTileB.TileType != LevelTileType.Empty && levelTileB.ElementType == ElementType.Ice;
-                
+
                 if (isIceA || isIceB)
                 {
                     continue; // 跳过被冰覆盖的交换
                 }
-                
+
                 // 检查是否包含特殊方块
                 var tileA = self.GetTile(swap.TileAX, swap.TileAY);
                 var tileB = self.GetTile(swap.TileBX, swap.TileBY);
-                
+
                 if (tileA != null && tileA.GetComponent<SpecialBlockComponent>() != null)
                 {
                     continue; // 跳过特殊方块
                 }
-                
+
                 if (tileB != null && tileB.GetComponent<SpecialBlockComponent>() != null)
                 {
                     continue; // 跳过特殊方块
                 }
-                
+
                 filteredSwaps.Add(swap);
             }
-            
+
             return filteredSwaps;
         }
-        
+
         /// <summary>
         /// 获取关卡瓦片数据（公开方法）
         /// </summary>
         public static LevelTile GetLevelTile(this Match3BoardComponent self, int x, int y)
         {
             if (!self.HasLevel) return default;
-            
+
             return self.Level.GetTile(x, y);
         }
 
@@ -290,12 +289,12 @@ namespace ET
         public static void SetLevelTile(this Match3BoardComponent self, int x, int y, LevelTile tile)
         {
             if (!self.HasLevel) return;
-            
+
             int width = self.Level.Width;
             int height = self.Level.Height;
-            
+
             if (x < 0 || x >= width || y < 0 || y >= height) return;
-            
+
             int index = x + (y * width);
             if (index >= 0 && index < self.Level.Tiles.Count)
             {
@@ -306,7 +305,7 @@ namespace ET
         public static List<Match> DetectAllMatches(this Match3BoardComponent self)
         {
             var matches = new List<Match>();
-            
+
             // 按优先级顺序检测（从复杂到简单）
             var detectors = new IMatchDetector[]
             {

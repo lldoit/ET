@@ -27,11 +27,11 @@ namespace ET.Client
                 case BoosterType.Bomb:
                     await PlayBombAnimationAsync(scene, worldPosition, args.Duration);
                     break;
-                    
+
                 case BoosterType.ColorBomb:
                     await PlayColorBombUseAnimationAsync(scene, worldPosition, args.Duration);
                     break;
-                    
+
                 default:
                     break;
             }
@@ -51,9 +51,9 @@ namespace ET.Client
             }
 
             // 播放炸弹爆炸特效
-            // 可以使用包装糖果爆炸特效（大范围爆炸）
-            fxPool.PlayWrappedCandyExplosion(position);
-            
+            // 使用技能糖果爆炸特效（大范围爆炸）
+            fxPool.PlaySkillCandyExplosion(position);
+
             await scene.Root().GetComponent<TimerComponent>().WaitAsync((long)(duration * 1000));
         }
 
@@ -72,7 +72,7 @@ namespace ET.Client
 
             // 播放生成特效
             fxPool.PlaySpawnParticles(position);
-            
+
             await scene.Root().GetComponent<TimerComponent>().WaitAsync((long)(duration * 1000));
         }
     }

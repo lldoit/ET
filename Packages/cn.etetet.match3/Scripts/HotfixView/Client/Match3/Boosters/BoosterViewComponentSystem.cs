@@ -18,7 +18,7 @@ namespace ET.Client
             self.ColorBombAnimDuration = 600;
             self.SwitchAnimDuration = 250;
         }
-        
+
         [EntitySystem]
         private static void Destroy(this BoosterViewComponent self)
         {
@@ -37,14 +37,14 @@ namespace ET.Client
         {
             // 播放音效
             self.PlayBoosterSound(self.LollipopSound);
-            
+
             // 播放特效
             if (self.LollipopEffectPrefab != null)
             {
                 var effect = UnityEngine.Object.Instantiate(self.LollipopEffectPrefab, worldPosition, Quaternion.identity);
                 UnityEngine.Object.Destroy(effect, self.LollipopAnimDuration / 1000f);
             }
-            
+
             // 等待动画完成
             await self.Root().GetComponent<TimerComponent>().WaitAsync(self.LollipopAnimDuration);
         }
@@ -56,22 +56,22 @@ namespace ET.Client
         {
             // 播放音效
             self.PlayBoosterSound(self.BombSound);
-            
+
             // 播放特效
             if (self.BombEffectPrefab != null)
             {
                 var effect = UnityEngine.Object.Instantiate(self.BombEffectPrefab, worldPosition, Quaternion.identity);
-                
+
                 // 炸弹特效可能需要扩散动画
                 var particleSystem = effect.GetComponent<ParticleSystem>();
                 if (particleSystem != null)
                 {
                     particleSystem.Play();
                 }
-                
+
                 UnityEngine.Object.Destroy(effect, self.BombAnimDuration / 1000f);
             }
-            
+
             // 等待动画完成
             await self.Root().GetComponent<TimerComponent>().WaitAsync(self.BombAnimDuration);
         }
@@ -83,22 +83,22 @@ namespace ET.Client
         {
             // 播放音效
             self.PlayBoosterSound(self.ColorBombSound);
-            
+
             // 播放特效
             if (self.ColorBombEffectPrefab != null)
             {
                 var effect = UnityEngine.Object.Instantiate(self.ColorBombEffectPrefab, worldPosition, Quaternion.identity);
-                
+
                 // 彩色炸弹生成特效
                 var particleSystem = effect.GetComponent<ParticleSystem>();
                 if (particleSystem != null)
                 {
                     particleSystem.Play();
                 }
-                
+
                 UnityEngine.Object.Destroy(effect, self.ColorBombAnimDuration / 1000f);
             }
-            
+
             // 等待动画完成
             await self.Root().GetComponent<TimerComponent>().WaitAsync(self.ColorBombAnimDuration);
         }
@@ -110,14 +110,14 @@ namespace ET.Client
         {
             // 播放音效
             self.PlayBoosterSound(self.SwitchSound);
-            
+
             // 播放交换特效（在两个位置之间）
             if (self.SwitchEffectPrefab != null)
             {
                 // 在两个瓦片位置之间的中点播放特效
                 Vector3 midPoint = (worldPosition1 + worldPosition2) / 2f;
                 var effect = UnityEngine.Object.Instantiate(self.SwitchEffectPrefab, midPoint, Quaternion.identity);
-                
+
                 // 可以添加连线效果
                 var lineRenderer = effect.GetComponent<LineRenderer>();
                 if (lineRenderer != null)
@@ -125,10 +125,10 @@ namespace ET.Client
                     lineRenderer.SetPosition(0, worldPosition1);
                     lineRenderer.SetPosition(1, worldPosition2);
                 }
-                
+
                 UnityEngine.Object.Destroy(effect, self.SwitchAnimDuration / 1000f);
             }
-            
+
             // 等待动画完成
             await self.Root().GetComponent<TimerComponent>().WaitAsync(self.SwitchAnimDuration);
         }
@@ -150,14 +150,14 @@ namespace ET.Client
                     BoosterType.Switch => "选择第一个瓦片",
                     _ => "选择目标瓦片"
                 };
-                
+
                 EventSystem.Instance.Publish(scene, new ShowHintTextEvent
                 {
                     Message = message,
                     Duration = 3f
                 });
             }
-            
+
             Log.Info($"道具 {boosterType} 已激活，请选择目标瓦片");
         }
 
@@ -176,7 +176,7 @@ namespace ET.Client
         {
             // 使用Match3AudioHelper播放音效
             Scene clientScene = self.Root() as Scene;
-            
+
             if (clientScene != null)
             {
                 // 根据音效名称调用对应的方法
@@ -215,11 +215,11 @@ namespace ET.Client
             var match3Board = self.Root().GetComponent<Match3BoardComponent>();
             if (match3Board != null && tile != null)
             {
-                // 根据瓦片类型（CandyComponent/StripedCandyComponent/WrappedCandyComponent等）
+                // 根据瓦片类型（CandyComponent/SkillCandyComponent/ColorBombComponent等）
                 // 自动播放对应的消除特效
                 match3Board.PlayTileExplosionEffect(tile, worldPosition);
             }
-            
+
             await ETTask.CompletedTask;
         }
     }

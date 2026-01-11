@@ -38,7 +38,7 @@ namespace ET
             {
                 // 如果没有新匹配，检测可能的交换
                 self.PossibleSwaps = self.DetectPossibleSwaps();
-                
+
                 // 如果没有可能的交换，需要重新洗牌
                 if (self.PossibleSwaps.Count == 0)
                 {
@@ -78,7 +78,7 @@ namespace ET
                     {
                         var checkTile = self.GetTile(i, k);
                         var levelTile = self.GetLevelTile(i, k);
-                        
+
                         if (checkTile == null && levelTile.TileType != LevelTileType.Hole)
                         {
                             bottom = k;
@@ -100,7 +100,7 @@ namespace ET
                             ToY = bottom,
                             TileRef = tile
                         });
-                        
+
                         // 移动瓦片到底部
                         self.SetTile(i, j, null);
                         self.SetTile(i, bottom, tile);
@@ -116,7 +116,7 @@ namespace ET
                 {
                     var tile = self.GetTile(i, j);
                     var levelTile = self.GetLevelTile(i, j);
-                    
+
                     if (tile == null && levelTile.TileType != LevelTileType.Hole)
                     {
                         numEmpties++;
@@ -145,7 +145,7 @@ namespace ET
                         {
                             var newTile = self.CreateRandomTile(i, j, true);
                             self.SetTile(i, j, newTile);
-                            
+
                             // 记录新瓦片创建信息（初始位置在上方numEmpties个单位）
                             newTiles.Add(new FillCreateInfo
                             {
@@ -155,7 +155,7 @@ namespace ET
                                 TargetY = j,
                                 TileRef = newTile
                             });
-                            
+
                             numEmpties--;
                         }
                     }
@@ -203,7 +203,7 @@ namespace ET
             {
                 // 没有新匹配，检测可能的交换
                 self.PossibleSwaps = self.DetectPossibleSwaps();
-                
+
                 // 如果没有可能的交换，需要重新洗牌
                 if (self.PossibleSwaps.Count == 0)
                 {
@@ -240,7 +240,7 @@ namespace ET
                     if (dropPath.Count > 0)
                     {
                         var finalPos = dropPath[dropPath.Count - 1];
-                        
+
                         // 记录移动信息，包含完整路径用于滑动动画
                         // 参考CandyMatch3Kit：路径动画时长 = 0.5秒 * 路径长度
                         moves.Add(new FillMoveInfo
@@ -252,7 +252,7 @@ namespace ET
                             TileRef = tile,
                             Path = new List<TileDef>(dropPath) // 复制路径信息
                         });
-                        
+
                         // 移动瓦片
                         self.SetTile(i, j, null);
                         self.SetTile(finalPos.x, finalPos.y, tile);
@@ -268,7 +268,7 @@ namespace ET
                 {
                     var tile = self.GetTile(i, j);
                     var levelTile = self.GetLevelTile(i, j);
-                    
+
                     if (tile == null && levelTile.TileType != LevelTileType.Hole)
                     {
                         numEmpties++;
@@ -285,12 +285,12 @@ namespace ET
                     {
                         var tile = self.GetTile(i, j);
                         var levelTile = self.GetLevelTile(i, j);
-                        
+
                         if (tile == null && levelTile.TileType != LevelTileType.Hole)
                         {
                             var newTile = self.CreateRandomTile(i, j, true);
                             self.SetTile(i, j, newTile);
-                            
+
                             // 记录新瓦片创建信息
                             newTiles.Add(new FillCreateInfo
                             {
@@ -300,7 +300,7 @@ namespace ET
                                 TargetY = j,
                                 TileRef = newTile
                             });
-                            
+
                             numEmpties--;
                         }
                     }
@@ -327,7 +327,7 @@ namespace ET
             var path = new List<TileDef>();
             int width = self.GetWidth();
             int height = self.GetHeight();
-            
+
             int currentX = startX;
             int currentY = startY;
 
@@ -375,7 +375,7 @@ namespace ET
         {
             var tile = self.GetTile(x, y);
             var levelTile = self.GetLevelTile(x, y);
-            
+
             // 位置为空且不是洞
             return tile == null && levelTile.TileType != LevelTileType.Hole;
         }
@@ -390,13 +390,13 @@ namespace ET
         {
             int width = self.GetWidth();
             int height = self.GetHeight();
-            
+
             // 收集所有需要洗牌的移动信息
             var shuffleMoves = new List<ShuffleMoveInfo>();
-            
+
             // 等待2秒（参考CandyMatch3Kit）
             await self.Root().GetComponent<TimerComponent>().WaitAsync(2000);
-            
+
             // 遍历所有瓦片，替换普通糖果
             for (int j = 0; j < height; j++)
             {
@@ -407,30 +407,30 @@ namespace ET
                     {
                         continue;
                     }
-                    
+
                     // 只替换普通糖果，保留特殊糖果、特殊方块等
-                    // 参考CandyMatch3Kit：不替换StripedCandy、WrappedCandy、ColorBomb等
+                    // 不替换SkillCandy、ColorBomb等
                     if (tile.GetComponent<SpecialBlockComponent>() != null ||
-                        tile.GetComponent<StripedCandyComponent>() != null ||
-                        tile.GetComponent<WrappedCandyComponent>() != null ||
+                        tile.GetComponent<SkillCandyComponent>() != null ||
                         tile.GetComponent<ColorBombComponent>() != null)
                     {
                         continue;
                     }
-                    
+
+
                     // 记录原始位置
                     int oldX = i;
                     int oldY = j;
-                    
+
                     // 创建新的随机瓦片替换（runtime=false以避免产生初始匹配）
                     var newTile = self.CreateRandomTile(i, j, false);
-                    
+
                     // 更新棋盘
                     self.SetTile(i, j, newTile);
-                    
+
                     // 销毁旧瓦片
                     tile.Dispose();
-                    
+
                     // 记录移动信息用于动画
                     shuffleMoves.Add(new ShuffleMoveInfo
                     {
@@ -442,7 +442,7 @@ namespace ET
                     });
                 }
             }
-            
+
             // 发布洗牌动画事件
             if (shuffleMoves.Count > 0)
             {
@@ -451,17 +451,17 @@ namespace ET
                     Moves = shuffleMoves,
                     Duration = 0.5f
                 });
-                
+
                 // 播放洗牌音效
                 EventSystem.Instance.Publish(self.Scene(), new PlaySoundEvent { SoundType = "Shuffle" });
             }
-            
+
             // 等待动画完成
             await self.Root().GetComponent<TimerComponent>().WaitAsync(500);
-            
+
             // 重新检测可能的交换
             self.PossibleSwaps = self.DetectPossibleSwaps();
-            
+
             // 如果仍然没有可能的交换，递归洗牌
             if (self.PossibleSwaps.Count == 0)
             {
