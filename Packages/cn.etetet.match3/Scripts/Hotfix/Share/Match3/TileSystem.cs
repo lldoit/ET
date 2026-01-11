@@ -5,8 +5,6 @@ namespace ET
     /// </summary>
     [FriendOf(typeof(Tile))]
     [FriendOf(typeof(CandyComponent))]
-    [FriendOf(typeof(StripedCandyComponent))]
-    [FriendOf(typeof(WrappedCandyComponent))]
     [FriendOf(typeof(SkillCandyComponent))]
     [EntitySystemOf(typeof(Tile))]
     public static partial class TileSystem
@@ -52,18 +50,12 @@ namespace ET
         }
 
         /// <summary>
-        /// 获取瓦片颜色（支持普通糖果、条纹糖果、包装糖果）
+        /// 获取瓦片颜色（支持普通糖果、技能糖果）
         /// </summary>
         public static CandyColor? GetColor(this Tile self)
         {
             var candy = self.GetComponent<CandyComponent>();
             if (candy != null) return candy.Color;
-
-            var striped = self.GetComponent<StripedCandyComponent>();
-            if (striped != null) return striped.Color;
-
-            var wrapped = self.GetComponent<WrappedCandyComponent>();
-            if (wrapped != null) return wrapped.Color;
 
             var skill = self.GetComponent<SkillCandyComponent>();
             if (skill != null) return skill.Color;

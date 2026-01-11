@@ -19,8 +19,17 @@ namespace ET.Client
         {
             if (self.GameObject != null)
             {
-                UnityEngine.Object.Destroy(self.GameObject);
+                var tilePool = self.Scene().GetComponent<TilePoolComponent>();
+                if (tilePool != null && self.Prefab != null)
+                {
+                    tilePool.ReturnTile(self.GameObject, self.Prefab);
+                }
+                else
+                {
+                    UnityEngine.Object.Destroy(self.GameObject);
+                }
                 self.GameObject = null;
+                self.Prefab = null;
             }
         }
 

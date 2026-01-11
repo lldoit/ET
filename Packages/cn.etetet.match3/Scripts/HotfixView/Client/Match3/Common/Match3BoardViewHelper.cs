@@ -187,9 +187,11 @@ namespace ET.Client
             
             // 1. 条纹糖果
             var stripedCandy = tile.GetComponent<StripedCandyComponent>();
+            GameObject prefab = null; // Store source prefab
+            
             if (stripedCandy != null)
             {
-                tileObj = tilePool.CreateStripedCandyView(stripedCandy.Color, stripedCandy.Direction, position);
+                (tileObj, prefab) = tilePool.CreateStripedCandyView(stripedCandy.Color, stripedCandy.Direction, position);
             }
             
             // 2. 包装糖果
@@ -199,7 +201,7 @@ namespace ET.Client
                 if (wrappedCandy != null)
                 {
                     Log.Info($"[Match3View] Found WrappedCandyComponent. Creating view for Color: {wrappedCandy.Color} at {position}");
-                    tileObj = tilePool.CreateWrappedCandyView(wrappedCandy.Color, position);
+                    (tileObj, prefab) = tilePool.CreateWrappedCandyView(wrappedCandy.Color, position);
                     if (tileObj == null)
                     {
                         Log.Error($"[Match3View] Failed to create WrappedCandyView for Color: {wrappedCandy.Color}. Check TilePool prefabs.");
@@ -213,7 +215,7 @@ namespace ET.Client
                 var skillCandy = tile.GetComponent<SkillCandyComponent>();
                 if (skillCandy != null)
                 {
-                    tileObj = tilePool.CreateWrappedCandyView(skillCandy.Color, position);
+                    (tileObj, prefab) = tilePool.CreateWrappedCandyView(skillCandy.Color, position);
                     if (tileObj != null)
                     {
                         tile.AddComponent<SkillCandyViewComponent, GameObject>(tileObj);
@@ -227,7 +229,7 @@ namespace ET.Client
                 var colorBomb = tile.GetComponent<ColorBombComponent>();
                 if (colorBomb != null)
                 {
-                    tileObj = tilePool.CreateColorBombView(position);
+                    (tileObj, prefab) = tilePool.CreateColorBombView(position);
                 }
             }
             
@@ -237,7 +239,7 @@ namespace ET.Client
                 var candy = tile.GetComponent<CandyComponent>();
                 if (candy != null)
                 {
-                    tileObj = tilePool.CreateCandyView(candy.Color, position);
+                    (tileObj, prefab) = tilePool.CreateCandyView(candy.Color, position);
                 }
             }
             
@@ -247,7 +249,7 @@ namespace ET.Client
                 var specialBlock = tile.GetComponent<SpecialBlockComponent>();
                 if (specialBlock != null)
                 {
-                    tileObj = tilePool.CreateSpecialBlockView(specialBlock.Type, position);
+                    (tileObj, prefab) = tilePool.CreateSpecialBlockView(specialBlock.Type, position);
                 }
             }
             
@@ -257,14 +259,15 @@ namespace ET.Client
                 var collectable = tile.GetComponent<CollectableComponent>();
                 if (collectable != null)
                 {
-                    tileObj = tilePool.CreateCollectableView(collectable.Type, position);
+                    (tileObj, prefab) = tilePool.CreateCollectableView(collectable.Type, position);
                 }
             }
             
             // 创建 TileView 组件
             if (tileObj != null)
             {
-                tile.AddComponent<TileView, GameObject>(tileObj);
+                var tileView = tile.AddComponent<TileView, GameObject>(tileObj);
+                tileView.Prefab = prefab;
             }
         }
 

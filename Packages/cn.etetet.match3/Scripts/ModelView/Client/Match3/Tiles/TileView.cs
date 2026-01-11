@@ -9,6 +9,7 @@ namespace ET.Client
     public class TileView : Entity, IAwake<GameObject>, IDestroy
     {
         public GameObject GameObject { get; set; }
+        public GameObject Prefab { get; set; }
     }
 }
 

@@ -100,6 +100,17 @@ namespace ET.Client
             
             var resourcePackage = YooAssets.GetPackage("DefaultPackage");
             
+            // 辅助方法：预填充
+            void PreFill(GameObject prefab)
+            {
+                if (prefab == null) return;
+                for (int i = 0; i < self.PreFillCount; i++)
+                {
+                    var obj = UnityEngine.Object.Instantiate(prefab);
+                    self.ReturnTile(obj, prefab);
+                }
+            }
+
             // 辅助方法：加载GameObject资源
             async ETTask<GameObject> LoadPrefabAsync(string location)
             {
@@ -108,6 +119,10 @@ namespace ET.Client
                     var handle = resourcePackage.LoadAssetAsync<GameObject>(location);
                     await handle.Task;
                     var prefab = handle.AssetObject as GameObject;
+                    if (prefab != null)
+                    {
+                        PreFill(prefab);
+                    }
                     return prefab;
                 }
                 catch
@@ -209,10 +224,12 @@ namespace ET.Client
             if (tileObj == null)
             {
                 tileObj = UnityEngine.Object.Instantiate(prefab);
-                if (self.BoardRoot != null)
-                {
-                    tileObj.transform.SetParent(self.BoardRoot);
-                }
+            }
+
+            // 统一设置父节点到 BoardRoot
+            if (tileObj != null && self.BoardRoot != null)
+            {
+                tileObj.transform.SetParent(self.BoardRoot, false);
             }
             
             return tileObj;
@@ -243,7 +260,7 @@ namespace ET.Client
         /// <summary>
         /// 创建普通糖果视图
         /// </summary>
-        public static GameObject CreateCandyView(this TilePoolComponent self, CandyColor color, Vector3 position)
+        public static (GameObject, GameObject) CreateCandyView(this TilePoolComponent self, CandyColor color, Vector3 position)
         {
             var prefab = self.GetCandyPrefab(color);
             var tileObj = self.GetTile(prefab);
@@ -251,7 +268,7 @@ namespace ET.Client
             {
                 tileObj.transform.localPosition = position;
             }
-            return tileObj;
+            return (tileObj, prefab);
         }
 
         /// <summary>
@@ -350,7 +367,7 @@ namespace ET.Client
         /// <summary>
         /// 创建条纹糖果视图
         /// </summary>
-        public static GameObject CreateStripedCandyView(this TilePoolComponent self, CandyColor color, StripeDirection direction, Vector3 position)
+        public static (GameObject, GameObject) CreateStripedCandyView(this TilePoolComponent self, CandyColor color, StripeDirection direction, Vector3 position)
         {
             var prefab = self.GetStripedCandyPrefab(color, direction);
             var tileObj = self.GetTile(prefab);
@@ -358,13 +375,13 @@ namespace ET.Client
             {
                 tileObj.transform.localPosition = position;
             }
-            return tileObj;
+            return (tileObj, prefab);
         }
 
         /// <summary>
         /// 创建包装糖果视图
         /// </summary>
-        public static GameObject CreateWrappedCandyView(this TilePoolComponent self, CandyColor color, Vector3 position)
+        public static (GameObject, GameObject) CreateWrappedCandyView(this TilePoolComponent self, CandyColor color, Vector3 position)
         {
             var prefab = self.GetWrappedCandyPrefab(color);
             var tileObj = self.GetTile(prefab);
@@ -372,26 +389,26 @@ namespace ET.Client
             {
                 tileObj.transform.localPosition = position;
             }
-            return tileObj;
+            return (tileObj, prefab);
         }
 
         /// <summary>
         /// 创建彩色炸弹视图
         /// </summary>
-        public static GameObject CreateColorBombView(this TilePoolComponent self, Vector3 position)
+        public static (GameObject, GameObject) CreateColorBombView(this TilePoolComponent self, Vector3 position)
         {
             var tileObj = self.GetTile(self.ColorBombPrefab);
             if (tileObj != null)
             {
                 tileObj.transform.localPosition = position;
             }
-            return tileObj;
+            return (tileObj, self.ColorBombPrefab);
         }
 
         /// <summary>
         /// 创建特殊方块视图
         /// </summary>
-        public static GameObject CreateSpecialBlockView(this TilePoolComponent self, SpecialBlockType type, Vector3 position)
+        public static (GameObject, GameObject) CreateSpecialBlockView(this TilePoolComponent self, SpecialBlockType type, Vector3 position)
         {
             var prefab = self.GetSpecialBlockPrefab(type);
             var tileObj = self.GetTile(prefab);
@@ -399,13 +416,13 @@ namespace ET.Client
             {
                 tileObj.transform.localPosition = position;
             }
-            return tileObj;
+            return (tileObj, prefab);
         }
 
         /// <summary>
         /// 创建收集物视图
         /// </summary>
-        public static GameObject CreateCollectableView(this TilePoolComponent self, CollectableType type, Vector3 position)
+        public static (GameObject, GameObject) CreateCollectableView(this TilePoolComponent self, CollectableType type, Vector3 position)
         {
             var prefab = self.GetCollectablePrefab(type);
             var tileObj = self.GetTile(prefab);
@@ -413,7 +430,7 @@ namespace ET.Client
             {
                 tileObj.transform.localPosition = position;
             }
-            return tileObj;
+            return (tileObj, prefab);
         }
     }
 }

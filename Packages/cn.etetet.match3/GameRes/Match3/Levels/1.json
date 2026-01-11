@@ -204,10 +204,10 @@
             "CollectableType": "Cherry"
         },
         {
-            "TileType": "Candy",
+            "TileType": "SpecialCandy",
             "ElementType": "None",
             "CandyType": "BlueCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "SpecialCandyType": "ColorBomb",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },

@@ -122,11 +122,7 @@ namespace ET
                 var centerTile = self.GetTile(specialTilePos.x, specialTilePos.y);
                 if (centerTile != null)
                 {
-                    var candy = centerTile.GetComponent<CandyComponent>();
-                    if (candy != null)
-                    {
-                        specialColor = candy.GetColor();
-                    }
+                    specialColor = centerTile.GetColor();
                 }
             }
 
@@ -147,36 +143,22 @@ namespace ET
                 case MatchType.TShaped:
                 case MatchType.LShaped:
                 case MatchType.FShaped:
-                    // 生成包装糖果
+                case MatchType.FourHorizontal:
+                case MatchType.FourVertical:
+                    // 生成技能糖果
                     if (specialColor.HasValue)
                     {
-                        Log.Info($"[Match3] Processing T/L Match. Creating Wrapped Candy at ({specialTilePos.x}, {specialTilePos.y}) Color: {specialColor.Value}");
-                        specialTile = self.CreateWrappedTile(specialTilePos.x, specialTilePos.y, specialColor.Value);
+                        Log.Info($"[Match3] Processing S/T/L/F/4H/4V Match. Creating Skill Candy at ({specialTilePos.x}, {specialTilePos.y}) Color: {specialColor.Value}");
+                        specialTile = self.CreateSkillCandyTile(specialTilePos.x, specialTilePos.y, specialColor.Value);
                     }
                     else
                     {
-                        Log.Warning($"[Match3] T/L Match at ({specialTilePos.x}, {specialTilePos.y}) but SpecialColor is NULL/Invalid.");
-                    }
-                    break;
-
-                case MatchType.FourHorizontal:
-                    // 生成横向条纹糖果
-                    if (specialColor.HasValue)
-                    {
-                        specialTile = self.CreateHorizontalStripedTile(specialTilePos.x, specialTilePos.y, specialColor.Value);
-                    }
-                    break;
-
-                case MatchType.FourVertical:
-                    // 生成纵向条纹糖果
-                    if (specialColor.HasValue)
-                    {
-                        specialTile = self.CreateVerticalStripedTile(specialTilePos.x, specialTilePos.y, specialColor.Value);
+                        Log.Warning($"[Match3] S/T/L/F/4H/4V Match at ({specialTilePos.x}, {specialTilePos.y}) but SpecialColor is NULL/Invalid.");
                     }
                     break;
             }
 
-            // 如果生成了特殊糖果，设置到棋盘上并播放生成特效如果生成了特殊糖果，设置到棋盘上并播放生成特效
+            // 如果生成了特殊糖果，设置到棋盘上并播放生成特效
             if (specialTile != null)
             {
                 // 销毁旧瓦片，防止重叠
@@ -216,7 +198,6 @@ namespace ET
         /// <summary>
         /// 爆炸瓦片
         /// </summary>
-
         public static async ETTask ExplodeTileAsync(this Match3BoardComponent self, Tile tile, int x, int y, HashSet<long> visited = null)
         {
             if (tile == null)
@@ -255,10 +236,7 @@ namespace ET
 
             // 检查是否有特殊糖果组件
             bool shouldDispose = true;
-            if (tile.GetComponent<StripedCandyComponent>() != null || 
-                tile.GetComponent<WrappedCandyComponent>() != null || 
-                tile.GetComponent<SkillCandyComponent>() != null ||
-                tile.GetComponent<ColorBombComponent>() != null)
+            if (tile.GetComponent<SkillCandyComponent>() != null)
             {
                 shouldDispose = await self.ExplodeSpecialCandyAsync(tile, x, y, visited);
             }
@@ -282,22 +260,10 @@ namespace ET
                 Y = y
             });
             
-            // 从棋盘上移除 (只有在确实要销毁时才移除，或者如果它是待定爆炸状态，我们也暂时移除它的引用以便让上面的糖果掉下来，
-            // 但是如果是包装糖果的第一次爆炸，它其实还在原来的位置，只是变成了一个"待定爆炸"的状态。
-            // 包装糖果的逻辑是：第一次爆炸后，它变成pending状态，会随着Gravity下落，然后在下一帧再次爆炸。
-            // 实际上 CandyMatch3Kit 的逻辑是 WrappedCandy 第一次爆炸后，它仍然占据格子，但是变成不可消除/或者特殊状态，
-            // 然后周围消除后，它会掉落，然后再次爆炸。
-            // 这里我们简化处理： PendingExplosionComponent 的瓦片仍然在棋盘上，参与物理下落。
-            
             if (shouldDispose)
             {
                 self.SetTile(x, y, null);
                 tile.Dispose();
-            }
-            else
-            {
-                // 如果不销毁（等待第二次爆炸），我们需要确保它不阻挡其他匹配，但它需要占据空间
-                // 这里不做额外操作，它仍然在棋盘上，只是加了PendingExplosionComponent
             }
 
             // 等待爆炸动画完成
@@ -320,30 +286,12 @@ namespace ET
                 return;
             }
 
-            // 条纹糖果
-            var stripedCandy = tile.GetComponent<StripedCandyComponent>();
-            if (stripedCandy != null)
-            {
-                GameStateSystem.AddCandy(ref self.GameState, stripedCandy.GetColor());
-                GameStateSystem.AddScore(ref self.GameState, 50 * self.ConsecutiveCascades);
-                return;
-            }
-
             // 技能糖果
             var skillCandy = tile.GetComponent<SkillCandyComponent>();
             if (skillCandy != null)
             {
                 GameStateSystem.AddCandy(ref self.GameState, skillCandy.GetColor());
                 GameStateSystem.AddScore(ref self.GameState, 60 * self.ConsecutiveCascades);
-                return;
-            }
-
-            // 包装糖果
-            var wrappedCandy = tile.GetComponent<WrappedCandyComponent>();
-            if (wrappedCandy != null)
-            {
-                GameStateSystem.AddCandy(ref self.GameState, wrappedCandy.GetColor());
-                GameStateSystem.AddScore(ref self.GameState, 50 * self.ConsecutiveCascades);
                 return;
             }
 
@@ -381,28 +329,13 @@ namespace ET
         }
 
         /// <summary>
-        /// 爆炸特殊糖果（条纹/包装/彩色炸弹）
+        /// 爆炸特殊糖果（技能）
         /// 返回 true 表示该特殊糖果应该被销毁，false 表示保留（例如包装糖果的第一次爆炸）
         /// </summary>
         public static async ETTask<bool> ExplodeSpecialCandyAsync(this Match3BoardComponent self, Tile tile, int x, int y, HashSet<long> visited)
         {
             if (tile == null)
             {
-                return true;
-            }
-
-            // 横向条纹糖果 - 消除整行
-            var stripedCandy = tile.GetComponent<StripedCandyComponent>();
-            if (stripedCandy != null)
-            {
-                if (stripedCandy.GetDirection() == StripeDirection.Horizontal)
-                {
-                    await self.ExplodeRowAsync(y, visited);
-                }
-                else
-                {
-                    await self.ExplodeColumnAsync(x, visited);
-                }
                 return true;
             }
 
@@ -418,187 +351,12 @@ namespace ET
                 });
                 return true;
             }
-
-            // 包装糖果 - 消除周围3x3区域
-            var wrappedCandy = tile.GetComponent<WrappedCandyComponent>();
-            if (wrappedCandy != null)
-            {
-                // 爆炸
-                await self.ExplodeAreaAsync(x, y, 1, visited);
-                return true;
-            }
-
-            // 彩色炸弹 - 消除所有同色糖果
-            var colorBomb = tile.GetComponent<ColorBombComponent>();
-            if (colorBomb != null)
-            {
-                // 彩色炸弹被消除时，如果没有指定目标颜色（比如被横向/纵向/包装糖果炸到），
-                // 随机选择一种颜色进行消除
-                // 随机选择一种颜色进行消除
-                var targetColor = (CandyColor)RandomGenerator.RandomNumber(0, 5); 
-                await self.ExplodeColorBombAsync(x, y, targetColor, visited);
-                return true;
-            }
+            
+            await ETTask.CompletedTask;
 
             return true;
         }
 
-        /// <summary>
-        /// 爆炸整行（带条纹特效）
-        /// </summary>
-
-        private static async ETTask ExplodeRowAsync(this Match3BoardComponent self, int row, HashSet<long> visited)
-        {
-            int width = self.GetWidth();
-            for (int x = 0; x < width; x++)
-            {
-                // 播放横向条纹特效（通过事件通知HotfixView层）
-                EventSystem.Instance.Publish(self.Scene(), new PlayStripedEffectEvent
-                {
-                    Direction = StripeDirection.Horizontal,
-                    X = x,
-                    Y = row
-                });
-                
-                var tile = self.GetTile(x, row);
-                if (tile != null && tile.Destructable)
-                {
-                    await self.ExplodeTileAsync(tile, x, row, visited);
-                }
-            }
-        }
-
-        /// <summary>
-        /// 爆炸整列（带条纹特效）
-        /// </summary>
-
-        private static async ETTask ExplodeColumnAsync(this Match3BoardComponent self, int column, HashSet<long> visited)
-        {
-            int height = self.GetHeight();
-            for (int y = 0; y < height; y++)
-            {
-                // 播放竖向条纹特效（通过事件通知HotfixView层）
-                EventSystem.Instance.Publish(self.Scene(), new PlayStripedEffectEvent
-                {
-                    Direction = StripeDirection.Vertical,
-                    X = column,
-                    Y = y
-                });
-                
-                var tile = self.GetTile(column, y);
-                if (tile != null && tile.Destructable)
-                {
-                    await self.ExplodeTileAsync(tile, column, y, visited);
-                }
-            }
-        }
-
-        /// <summary>
-        /// 爆炸区域（NxN）（带包装特效）
-        /// </summary>
-
-        private static async ETTask ExplodeAreaAsync(this Match3BoardComponent self, int centerX, int centerY, int radius, HashSet<long> visited)
-        {
-            // 在中心位置播放包装糖果爆炸特效（通过事件通知HotfixView层）
-            EventSystem.Instance.Publish(self.Scene(), new PlayWrappedEffectEvent
-            {
-                X = centerX,
-                Y = centerY
-            });
-            
-            for (int dx = -radius; dx <= radius; dx++)
-            {
-                for (int dy = -radius; dy <= radius; dy++)
-                {
-                    int x = centerX + dx;
-                    int y = centerY + dy;
-                    
-                    var tile = self.GetTile(x, y);
-                    if (tile != null && tile.Destructable)
-                    {
-                        // 如果是包装糖果本身（正在爆炸的），跳过
-                        // 注意：这里需要通过坐标判断，因为 tile 对象可能一样
-                        if (x == centerX && y == centerY) continue;
-
-                        await self.ExplodeTileAsync(tile, x, y, visited);
-                    }
-                }
-            }
-        }
-
-
-        /// <summary>
-        /// 爆炸彩色炸弹（消除所有同色糖果）
-        /// </summary>
-
-        public static async ETTask ExplodeColorBombAsync(this Match3BoardComponent self, int centerX, int centerY, CandyColor targetColor, HashSet<long> visited)
-        {
-            // 播放彩色炸弹特效
-            EventSystem.Instance.Publish(self.Scene(), new PlayColorBombEffectEvent 
-            { 
-                TargetColor = targetColor,
-                CenterX = centerX,
-                CenterY = centerY
-            });
-
-            // 收集所有同色糖果
-            var tilesToExplode = new List<Tile>();
-            int width = self.GetWidth();
-            int height = self.GetHeight();
-            
-            for (int x = 0; x < width; x++)
-            {
-                for (int y = 0; y < height; y++)
-                {
-                    var tile = self.GetTile(x, y);
-                    if (tile == null || !tile.Destructable) continue;
-                    
-                    // 检查是否是同色糖果
-                    var candy = tile.GetComponent<CandyComponent>();
-                    if (candy != null && candy.GetColor() == targetColor)
-                    {
-                        tilesToExplode.Add(tile);
-                    }
-                    // 或者是同色的条纹/包装糖果
-                    else 
-                    {
-                        var striped = tile.GetComponent<StripedCandyComponent>();
-                        if (striped != null && striped.GetColor() == targetColor)
-                        {
-                            tilesToExplode.Add(tile);
-                        }
-                        else
-                        {
-                            var wrapped = tile.GetComponent<WrappedCandyComponent>();
-                            if (wrapped != null && wrapped.GetColor() == targetColor)
-                            {
-                                tilesToExplode.Add(tile);
-                            }
-                            else
-                            {
-                                var skill = tile.GetComponent<SkillCandyComponent>();
-                                if (skill != null && skill.GetColor() == targetColor)
-                                {
-                                    tilesToExplode.Add(tile);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-            
-            // 异步消除所有收集到的糖果
-            // 为了视觉效果，可以稍微做一些随机延迟或者从中心向外扩散
-            foreach (var tile in tilesToExplode)
-            {
-                 // 注意：这里可能会有些瓦片已经被前面的连带反应炸掉了，所以需要判空
-                 if (!tile.IsDisposed)
-                 {
-                     // 同时触发特殊糖果的效果
-                     await self.ExplodeTileAsync(tile, tile.X, tile.Y, visited);
-                 }
-            }
-        }
         /// <summary>
         /// 销毁指定位置的覆盖元素（冰/蜂蜜/糖浆）
         /// </summary>

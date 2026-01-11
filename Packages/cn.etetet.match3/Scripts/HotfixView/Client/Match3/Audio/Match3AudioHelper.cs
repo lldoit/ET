@@ -12,7 +12,7 @@ namespace ET.Client
         /// </summary>
         public static void PlayTileSwapFailed(Scene scene)
         {
-            AudioHelper.PlaySoundQuick(scene, Match3SoundType.SFX_TileSwapFailed);
+            AudioHelper.PlaySoundQuick(scene.Root(), Match3SoundType.SFX_TileSwapFailed);
         }
         
         /// <summary>
@@ -28,7 +28,7 @@ namespace ET.Client
                 _ => Match3SoundType.SFX_MatchSpecial
             };
             
-            AudioHelper.PlaySoundQuick(scene, soundAddress);
+            AudioHelper.PlaySoundQuick(scene.Root(), soundAddress);
         }
         
         /// <summary>
@@ -45,7 +45,7 @@ namespace ET.Client
                 _ => Match3SoundType.SFX_Combo5Plus
             };
             
-            AudioHelper.PlaySoundQuick(scene, soundAddress);
+            AudioHelper.PlaySoundQuick(scene.Root(), soundAddress);
         }
         
         #endregion
@@ -57,7 +57,7 @@ namespace ET.Client
         /// </summary>
         public static void PlaySpecialCandyCreate(Scene scene)
         {
-            AudioHelper.PlaySoundQuick(scene, Match3SoundType.SFX_SpecialCandyCreate);
+            AudioHelper.PlaySoundQuick(scene.Root(), Match3SoundType.SFX_SpecialCandyCreate);
         }
         
         /// <summary>
@@ -65,7 +65,7 @@ namespace ET.Client
         /// </summary>
         public static void PlayStripedCandySound(Scene scene)
         {
-            AudioHelper.PlaySoundQuick(scene, Match3SoundType.SFX_StripedCandy);
+            AudioHelper.PlaySoundQuick(scene.Root(), Match3SoundType.SFX_StripedCandy);
         }
         
         /// <summary>
@@ -73,7 +73,7 @@ namespace ET.Client
         /// </summary>
         public static void PlayWrappedCandySound(Scene scene)
         {
-            AudioHelper.PlaySoundQuick(scene, Match3SoundType.SFX_WrappedCandy);
+            AudioHelper.PlaySoundQuick(scene.Root(), Match3SoundType.SFX_WrappedCandy);
         }
         
         /// <summary>
@@ -81,7 +81,7 @@ namespace ET.Client
         /// </summary>
         public static void PlayColorBombSound(Scene scene)
         {
-            AudioHelper.PlaySoundQuick(scene, Match3SoundType.SFX_ColorBomb);
+            AudioHelper.PlaySoundQuick(scene.Root(), Match3SoundType.SFX_ColorBomb);
         }
         
         #endregion
@@ -93,7 +93,7 @@ namespace ET.Client
         /// </summary>
         public static void PlayBoosterLollipopSound(Scene scene)
         {
-            AudioHelper.PlaySoundQuick(scene, Match3SoundType.SFX_BoosterLollipop);
+            AudioHelper.PlaySoundQuick(scene.Root(), Match3SoundType.SFX_BoosterLollipop);
         }
         
         /// <summary>
@@ -101,7 +101,7 @@ namespace ET.Client
         /// </summary>
         public static void PlayBoosterBombSound(Scene scene)
         {
-            AudioHelper.PlaySoundQuick(scene, Match3SoundType.SFX_BoosterBomb);
+            AudioHelper.PlaySoundQuick(scene.Root(), Match3SoundType.SFX_BoosterBomb);
         }
         
         /// <summary>
@@ -109,7 +109,7 @@ namespace ET.Client
         /// </summary>
         public static void PlayBoosterSwitchSound(Scene scene)
         {
-            AudioHelper.PlaySoundQuick(scene, Match3SoundType.SFX_BoosterSwitch);
+            AudioHelper.PlaySoundQuick(scene.Root(), Match3SoundType.SFX_BoosterSwitch);
         }
         
         /// <summary>
@@ -117,7 +117,7 @@ namespace ET.Client
         /// </summary>
         public static void PlayBoosterColorBombSound(Scene scene)
         {
-            AudioHelper.PlaySoundQuick(scene, Match3SoundType.SFX_BoosterColorBomb);
+            AudioHelper.PlaySoundQuick(scene.Root(), Match3SoundType.SFX_BoosterColorBomb);
         }
         
         #endregion
@@ -129,7 +129,7 @@ namespace ET.Client
         /// </summary>
         public static void PlayChocolateBreakSound(Scene scene)
         {
-            AudioHelper.PlaySoundQuick(scene, Match3SoundType.SFX_ChocolateBreak);
+            AudioHelper.PlaySoundQuick(scene.Root(), Match3SoundType.SFX_ChocolateBreak);
         }
         
         /// <summary>
@@ -137,7 +137,7 @@ namespace ET.Client
         /// </summary>
         public static void PlayMarshmallowBreakSound(Scene scene)
         {
-            AudioHelper.PlaySoundQuick(scene, Match3SoundType.SFX_MarshmallowBreak);
+            AudioHelper.PlaySoundQuick(scene.Root(), Match3SoundType.SFX_MarshmallowBreak);
         }
         
         /// <summary>
@@ -145,7 +145,7 @@ namespace ET.Client
         /// </summary>
         public static void PlayIceBreakSound(Scene scene)
         {
-            AudioHelper.PlaySoundQuick(scene, Match3SoundType.SFX_IceBreak);
+            AudioHelper.PlaySoundQuick(scene.Root(), Match3SoundType.SFX_IceBreak);
         }
         
         #endregion
@@ -157,7 +157,7 @@ namespace ET.Client
         /// </summary>
         public static void PlayCollectableCollectSound(Scene scene)
         {
-            AudioHelper.PlaySoundQuick(scene, Match3SoundType.SFX_CollectableCollect);
+            AudioHelper.PlaySoundQuick(scene.Root(), Match3SoundType.SFX_CollectableCollect);
         }
         
         #endregion
@@ -169,7 +169,7 @@ namespace ET.Client
         /// </summary>
         public static void PlayLevelStartSound(Scene scene)
         {
-            AudioHelper.PlaySoundQuick(scene, Match3SoundType.SFX_LevelStart);
+            AudioHelper.PlaySoundQuick(scene.Root(), Match3SoundType.SFX_LevelStart);
         }
         
         /// <summary>
@@ -177,7 +177,7 @@ namespace ET.Client
         /// </summary>
         public static void PlayLevelCompleteSound(Scene scene)
         {
-            AudioHelper.PlaySoundQuick(scene, Match3SoundType.SFX_LevelComplete);
+            AudioHelper.PlaySoundQuick(scene.Root(), Match3SoundType.SFX_LevelComplete);
         }
         
         /// <summary>
@@ -185,7 +185,7 @@ namespace ET.Client
         /// </summary>
         public static void PlayLevelFailedSound(Scene scene)
         {
-            AudioHelper.PlaySoundQuick(scene, Match3SoundType.SFX_LevelFailed);
+            AudioHelper.PlaySoundQuick(scene.Root(), Match3SoundType.SFX_LevelFailed);
         }
         
         /// <summary>
@@ -193,7 +193,7 @@ namespace ET.Client
         /// </summary>
         public static void PlayStarEarnedSound(Scene scene)
         {
-            AudioHelper.PlaySoundQuick(scene, Match3SoundType.SFX_StarEarned);
+            AudioHelper.PlaySoundQuick(scene.Root(), Match3SoundType.SFX_StarEarned);
         }
         
         /// <summary>
@@ -201,7 +201,7 @@ namespace ET.Client
         /// </summary>
         public static void PlayNoMovesLeftSound(Scene scene)
         {
-            AudioHelper.PlaySoundQuick(scene, Match3SoundType.SFX_NoMovesLeft);
+            AudioHelper.PlaySoundQuick(scene.Root(), Match3SoundType.SFX_NoMovesLeft);
         }
         
         /// <summary>
@@ -209,7 +209,7 @@ namespace ET.Client
         /// </summary>
         public static void PlayNewHighScoreSound(Scene scene)
         {
-            AudioHelper.PlaySoundQuick(scene, Match3SoundType.SFX_NewHighScore);
+            AudioHelper.PlaySoundQuick(scene.Root(), Match3SoundType.SFX_NewHighScore);
         }
         
         #endregion

@@ -10,6 +10,8 @@ namespace ET.Client
     [ComponentOf(typeof(Scene))]
     public class TilePoolComponent : Entity, IAwake, IDestroy
     {
+        public int PreFillCount = 20;
+
         /// <summary>
         /// 瓦片对象池根节点
         /// </summary>

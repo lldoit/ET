@@ -56,7 +56,7 @@ namespace ET
                 // 执行Combo
                 self.CurrentlySwapping = true;
                 await self.SwapTilesWithAnimationAsync(x1, y1, x2, y2);
-                await self.ProcessComboAsync(combo, tile1, tile2);
+                await self.ProcessComboAsync(combo);
                 self.CurrentlySwapping = false;
                 
                 // 消除限制
@@ -195,7 +195,7 @@ namespace ET
         /// <summary>
         /// 处理Combo
         /// </summary>
-        private static async ETTask ProcessComboAsync(this Match3BoardComponent self, Combo combo, Tile tileA, Tile tileB)
+        private static async ETTask ProcessComboAsync(this Match3BoardComponent self, Combo combo)
         {
             if (combo == null) return;
 

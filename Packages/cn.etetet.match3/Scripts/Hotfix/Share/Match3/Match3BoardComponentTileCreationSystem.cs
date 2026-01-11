@@ -166,33 +166,6 @@ namespace ET
         }
 
         /// <summary>
-        /// 创建横向条纹糖果
-        /// </summary>
-        /// <summary>
-        /// 创建横向条纹糖果 (替换为技能糖果)
-        /// </summary>
-        public static Tile CreateHorizontalStripedTile(this Match3BoardComponent self, int x, int y, CandyColor color)
-        {
-            return self.CreateSkillCandyTile(x, y, color);
-        }
-
-        /// <summary>
-        /// 创建纵向条纹糖果 (替换为技能糖果)
-        /// </summary>
-        public static Tile CreateVerticalStripedTile(this Match3BoardComponent self, int x, int y, CandyColor color)
-        {
-            return self.CreateSkillCandyTile(x, y, color);
-        }
-
-        /// <summary>
-        /// 创建包装糖果 (替换为技能糖果)
-        /// </summary>
-        public static Tile CreateWrappedTile(this Match3BoardComponent self, int x, int y, CandyColor color)
-        {
-            return self.CreateSkillCandyTile(x, y, color);
-        }
-
-        /// <summary>
         /// 创建技能糖果
         /// </summary>
         public static Tile CreateSkillCandyTile(this Match3BoardComponent self, int x, int y, CandyColor color)

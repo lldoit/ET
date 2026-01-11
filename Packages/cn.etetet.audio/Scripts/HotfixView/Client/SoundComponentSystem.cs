@@ -12,8 +12,6 @@ namespace ET.Client
         [EntitySystem]
         private static void Awake(this SoundComponent self)
         {
-            Scene scene = self.GetParent<Scene>();
-            
             // 获取Global/Audio节点，如果不存在则创建
             Transform globalTransform = GameObject.Find("/Global")?.transform;
             if (globalTransform == null)
