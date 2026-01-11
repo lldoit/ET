@@ -6,6 +6,7 @@ namespace ET
     /// 三消游戏板组件系统 - 填充策略相关
     /// </summary>
     [FriendOf(typeof(Match3BoardComponent))]
+    [FriendOf(typeof(Tile))]
     public static partial class Match3BoardComponentFillSystem
     {
         /// <summary>
@@ -35,7 +36,7 @@ namespace ET
             }
             else
             {
-                // 没有新匹配，检测可能的交换
+                // 如果没有新匹配，检测可能的交换
                 self.PossibleSwaps = self.DetectPossibleSwaps();
                 
                 // 如果没有可能的交换，需要重新洗牌
@@ -45,6 +46,8 @@ namespace ET
                 }
             }
         }
+
+
 
         /// <summary>
         /// 应用重力填充内部逻辑
@@ -162,16 +165,12 @@ namespace ET
             // 发布填充事件通知View层播放动画
             if (moves.Count > 0 || newTiles.Count > 0)
             {
-                Scene scene = self.Root() as Scene;
-                if (scene != null)
+                EventSystem.Instance.Publish(self.Scene(), new Match3FillEvent
                 {
-                    EventSystem.Instance.Publish(scene, new Match3FillEvent
-                    {
-                        Moves = moves,
-                        NewTiles = newTiles,
-                        Duration = 0.5f // 动画持续时间0.5秒，对应CandyMatch3Kit的设置
-                    });
-                }
+                    Moves = moves,
+                    NewTiles = newTiles,
+                    Duration = 0.5f // 动画持续时间0.5秒，对应CandyMatch3Kit的设置
+                });
             }
         }
 
@@ -311,16 +310,12 @@ namespace ET
             // 发布填充事件通知View层播放动画
             if (moves.Count > 0 || newTiles.Count > 0)
             {
-                Scene scene = self.Root() as Scene;
-                if (scene != null)
+                EventSystem.Instance.Publish(self.Scene(), new Match3FillEvent
                 {
-                    EventSystem.Instance.Publish(scene, new Match3FillEvent
-                    {
-                        Moves = moves,
-                        NewTiles = newTiles,
-                        Duration = 0.5f // 动画持续时间0.5秒
-                    });
-                }
+                    Moves = moves,
+                    NewTiles = newTiles,
+                    Duration = 0.5f // 动画持续时间0.5秒
+                });
             }
         }
 
@@ -402,9 +397,6 @@ namespace ET
             // 等待2秒（参考CandyMatch3Kit）
             await self.Root().GetComponent<TimerComponent>().WaitAsync(2000);
             
-            // 发布洗牌开始事件（可用于显示提示弹窗）
-            Scene scene = self.Root() as Scene;
-            
             // 遍历所有瓦片，替换普通糖果
             for (int j = 0; j < height; j++)
             {
@@ -452,16 +444,16 @@ namespace ET
             }
             
             // 发布洗牌动画事件
-            if (scene != null && shuffleMoves.Count > 0)
+            if (shuffleMoves.Count > 0)
             {
-                EventSystem.Instance.Publish(scene, new Match3ShuffleEvent
+                EventSystem.Instance.Publish(self.Scene(), new Match3ShuffleEvent
                 {
                     Moves = shuffleMoves,
                     Duration = 0.5f
                 });
                 
                 // 播放洗牌音效
-                EventSystem.Instance.Publish(scene, new PlaySoundEvent { SoundType = "Shuffle" });
+                EventSystem.Instance.Publish(self.Scene(), new PlaySoundEvent { SoundType = "Shuffle" });
             }
             
             // 等待动画完成

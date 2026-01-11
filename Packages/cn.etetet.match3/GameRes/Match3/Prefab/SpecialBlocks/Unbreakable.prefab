@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4115515356386936}
   - component: {fileID: 212194445928561852}
   - component: {fileID: 61061115606015484}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Unbreakable
   m_TagString: Tile
   m_Icon: {fileID: 0}
@@ -85,7 +85,7 @@ SpriteRenderer:
   m_Size: {x: 1.3, y: 1.3}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!61 &61061115606015484

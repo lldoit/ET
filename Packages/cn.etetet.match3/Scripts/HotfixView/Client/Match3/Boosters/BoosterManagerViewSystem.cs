@@ -188,9 +188,10 @@ namespace ET.Client
                 return tileView.GameObject.transform.position;
             }
 
-            // 如果没有TileView，使用棋盘坐标计算
-            // 假设每个格子是1单位，棋盘从(0,0)开始
-            return new Vector3(tile.X, tile.Y, 0);
+            // 如果没有TileView，使用棋盘坐标计算（简化版本，实际应从棋盘获取尺寸）
+            // 这里的回退逻辑简单返回，因为正常情况下应该总是有TileView
+            Log.Warning($"[BoosterManagerViewSystem] Tile at ({tile.X}, {tile.Y}) 没有 TileView，无法获取世界坐标");
+            return Vector3.zero;
         }
     }
 }

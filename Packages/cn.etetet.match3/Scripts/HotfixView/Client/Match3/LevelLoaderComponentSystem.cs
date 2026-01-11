@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 using UnityEngine;
 using YooAsset;
 
@@ -17,7 +18,7 @@ namespace ET.Client
         private static void Awake(this LevelLoaderComponent self)
         {
             self.LevelCache = new Dictionary<int, Level>();
-            self.LevelPathPrefix = "Match3/Levels/";
+            self.LevelPathPrefix = "Levels_";
         }
 
         [EntitySystem]
@@ -60,8 +61,8 @@ namespace ET.Client
                     return default;
                 }
 
-                // 解析JSON
-                var levelData = JsonUtility.FromJson<LevelData>(textAsset.text);
+                // 解析JSON（使用 Newtonsoft.Json 以正确解析嵌套列表）
+                var levelData = JsonConvert.DeserializeObject<LevelData>(textAsset.text);
                 if (levelData == null)
                 {
                     Log.Error($"解析关卡JSON失败: {assetPath}");

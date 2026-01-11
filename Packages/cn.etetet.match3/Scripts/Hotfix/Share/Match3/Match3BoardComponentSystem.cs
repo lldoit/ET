@@ -7,15 +7,8 @@ namespace ET
     /// </summary>
     [FriendOf(typeof(Match3BoardComponent))]
     [FriendOf(typeof(Tile))]
-    [EntitySystemOf(typeof(Match3BoardComponent))]
     public static partial class Match3BoardComponentSystem
     {
-        [EntitySystem]
-        private static void Awake(this Match3BoardComponent self)
-        {
-            GameStateSystem.Reset(ref self.GameState);
-        }
-
         /// <summary>
         /// 获取指定位置的瓦片
         /// </summary>
@@ -66,7 +59,6 @@ namespace ET
             GameStateSystem.Reset(ref self.GameState);
             self.CurrentLimit = level.Limit;
         }
-
 
         /// <summary>
         /// 获取关卡宽度
@@ -169,7 +161,8 @@ namespace ET
         {
             return t.GetComponent<CandyComponent>() != null || 
                    t.GetComponent<StripedCandyComponent>() != null || 
-                   t.GetComponent<WrappedCandyComponent>() != null;
+                   t.GetComponent<WrappedCandyComponent>() != null ||
+                   t.GetComponent<SkillCandyComponent>() != null;
         }
 
         /// <summary>
@@ -291,8 +284,25 @@ namespace ET
         }
 
         /// <summary>
-        /// 检测所有匹配（按优先级顺序检测）
+        /// 设置关卡瓦片数据（公开方法）
+        /// 注意：Level.Tiles是List，LevelTile是struct，必须替换List中的元素
         /// </summary>
+        public static void SetLevelTile(this Match3BoardComponent self, int x, int y, LevelTile tile)
+        {
+            if (!self.HasLevel) return;
+            
+            int width = self.Level.Width;
+            int height = self.Level.Height;
+            
+            if (x < 0 || x >= width || y < 0 || y >= height) return;
+            
+            int index = x + (y * width);
+            if (index >= 0 && index < self.Level.Tiles.Count)
+            {
+                self.Level.Tiles[index] = tile;
+            }
+        }
+
         public static List<Match> DetectAllMatches(this Match3BoardComponent self)
         {
             var matches = new List<Match>();
@@ -310,17 +320,43 @@ namespace ET
                 new VerticalMatchDetector()           // 纵向3连
             };
 
+            // 依次运行所有检测器，收集所有匹配
+            // 高优先级的匹配会先被加入列表
             foreach (var detector in detectors)
             {
                 var detectedMatches = detector.DetectMatches(self);
-                if (detectedMatches.Count > 0)
+                foreach (var newMatch in detectedMatches)
                 {
-                    matches.AddRange(detectedMatches);
-                    break; // 只处理优先级最高的匹配
+                    // 检查是否与已有匹配重叠
+                    if (!self.IsOverlapping(newMatch, matches))
+                    {
+                        matches.Add(newMatch);
+                    }
                 }
             }
 
             return matches;
+        }
+
+        /// <summary>
+        /// 检查匹配是否重叠
+        /// </summary>
+        private static bool IsOverlapping(this Match3BoardComponent self, Match newMatch, List<Match> existingMatches)
+        {
+            foreach (var existingMatch in existingMatches)
+            {
+                foreach (var newTile in newMatch.tiles)
+                {
+                    foreach (var existingTile in existingMatch.tiles)
+                    {
+                        if (newTile.x == existingTile.x && newTile.y == existingTile.y)
+                        {
+                            return true;
+                        }
+                    }
+                }
+            }
+            return false;
         }
     }
 }

@@ -29,11 +29,33 @@ namespace ET
         public int Y { get; set; }
     }
 
+
+
     /// <summary>
     /// 播放包装糖果特效事件
     /// </summary>
     public struct PlayWrappedEffectEvent
     {
+        public int X { get; set; }
+        public int Y { get; set; }
+    }
+
+    /// <summary>
+    /// 播放元素爆炸特效事件（冰/蜂蜜/糖浆）
+    /// </summary>
+    public struct PlayElementExplosionEvent
+    {
+        public ElementType ElementType { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
+    }
+
+    /// <summary>
+    /// 播放特殊方块爆炸特效事件
+    /// </summary>
+    public struct PlaySpecialBlockExplosionEvent
+    {
+        public SpecialBlockType BlockType { get; set; }
         public int X { get; set; }
         public int Y { get; set; }
     }

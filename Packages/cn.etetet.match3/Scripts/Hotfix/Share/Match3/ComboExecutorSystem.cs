@@ -92,11 +92,7 @@ namespace ET
             }
 
             // 播放音效事件
-            Scene scene = self.Root() as Scene;
-            if (scene != null)
-            {
-                EventSystem.Instance.Publish(scene, new PlaySoundEvent { SoundType = "ColorBomb" });
-            }
+            EventSystem.Instance.Publish(self.Scene(), new PlaySoundEvent { SoundType = "ColorBomb" });
         }
 
         /// <summary>
@@ -166,11 +162,7 @@ namespace ET
             }
 
             // 播放音效
-            Scene scene = self.Root() as Scene;
-            if (scene != null)
-            {
-                EventSystem.Instance.Publish(scene, new PlaySoundEvent { SoundType = "ColorBomb" });
-            }
+            EventSystem.Instance.Publish(self.Scene(), new PlaySoundEvent { SoundType = "ColorBomb" });
         }
 
         /// <summary>
@@ -237,7 +229,7 @@ namespace ET
                 {
                     self.SetTile(pos.x, pos.y, newTile);
                     // 立即触发条纹效果
-                    await self.ExplodeSpecialCandyAsync(newTile, pos.x, pos.y);
+                    await self.ExplodeSpecialCandyAsync(newTile, pos.x, pos.y, new HashSet<long>());
                     if (!newTile.IsDisposed)
                     {
                         await self.ExplodeTileAsync(newTile, pos.x, pos.y);
@@ -246,11 +238,7 @@ namespace ET
             }
 
             // 播放音效
-            Scene scene = self.Root() as Scene;
-            if (scene != null)
-            {
-                EventSystem.Instance.Publish(scene, new PlaySoundEvent { SoundType = "ColorBomb" });
-            }
+            EventSystem.Instance.Publish(self.Scene(), new PlaySoundEvent { SoundType = "ColorBomb" });
         }
 
         /// <summary>
@@ -306,7 +294,7 @@ namespace ET
                 {
                     self.SetTile(pos.x, pos.y, newTile);
                     // 立即触发包装效果
-                    await self.ExplodeSpecialCandyAsync(newTile, pos.x, pos.y);
+                    await self.ExplodeSpecialCandyAsync(newTile, pos.x, pos.y, new HashSet<long>());
                     if (!newTile.IsDisposed)
                     {
                         await self.ExplodeTileAsync(newTile, pos.x, pos.y);
@@ -315,11 +303,7 @@ namespace ET
             }
 
             // 播放音效
-            Scene scene = self.Root() as Scene;
-            if (scene != null)
-            {
-                EventSystem.Instance.Publish(scene, new PlaySoundEvent { SoundType = "ColorBomb" });
-            }
+            EventSystem.Instance.Publish(self.Scene(), new PlaySoundEvent { SoundType = "ColorBomb" });
         }
 
         /// <summary>
@@ -348,7 +332,6 @@ namespace ET
             var tilesToExplode = new HashSet<Tile>();
             int width = self.GetWidth();
             int height = self.GetHeight();
-            Scene scene = self.Root() as Scene;
 
             // 根据方向组合决定消除范围
             if (stripedA.GetDirection() == StripeDirection.Horizontal && 
@@ -365,14 +348,11 @@ namespace ET
                         if (tile != null && tile.Destructable)
                         {
                             tilesToExplode.Add(tile);
-                            if (scene != null)
+                            EventSystem.Instance.Publish(self.Scene(), new PlayStripedEffectEvent
                             {
-                                EventSystem.Instance.Publish(scene, new PlayStripedEffectEvent
-                                {
-                                    Direction = StripeDirection.Horizontal,
-                                    X = x, Y = row
-                                });
-                            }
+                                Direction = StripeDirection.Horizontal,
+                                X = x, Y = row
+                            });
                         }
                     }
                 }
@@ -391,14 +371,11 @@ namespace ET
                         if (tile != null && tile.Destructable)
                         {
                             tilesToExplode.Add(tile);
-                            if (scene != null)
+                            EventSystem.Instance.Publish(self.Scene(), new PlayStripedEffectEvent
                             {
-                                EventSystem.Instance.Publish(scene, new PlayStripedEffectEvent
-                                {
-                                    Direction = StripeDirection.Vertical,
-                                    X = col, Y = y
-                                });
-                            }
+                                Direction = StripeDirection.Vertical,
+                                X = col, Y = y
+                            });
                         }
                     }
                 }
@@ -412,14 +389,11 @@ namespace ET
                     if (tile != null && tile.Destructable)
                     {
                         tilesToExplode.Add(tile);
-                        if (scene != null)
+                        EventSystem.Instance.Publish(self.Scene(), new PlayStripedEffectEvent
                         {
-                            EventSystem.Instance.Publish(scene, new PlayStripedEffectEvent
-                            {
-                                Direction = StripeDirection.Horizontal,
-                                X = x, Y = centerY
-                            });
-                        }
+                            Direction = StripeDirection.Horizontal,
+                            X = x, Y = centerY
+                        });
                     }
                 }
                 for (int y = 0; y < height; y++)
@@ -428,14 +402,11 @@ namespace ET
                     if (tile != null && tile.Destructable)
                     {
                         tilesToExplode.Add(tile);
-                        if (scene != null)
+                        EventSystem.Instance.Publish(self.Scene(), new PlayStripedEffectEvent
                         {
-                            EventSystem.Instance.Publish(scene, new PlayStripedEffectEvent
-                            {
-                                Direction = StripeDirection.Vertical,
-                                X = centerX, Y = y
-                            });
-                        }
+                            Direction = StripeDirection.Vertical,
+                            X = centerX, Y = y
+                        });
                     }
                 }
             }
@@ -450,10 +421,7 @@ namespace ET
             }
 
             // 播放音效
-            if (scene != null)
-            {
-                EventSystem.Instance.Publish(scene, new PlaySoundEvent { SoundType = "LineVerticalHorizontal" });
-            }
+            EventSystem.Instance.Publish(self.Scene(), new PlaySoundEvent { SoundType = "LineVerticalHorizontal" });
         }
 
         /// <summary>
@@ -490,14 +458,10 @@ namespace ET
             }
 
             // 播放包装特效
-            Scene scene = self.Root() as Scene;
-            if (scene != null)
+            EventSystem.Instance.Publish(self.Scene(), new PlayWrappedEffectEvent
             {
-                EventSystem.Instance.Publish(scene, new PlayWrappedEffectEvent
-                {
-                    X = centerX, Y = centerY
-                });
-            }
+                X = centerX, Y = centerY
+            });
 
             // 消除所有收集的瓦片
             foreach (var tile in tilesToExplode)
@@ -509,10 +473,7 @@ namespace ET
             }
 
             // 播放音效
-            if (scene != null)
-            {
-                EventSystem.Instance.Publish(scene, new PlaySoundEvent { SoundType = "CandyWrap" });
-            }
+            EventSystem.Instance.Publish(self.Scene(), new PlaySoundEvent { SoundType = "CandyWrap" });
         }
 
         /// <summary>
@@ -536,7 +497,6 @@ namespace ET
             var tilesToExplode = new HashSet<Tile>();
             int width = self.GetWidth();
             int height = self.GetHeight();
-            Scene scene = self.Root() as Scene;
 
             // 消除3行
             for (int dy = -1; dy <= 1; dy++)
@@ -549,14 +509,11 @@ namespace ET
                     if (tile != null && tile.Destructable)
                     {
                         tilesToExplode.Add(tile);
-                        if (scene != null)
+                        EventSystem.Instance.Publish(self.Scene(), new PlayStripedEffectEvent
                         {
-                            EventSystem.Instance.Publish(scene, new PlayStripedEffectEvent
-                            {
-                                Direction = StripeDirection.Horizontal,
-                                X = x, Y = row
-                            });
-                        }
+                            Direction = StripeDirection.Horizontal,
+                            X = x, Y = row
+                        });
                     }
                 }
             }
@@ -572,14 +529,11 @@ namespace ET
                     if (tile != null && tile.Destructable)
                     {
                         tilesToExplode.Add(tile);
-                        if (scene != null)
+                        EventSystem.Instance.Publish(self.Scene(), new PlayStripedEffectEvent
                         {
-                            EventSystem.Instance.Publish(scene, new PlayStripedEffectEvent
-                            {
-                                Direction = StripeDirection.Vertical,
-                                X = col, Y = y
-                            });
-                        }
+                            Direction = StripeDirection.Vertical,
+                            X = col, Y = y
+                        });
                     }
                 }
             }
@@ -594,10 +548,7 @@ namespace ET
             }
 
             // 播放音效
-            if (scene != null)
-            {
-                EventSystem.Instance.Publish(scene, new PlaySoundEvent { SoundType = "LineVerticalHorizontal" });
-            }
+            EventSystem.Instance.Publish(self.Scene(), new PlaySoundEvent { SoundType = "LineVerticalHorizontal" });
         }
     }
 }

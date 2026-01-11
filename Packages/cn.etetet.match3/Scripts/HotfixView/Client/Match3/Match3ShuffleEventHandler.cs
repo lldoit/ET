@@ -7,7 +7,7 @@ namespace ET.Client
     /// Match3洗牌事件处理器
     /// 使用PrimeTween播放瓦片洗牌动画
     /// </summary>
-    [Event(SceneType.Current)]
+    [Event(SceneType.Battle)]
     public class Match3ShuffleEventHandler : AEvent<Scene, Match3ShuffleEvent>
     {
         protected override async ETTask Run(Scene scene, Match3ShuffleEvent args)

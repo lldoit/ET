@@ -4,7 +4,7 @@ namespace ET.Client
     /// 显示提示文本事件处理器
     /// 监听ShowHintTextEvent用于在UI上显示提示信息
     /// </summary>
-    [Event(SceneType.Current)]
+    [Event(SceneType.Battle)]
     public class ShowHintTextEventHandler : AEvent<Scene, ShowHintTextEvent>
     {
         protected override async ETTask Run(Scene scene, ShowHintTextEvent args)

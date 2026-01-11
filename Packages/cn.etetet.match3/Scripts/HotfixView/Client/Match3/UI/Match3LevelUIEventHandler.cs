@@ -3,7 +3,7 @@ namespace ET.Client
     /// <summary>
     /// 关卡UI初始化事件处理器
     /// </summary>
-    [Event(SceneType.Current)]
+    [Event(SceneType.Battle)]
     public class LevelUIInitEventHandler : AEvent<Scene, LevelUIInitEvent>
     {
         protected override async ETTask Run(Scene scene, LevelUIInitEvent args)
@@ -28,7 +28,7 @@ namespace ET.Client
     /// <summary>
     /// 目标进度变化事件处理器
     /// </summary>
-    [Event(SceneType.Current)]
+    [Event(SceneType.Battle)]
     public class GoalProgressChangedEventHandler : AEvent<Scene, GoalProgressChangedEvent>
     {
         protected override async ETTask Run(Scene scene, GoalProgressChangedEvent args)

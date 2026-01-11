@@ -16,13 +16,11 @@ namespace ET
         {
             // 清除匹配提示并停止计时器
             self.ClearSuggestedMatch();
-            self.StopSuggestedMatchTimer();
+            self.LastMoveTime = TimeInfo.Instance.ClientNow();
             
             // 检查输入是否锁定
             if (self.InputLocked || self.CurrentlySwapping || self.CurrentlyAwarding)
             {
-                // 重启匹配提示计时器
-                _ = self.StartSuggestedMatchTimerAsync();
                 return false;
             }
 
@@ -47,6 +45,10 @@ namespace ET
                 return false;
             }
 
+            // 记录最后交换的瓦片位置，用于确定特殊糖果生成位置
+            self.LastSwappedTileA = new TileDef(x1, y1);
+            self.LastSwappedTileB = new TileDef(x2, y2);
+
             // 检测是否是Combo
             var combo = ComboDetectorSystem.GetCombo(tile1, tile2);
             if (combo != null)
@@ -65,9 +67,6 @@ namespace ET
                 
                 // 应用填充
                 await self.ApplyFillStrategyAsync();
-                
-                // 重启匹配提示计时器
-                _ = self.StartSuggestedMatchTimerAsync();
                 
                 return true;
             }
@@ -97,19 +96,15 @@ namespace ET
                 
                 self.CurrentlySwapping = false;
                 
-                // 重启匹配提示计时器
-                _ = self.StartSuggestedMatchTimerAsync();
-                
                 return true;
             }
             else
             {
+                EventSystem.Instance.Publish(self.Scene(), new PlaySoundEvent { SoundType = "TileSwapFailed" });
+                
                 // 没有匹配，交换回来
                 await self.SwapTilesWithAnimationAsync(x2, y2, x1, y1);
                 self.CurrentlySwapping = false;
-                
-                // 重启匹配提示计时器
-                _ = self.StartSuggestedMatchTimerAsync();
                 
                 return false;
             }
@@ -127,20 +122,13 @@ namespace ET
             self.SetTile(x1, y1, tile2);
             self.SetTile(x2, y2, tile1);
 
-            // 播放交换音效
-            Scene scene = self.Root() as Scene;
-            if (scene != null)
+            // 发布交换动画事件
+            EventSystem.Instance.Publish(self.Scene(), new Match3SwapEvent
             {
-                EventSystem.Instance.Publish(scene, new PlaySoundEvent { SoundType = "TileSwap" });
-                
-                // 发布交换动画事件
-                EventSystem.Instance.Publish(scene, new Match3SwapEvent
-                {
-                    Tile1Ref = tile1,
-                    Tile2Ref = tile2,
-                    Duration = 0.25f // 对应CandyMatch3Kit的0.25秒动画
-                });
-            }
+                Tile1Ref = tile1,
+                Tile2Ref = tile2,
+                Duration = 0.25f // 对应CandyMatch3Kit的0.25秒动画
+            });
             
             // 等待动画完成
             await self.Root().GetComponent<TimerComponent>().WaitAsync(250);

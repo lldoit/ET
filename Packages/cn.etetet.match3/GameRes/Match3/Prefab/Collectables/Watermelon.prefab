@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 212194445928561852}
   - component: {fileID: 61118236788747546}
   - component: {fileID: 95319290492052878}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Watermelon
   m_TagString: Tile
   m_Icon: {fileID: 0}
@@ -86,7 +86,7 @@ SpriteRenderer:
   m_Size: {x: 1.3, y: 1.3}
   m_AdaptiveModeThreshold: 0.5
   m_SpriteTileMode: 0
-  m_WasSpriteAssigned: 0
+  m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
 --- !u!61 &61118236788747546

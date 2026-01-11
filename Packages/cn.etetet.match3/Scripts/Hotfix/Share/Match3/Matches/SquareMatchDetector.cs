@@ -25,10 +25,9 @@ namespace ET
                     var tile = board.GetTile(i, j);
                     if (tile != null)
                     {
-                        var candy = tile.GetComponent<CandyComponent>();
-                        if (candy != null)
+                        var color = tile.GetColor();
+                        if (color.HasValue)
                         {
-                            var color = candy.GetColor();
                             
                             // 检查2x2方块的四个位置是否都是相同颜色的糖果
                             var tileRight = board.GetTile(i + 1, j);
@@ -37,13 +36,13 @@ namespace ET
                             
                             if (tileRight != null && tileBottom != null && tileBottomRight != null)
                             {
-                                var candyRight = tileRight.GetComponent<CandyComponent>();
-                                var candyBottom = tileBottom.GetComponent<CandyComponent>();
-                                var candyBottomRight = tileBottomRight.GetComponent<CandyComponent>();
+                                var candyRight = tileRight.GetColor();
+                                var candyBottom = tileBottom.GetColor();
+                                var candyBottomRight = tileBottomRight.GetColor();
                                 
-                                if (candyRight != null && candyRight.GetColor() == color &&
-                                    candyBottom != null && candyBottom.GetColor() == color &&
-                                    candyBottomRight != null && candyBottomRight.GetColor() == color)
+                                if (candyRight.HasValue && candyRight.Value == color.Value &&
+                                    candyBottom.HasValue && candyBottom.Value == color.Value &&
+                                    candyBottomRight.HasValue && candyBottomRight.Value == color.Value)
                                 {
                                     var match = new Match();
                                     match.type = MatchType.Square;

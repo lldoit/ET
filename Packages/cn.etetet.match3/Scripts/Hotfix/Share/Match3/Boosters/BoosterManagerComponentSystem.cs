@@ -203,11 +203,7 @@ namespace ET
             board.UpdateGameStateForTile(tile);
 
             // 播放道具使用音效
-            Scene scene = self.Root() as Scene;
-            if (scene != null)
-            {
-                EventSystem.Instance.Publish(scene, new PlaySoundEvent { SoundType = "BoosterLollipop" });
-            }
+            EventSystem.Instance.Publish(self.Scene(), new PlaySoundEvent { SoundType = "BoosterLollipop" });
             
             // 销毁瓦片
             board.SetTile(x, y, null);
@@ -255,14 +251,10 @@ namespace ET
             }
 
             // 播放炸弹道具音效
-            Scene scene = self.Root() as Scene;
-            if (scene != null)
-            {
-                EventSystem.Instance.Publish(scene, new PlaySoundEvent { SoundType = "BoosterBomb" });
-            }
+            EventSystem.Instance.Publish(self.Scene(), new PlaySoundEvent { SoundType = "BoosterBomb" });
 
             // 发布炸弹道具动画事件
-            EventSystem.Instance.Publish(scene, new BoosterAnimationEvent
+            EventSystem.Instance.Publish(self.Scene(), new BoosterAnimationEvent
             {
                 BoosterType = BoosterType.Bomb,
                 TargetX = x,
@@ -316,14 +308,10 @@ namespace ET
             board.UpdateGameStateForTile(tile);
 
             // 播放道具使用音效
-            Scene scene = self.Root() as Scene;
-            if (scene != null)
-            {
-                EventSystem.Instance.Publish(scene, new PlaySoundEvent { SoundType = "BoosterColorBomb" });
-            }
+            EventSystem.Instance.Publish(self.Scene(), new PlaySoundEvent { SoundType = "BoosterColorBomb" });
 
             // 发布道具使用动画事件
-            EventSystem.Instance.Publish(scene, new BoosterAnimationEvent
+            EventSystem.Instance.Publish(self.Scene(), new BoosterAnimationEvent
             {
                 BoosterType = BoosterType.ColorBomb,
                 TargetX = x,
@@ -342,10 +330,7 @@ namespace ET
             board.SetTile(x, y, colorBombTile);
 
             // 播放彩色炸弹生成音效
-            if (scene != null)
-            {
-                EventSystem.Instance.Publish(scene, new PlaySoundEvent { SoundType = "SpecialCandyCreate" });
-            }
+            EventSystem.Instance.Publish(self.Scene(), new PlaySoundEvent { SoundType = "SpecialCandyCreate" });
 
             // 注意：彩色炸弹的生成特效可以在HotfixView层的TileView中自动播放
             // 或者通过监听TileComponent的创建来触发
@@ -370,19 +355,15 @@ namespace ET
             board.SetTile(x2, y2, tile1);
 
             // 播放交换道具音效
-            Scene scene = self.Root() as Scene;
-            if (scene != null)
-            {
-                EventSystem.Instance.Publish(scene, new PlaySoundEvent { SoundType = "BoosterSwitch" });
+            EventSystem.Instance.Publish(self.Scene(), new PlaySoundEvent { SoundType = "BoosterSwitch" });
                 
-                // 发布交换动画事件
-                EventSystem.Instance.Publish(scene, new Match3SwapEvent
-                {
-                    Tile1Ref = tile1,
-                    Tile2Ref = tile2,
-                    Duration = 0.25f
-                });
-            }
+            // 发布交换动画事件
+            EventSystem.Instance.Publish(self.Scene(), new Match3SwapEvent
+            {
+                Tile1Ref = tile1,
+                Tile2Ref = tile2,
+                Duration = 0.25f
+            });
 
             await board.Root().GetComponent<TimerComponent>().WaitAsync(250);
 

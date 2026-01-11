@@ -7,7 +7,7 @@ namespace ET.Client
     /// 道具动画事件处理器
     /// 根据道具类型播放对应的动画效果
     /// </summary>
-    [Event(SceneType.Current)]
+    [Event(SceneType.Battle)]
     public class BoosterAnimationEventHandler : AEvent<Scene, BoosterAnimationEvent>
     {
         protected override async ETTask Run(Scene scene, BoosterAnimationEvent args)

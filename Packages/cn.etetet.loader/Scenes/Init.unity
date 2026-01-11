@@ -477,6 +477,11 @@ PrefabInstance:
       propertyPath: m_ReferenceResolution.y
       value: 1920
       objectReference: {fileID: 0}
+    - target: {fileID: 4971227215529458049, guid: 4200f826ed726d4478d4d19000af33c4,
+        type: 3}
+      propertyPath: m_SortingOrder
+      value: -10
+      objectReference: {fileID: 0}
     - target: {fileID: 5386563787761468503, guid: 4200f826ed726d4478d4d19000af33c4,
         type: 3}
       propertyPath: m_Name
@@ -894,7 +899,7 @@ Camera:
   near clip plane: 0.3
   far clip plane: 1000
   field of view: 60
-  orthographic: 0
+  orthographic: 1
   orthographic size: 5
   m_Depth: 0
   m_CullingMask:

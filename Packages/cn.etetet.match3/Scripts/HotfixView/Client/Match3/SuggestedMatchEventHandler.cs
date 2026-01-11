@@ -5,7 +5,7 @@ namespace ET.Client
     /// <summary>
     /// 匹配提示事件处理器 - 播放/清除匹配提示动画
     /// </summary>
-    [Event(SceneType.Current)]
+    [Event(SceneType.Battle)]
     [FriendOf(typeof(Match3BoardComponent))]
     public class SuggestedMatchEventHandler : AEvent<Scene, SuggestedMatchEvent>
     {

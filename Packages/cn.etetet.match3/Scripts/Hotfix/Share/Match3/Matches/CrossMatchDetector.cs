@@ -22,11 +22,9 @@ namespace ET
                     var tile = board.GetTile(i, j);
                     if (tile != null)
                     {
-                        var candy = tile.GetComponent<CandyComponent>();
-                        if (candy != null)
+                        var color = tile.GetColor();
+                        if (color.HasValue)
                         {
-                            var color = candy.GetColor();
-
                             // 模式1：下方2个
                             //   X
                             // X X X
@@ -63,7 +61,7 @@ namespace ET
                                         match.AddTile(new TileDef(i - 1, j)); // 左侧
                                         match.AddTile(new TileDef(i + 1, j)); // 右侧
                                         
-                                        ExtendMatch(board, match, i, j, color, width, height);
+                                        ExtendMatch(board, match, i, j, color.Value, width, height);
                                         matches.Add(match);
                                     }
                                 }
@@ -105,7 +103,7 @@ namespace ET
                                         match.AddTile(new TileDef(i - 1, j)); // 左侧
                                         match.AddTile(new TileDef(i + 1, j)); // 右侧
                                         
-                                        ExtendMatch(board, match, i, j, color, width, height);
+                                        ExtendMatch(board, match, i, j, color.Value, width, height);
                                         matches.Add(match);
                                     }
                                 }
@@ -146,7 +144,7 @@ namespace ET
                                         match.AddTile(new TileDef(i - 1, j)); // 左侧第二个
                                         match.AddTile(new TileDef(i + 1, j)); // 右侧
                                         
-                                        ExtendMatch(board, match, i, j, color, width, height);
+                                        ExtendMatch(board, match, i, j, color.Value, width, height);
                                         matches.Add(match);
                                     }
                                 }
@@ -187,7 +185,7 @@ namespace ET
                                         match.AddTile(new TileDef(i + 1, j)); // 右侧第一个
                                         match.AddTile(new TileDef(i + 2, j)); // 右侧第二个
                                         
-                                        ExtendMatch(board, match, i, j, color, width, height);
+                                        ExtendMatch(board, match, i, j, color.Value, width, height);
                                         matches.Add(match);
                                     }
                                 }
@@ -203,7 +201,7 @@ namespace ET
         /// <summary>
         /// 延伸匹配到四个方向
         /// </summary>
-        private void ExtendMatch(Match3BoardComponent board, Match match, int centerX, int centerY, CandyColor color, int width, int height)
+        private void ExtendMatch(Match3BoardComponent board, Match match, int centerX, int centerY, CandyColor targetColor, int width, int height)
         {
             // 向上延伸
             var k = centerY - 2;
@@ -214,8 +212,8 @@ namespace ET
                 {
                     break;
                 }
-                var candy = tile.GetComponent<CandyComponent>();
-                if (candy == null || candy.GetColor() != color)
+                var colorFound = tile.GetColor();
+                if (!colorFound.HasValue || colorFound.Value != targetColor)
                 {
                     break;
                 }
@@ -232,8 +230,8 @@ namespace ET
                 {
                     break;
                 }
-                var candy = tile.GetComponent<CandyComponent>();
-                if (candy == null || candy.GetColor() != color)
+                var colorFound = tile.GetColor();
+                if (!colorFound.HasValue || colorFound.Value != targetColor)
                 {
                     break;
                 }
@@ -250,8 +248,8 @@ namespace ET
                 {
                     break;
                 }
-                var candy = tile.GetComponent<CandyComponent>();
-                if (candy == null || candy.GetColor() != color)
+                var colorFound = tile.GetColor();
+                if (!colorFound.HasValue || colorFound.Value != targetColor)
                 {
                     break;
                 }
@@ -268,8 +266,8 @@ namespace ET
                 {
                     break;
                 }
-                var candy = tile.GetComponent<CandyComponent>();
-                if (candy == null || candy.GetColor() != color)
+                var colorFound = tile.GetColor();
+                if (!colorFound.HasValue || colorFound.Value != targetColor)
                 {
                     break;
                 }

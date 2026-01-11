@@ -8,66 +8,11 @@ namespace ET
     [FriendOf(typeof(Match3BoardComponent))]
     [FriendOf(typeof(Tile))]
     [FriendOf(typeof(CandyComponent))]
+    [FriendOf(typeof(SkillCandyComponent))]
+    [FriendOf(typeof(StripedCandyComponent))]
+    [FriendOf(typeof(WrappedCandyComponent))]
     public static partial class Match3BoardComponentSuggestedMatchSystem
     {
-        /// <summary>
-        /// 启动匹配提示计时器
-        /// </summary>
-        public static async ETTask StartSuggestedMatchTimerAsync(this Match3BoardComponent self)
-        {
-            // 取消之前的计时器
-            self.StopSuggestedMatchTimer();
-            
-            // 创建新的取消token
-            self.SuggestedMatchCancelToken = new ETCancellationToken();
-            EntityRef<Match3BoardComponent> selfRef = self;
-            ETCancellationToken cancelToken = self.SuggestedMatchCancelToken;
-            
-            // 计算结束时间
-            long waitTimeMs = (long)(Match3Constants.TimeBetweenRandomMatchSuggestions * 1000);
-            long elapsedTime = 0;
-            const long checkInterval = 200; // 每200ms检查一次取消状态
-            
-            while (elapsedTime < waitTimeMs)
-            {
-                // 检查是否已取消
-                if (cancelToken.IsCancel())
-                {
-                    return;
-                }
-                
-                // 等待一小段时间
-                await self.Root().GetComponent<TimerComponent>().WaitAsync(checkInterval);
-                
-                // 重新获取Entity
-                self = selfRef;
-                if (self == null || self.IsDisposed) return;
-                
-                elapsedTime += checkInterval;
-            }
-            
-            // 检查最终取消状态
-            if (cancelToken.IsCancel())
-            {
-                return;
-            }
-            
-            // 显示匹配提示
-            await self.ShowSuggestedMatchAsync();
-        }
-        
-        /// <summary>
-        /// 停止匹配提示计时器
-        /// </summary>
-        public static void StopSuggestedMatchTimer(this Match3BoardComponent self)
-        {
-            if (self.SuggestedMatchCancelToken != null)
-            {
-                self.SuggestedMatchCancelToken.Cancel();
-                self.SuggestedMatchCancelToken = null;
-            }
-        }
-        
         /// <summary>
         /// 显示匹配提示
         /// 参照CandyMatch3Kit.HighlightRandomMatch添加彩色炸弹提示功能
@@ -93,15 +38,11 @@ namespace ET
                 self.SuggestedMatchTiles.AddRange(tilesToHighlight);
                 
                 // 发布事件通知View层
-                Scene scene = self.Root() as Scene;
-                if (scene != null)
+                EventSystem.Instance.Publish(self.Scene(), new SuggestedMatchEvent
                 {
-                    EventSystem.Instance.Publish(scene, new SuggestedMatchEvent
-                    {
-                        IsShow = true,
-                        TilesToHighlight = tilesToHighlight
-                    });
-                }
+                    IsShow = true,
+                    TilesToHighlight = tilesToHighlight
+                });
             }
             else
             {
@@ -124,23 +65,19 @@ namespace ET
                     self.SuggestedMatchTiles.AddRange(tilesToHighlight);
                     
                     // 发布事件通知View层
-                    Scene scene = self.Root() as Scene;
-                    if (scene != null)
+                    EventSystem.Instance.Publish(self.Scene(), new SuggestedMatchEvent
                     {
-                        EventSystem.Instance.Publish(scene, new SuggestedMatchEvent
-                        {
-                            IsShow = true,
-                            TilesToHighlight = tilesToHighlight
-                        });
-                    }
+                        IsShow = true,
+                        TilesToHighlight = tilesToHighlight
+                    });
                 }
                 else
                 {
                     // 既没有普通交换也没有可用的彩色炸弹，执行洗牌
                     await self.ShuffleBoardAsync();
                     
-                    // 洗牌后重启匹配提示计时器
-                    _ = self.StartSuggestedMatchTimerAsync();
+                    // 洗牌后重置计时器
+                    self.LastMoveTime = TimeInfo.Instance.ClientNow();
                 }
             }
         }
@@ -192,9 +129,9 @@ namespace ET
                         var neighborTile = self.GetTile(nx, ny);
                         if (neighborTile == null) continue;
                         
-                        // 检查邻居是否是普通糖果
-                        var candy = neighborTile.GetComponent<CandyComponent>();
-                        if (candy == null) continue;
+                        // 检查邻居是否是普通糖果或特殊糖果
+                        var neighborColor = neighborTile.GetColor();
+                        if (!neighborColor.HasValue) continue;
                         
                         // 检查邻居位置是否被冰覆盖
                         var neighborLevelTile = self.GetLevelTile(nx, ny);
@@ -220,15 +157,11 @@ namespace ET
             if (self.SuggestedMatchTiles.Count > 0)
             {
                 // 发布清除事件
-                Scene scene = self.Root() as Scene;
-                if (scene != null)
+                EventSystem.Instance.Publish(self.Scene(), new SuggestedMatchEvent
                 {
-                    EventSystem.Instance.Publish(scene, new SuggestedMatchEvent
-                    {
-                        IsShow = false,
-                        TilesToHighlight = null
-                    });
-                }
+                    IsShow = false,
+                    TilesToHighlight = null
+                });
                 
                 self.SuggestedMatchTiles.Clear();
             }
@@ -260,6 +193,22 @@ namespace ET
                 tilesToHighlight.AddRange(self.GetMatchingTilesAt(tileB, swap.TileAX, swap.TileAY));
             }
             
+            // 确保交换的两个瓦片都在提示列表中
+            var posA = new TileDef(swap.TileAX, swap.TileAY);
+            var posB = new TileDef(swap.TileBX, swap.TileBY);
+            
+            bool containsA = false;
+            bool containsB = false;
+            
+            foreach (var tileDef in tilesToHighlight)
+            {
+                if (tileDef.x == posA.x && tileDef.y == posA.y) containsA = true;
+                if (tileDef.x == posB.x && tileDef.y == posB.y) containsB = true;
+            }
+            
+            if (!containsA) tilesToHighlight.Add(posA);
+            if (!containsB) tilesToHighlight.Add(posB);
+            
             // 交换回来
             self.SetTile(swap.TileAX, swap.TileAY, tileA);
             self.SetTile(swap.TileBX, swap.TileBY, tileB);
@@ -275,8 +224,8 @@ namespace ET
             var tile = self.GetTile(x, y);
             if (tile == null) return false;
             
-            var candy = tile.GetComponent<CandyComponent>();
-            if (candy == null) return false;
+            var color = tile.GetColor();
+            if (!color.HasValue) return false;
             
             // 检查水平匹配
             int horizontalCount = 1;
@@ -284,8 +233,8 @@ namespace ET
             for (int i = x - 1; i >= 0; i--)
             {
                 var t = self.GetTile(i, y);
-                var c = t?.GetComponent<CandyComponent>();
-                if (c != null && c.Color == candy.Color)
+                var c = t?.GetColor();
+                if (c.HasValue && c.Value == color.Value)
                     horizontalCount++;
                 else
                     break;
@@ -294,8 +243,8 @@ namespace ET
             for (int i = x + 1; i < self.GetWidth(); i++)
             {
                 var t = self.GetTile(i, y);
-                var c = t?.GetComponent<CandyComponent>();
-                if (c != null && c.Color == candy.Color)
+                var c = t?.GetColor();
+                if (c.HasValue && c.Value == color.Value)
                     horizontalCount++;
                 else
                     break;
@@ -308,8 +257,8 @@ namespace ET
             for (int j = y - 1; j >= 0; j--)
             {
                 var t = self.GetTile(x, j);
-                var c = t?.GetComponent<CandyComponent>();
-                if (c != null && c.Color == candy.Color)
+                var c = t?.GetColor();
+                if (c.HasValue && c.Value == color.Value)
                     verticalCount++;
                 else
                     break;
@@ -318,8 +267,8 @@ namespace ET
             for (int j = y + 1; j < self.GetHeight(); j++)
             {
                 var t = self.GetTile(x, j);
-                var c = t?.GetComponent<CandyComponent>();
-                if (c != null && c.Color == candy.Color)
+                var c = t?.GetColor();
+                if (c.HasValue && c.Value == color.Value)
                     verticalCount++;
                 else
                     break;
@@ -337,8 +286,8 @@ namespace ET
             var tiles = new List<TileDef>();
             if (centerTile == null) return tiles;
             
-            var candy = centerTile.GetComponent<CandyComponent>();
-            if (candy == null) return tiles;
+            var color = centerTile.GetColor();
+            if (!color.HasValue) return tiles;
             
             // 添加中心瓦片
             tiles.Add(new TileDef(x, y));
@@ -347,8 +296,8 @@ namespace ET
             for (int i = x - 1; i >= 0; i--)
             {
                 var t = self.GetTile(i, y);
-                var c = t?.GetComponent<CandyComponent>();
-                if (c != null && c.Color == candy.Color)
+                var c = t?.GetColor();
+                if (c.HasValue && c.Value == color.Value)
                     tiles.Add(new TileDef(i, y));
                 else
                     break;
@@ -356,8 +305,8 @@ namespace ET
             for (int i = x + 1; i < self.GetWidth(); i++)
             {
                 var t = self.GetTile(i, y);
-                var c = t?.GetComponent<CandyComponent>();
-                if (c != null && c.Color == candy.Color)
+                var c = t?.GetColor();
+                if (c.HasValue && c.Value == color.Value)
                     tiles.Add(new TileDef(i, y));
                 else
                     break;
@@ -367,8 +316,8 @@ namespace ET
             for (int j = y - 1; j >= 0; j--)
             {
                 var t = self.GetTile(x, j);
-                var c = t?.GetComponent<CandyComponent>();
-                if (c != null && c.Color == candy.Color)
+                var c = t?.GetColor();
+                if (c.HasValue && c.Value == color.Value)
                     tiles.Add(new TileDef(x, j));
                 else
                     break;
@@ -376,8 +325,8 @@ namespace ET
             for (int j = y + 1; j < self.GetHeight(); j++)
             {
                 var t = self.GetTile(x, j);
-                var c = t?.GetComponent<CandyComponent>();
-                if (c != null && c.Color == candy.Color)
+                var c = t?.GetColor();
+                if (c.HasValue && c.Value == color.Value)
                     tiles.Add(new TileDef(x, j));
                 else
                     break;

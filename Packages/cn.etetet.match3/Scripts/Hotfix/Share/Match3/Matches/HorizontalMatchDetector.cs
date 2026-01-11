@@ -24,20 +24,19 @@ namespace ET
                     var tile = board.GetTile(i, j);
                     if (tile != null)
                     {
-                        var candy = tile.GetComponent<CandyComponent>();
-                        if (candy != null)
+                        var color = tile.GetColor();
+                        if (color.HasValue)
                         {
-                            var color = candy.GetColor();
                             var tileRight1 = board.GetTile(i + 1, j);
                             var tileRight2 = board.GetTile(i + 2, j);
                             
                             if (tileRight1 != null && tileRight2 != null)
                             {
-                                var candy1 = tileRight1.GetComponent<CandyComponent>();
-                                var candy2 = tileRight2.GetComponent<CandyComponent>();
+                                var color1 = tileRight1.GetColor();
+                                var color2 = tileRight2.GetColor();
                                 
-                                if (candy1 != null && candy1.GetColor() == color &&
-                                    candy2 != null && candy2.GetColor() == color)
+                                if (color1.HasValue && color1.Value == color.Value &&
+                                    color2.HasValue && color2.Value == color.Value)
                                 {
                                     var match = new Match();
                                     int matchLength = 0;
@@ -52,8 +51,8 @@ namespace ET
                                         {
                                             break;
                                         }
-                                        var nextCandy = nextTile.GetComponent<CandyComponent>();
-                                        if (nextCandy == null || nextCandy.GetColor() != color)
+                                        var nextColor = nextTile.GetColor();
+                                        if (!nextColor.HasValue || nextColor.Value != color.Value)
                                         {
                                             break;
                                         }

@@ -66,15 +66,47 @@ namespace ET.Client
 
         /// <summary>
         /// 指针按下处理
+        /// 参考 CandyMatch3Kit.GameBoard.HandleInput
         /// </summary>
         private static void OnPointerDown(this Match3InputComponent self, Match3BoardComponent board)
         {
-            // 获取点击的世界坐标
-            Vector3 worldPos = self.ScreenToWorldPosition(Input.mousePosition);
-            
-            // 转换为棋盘坐标
-            if (!self.WorldToBoardPosition(worldPos, out int x, out int y))
+            // 获取相机
+            Camera camera = self.GameCamera;
+            if (camera == null)
             {
+                camera = Camera.main;
+            }
+            if (camera == null)
+            {
+                Log.Warning("[Match3Input] 找不到相机");
+                return;
+            }
+            
+            // 使用 Physics2D.Raycast 检测瓦片（与 CandyMatch3Kit 一致）
+            Vector3 screenPos = Input.mousePosition;
+            Vector3 worldPos3D = camera.ScreenToWorldPoint(screenPos);
+            Vector2 worldPos = new Vector2(worldPos3D.x, worldPos3D.y);
+            
+            Log.Debug($"[Match3Input] 射线检测: screenPos={screenPos}, worldPos={worldPos}, camera={camera.name}, orthographic={camera.orthographic}");
+            
+            // 打印第一个瓦片的世界位置用于调试
+            var firstTile = board.GetTile(0, 0);
+            if (firstTile != null)
+            {
+                var firstTileView = firstTile.GetComponent<TileView>();
+                if (firstTileView != null && firstTileView.GameObject != null)
+                {
+                    Vector3 tilePos = firstTileView.GameObject.transform.position;
+                    Log.Debug($"[Match3Input] 第一个瓦片(0,0)世界位置: {tilePos}");
+                }
+            }
+            
+            RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
+            
+            if (hit.collider == null)
+            {
+                Log.Debug($"[Match3Input] 射线未命中任何Collider2D");
+                // 点击空白区域
                 // Switch模式下点击空白区域取消道具
                 var boosterMgr = board.GetComponent<BoosterManagerComponent>();
                 if (boosterMgr != null && boosterMgr.InSwitchMode)
@@ -83,13 +115,25 @@ namespace ET.Client
                 }
                 return;
             }
-
-            // 检查是否有效瓦片
-            var tile = board.GetTile(x, y);
+            
+            // 通过 Collider 的 GameObject 找到对应的 Tile
+            GameObject hitObject = hit.collider.gameObject;
+            
+            // 查找这个 GameObject 对应的 Tile
+            Tile tile = self.FindTileByGameObject(board, hitObject);
             if (tile == null)
             {
+                Log.Debug($"[Match3Input] 点击的对象不是瓦片: {hitObject.name}");
                 return;
             }
+            
+            int x = tile.GetX();
+            int y = tile.GetY();
+            
+            Log.Debug($"[Match3Input] 检测到瓦片点击: ({x}, {y})");
+            
+            // 记录拖拽起点
+            self.DragStartWorldPos = worldPos;
 
             // 检查是否有激活的道具
             var boosterManager = board.GetComponent<BoosterManagerComponent>();
@@ -101,7 +145,6 @@ namespace ET.Client
                     self.IsDragging = true;
                     self.SwitchSelectedX = x;
                     self.SwitchSelectedY = y;
-                    self.DragStartWorldPos = worldPos;
                     
                     // 播放瓦片选中动画
                     self.PlayTilePressedAnimation(tile, true);
@@ -117,11 +160,41 @@ namespace ET.Client
             self.IsDragging = true;
             self.DragStartX = x;
             self.DragStartY = y;
-            self.DragStartWorldPos = worldPos;
+            
+            // 播放按压动画
+            self.PlayTilePressedAnimation(tile, true);
+        }
+        
+        /// <summary>
+        /// 通过 GameObject 查找对应的 Tile
+        /// </summary>
+        private static Tile FindTileByGameObject(this Match3InputComponent self, Match3BoardComponent board, GameObject gameObject)
+        {
+            // 遍历所有瓦片，查找匹配的 GameObject
+            for (int y = 0; y < board.Level.Height; y++)
+            {
+                for (int x = 0; x < board.Level.Width; x++)
+                {
+                    var tile = board.GetTile(x, y);
+                    if (tile == null) continue;
+                    
+                    var tileView = tile.GetComponent<TileView>();
+                    if (tileView != null && tileView.GameObject != null)
+                    {
+                        // 检查 hitObject 是否是 tileView.GameObject 或其子物体
+                        if (tileView.GameObject == gameObject || gameObject.transform.IsChildOf(tileView.GameObject.transform))
+                        {
+                            return tile;
+                        }
+                    }
+                }
+            }
+            return null;
         }
 
         /// <summary>
         /// 指针释放处理
+        /// 参考 CandyMatch3Kit.GameBoard.HandleInput
         /// </summary>
         private static void OnPointerUp(this Match3InputComponent self, Match3BoardComponent board)
         {
@@ -131,6 +204,13 @@ namespace ET.Client
             }
 
             self.IsDragging = false;
+            
+            // 恢复起始瓦片的按压动画
+            var startTile = board.GetTile(self.DragStartX, self.DragStartY);
+            if (startTile != null)
+            {
+                self.PlayTilePressedAnimation(startTile, false);
+            }
 
             // 检查是否是Switch道具模式
             var boosterManager = board.GetComponent<BoosterManagerComponent>();
@@ -148,32 +228,62 @@ namespace ET.Client
                 return;
             }
 
-            // 获取释放的世界坐标
-            Vector3 worldPos = self.ScreenToWorldPosition(Input.mousePosition);
-
-            // 计算拖拽方向
-            Vector3 dragDelta = worldPos - self.DragStartWorldPos;
-            
-            // 检查是否超过最小拖拽距离
-            if (dragDelta.magnitude < self.MinDragDistance)
+            // 获取相机
+            Camera camera = self.GameCamera;
+            if (camera == null)
+            {
+                camera = Camera.main;
+            }
+            if (camera == null)
             {
                 return;
             }
-
-            // 确定交换方向（水平或垂直）
-            int targetX = self.DragStartX;
-            int targetY = self.DragStartY;
-
-            if (Mathf.Abs(dragDelta.x) > Mathf.Abs(dragDelta.y))
+            
+            // 使用射线检测目标瓦片（与 CandyMatch3Kit 一致）
+            Vector2 worldPos = camera.ScreenToWorldPoint(Input.mousePosition);
+            RaycastHit2D hit = Physics2D.Raycast(worldPos, Vector2.zero);
+            
+            if (hit.collider == null)
             {
-                // 水平拖拽
-                targetX += dragDelta.x > 0 ? 1 : -1;
+                return;
             }
-            else
+            
+            // 查找目标瓦片
+            GameObject hitObject = hit.collider.gameObject;
+            Tile targetTile = self.FindTileByGameObject(board, hitObject);
+            
+            if (targetTile == null)
             {
-                // 垂直拖拽
-                targetY += dragDelta.y > 0 ? 1 : -1;
+                return;
             }
+            
+            int targetX = targetTile.GetX();
+            int targetY = targetTile.GetY();
+            
+            // 确保不是同一个瓦片
+            if (targetX == self.DragStartX && targetY == self.DragStartY)
+            {
+                return;
+            }
+            
+            // 检查是否相邻（不允许对角线）
+            int dx = Mathf.Abs(targetX - self.DragStartX);
+            int dy = Mathf.Abs(targetY - self.DragStartY);
+            
+            if (dx > 1 || dy > 1)
+            {
+                Log.Debug($"[Match3Input] 目标瓦片不相邻: ({self.DragStartX},{self.DragStartY}) -> ({targetX},{targetY})");
+                return;
+            }
+            
+            // 不允许对角线交换
+            if (dx == 1 && dy == 1)
+            {
+                Log.Debug($"[Match3Input] 不允许对角线交换");
+                return;
+            }
+            
+            Log.Debug($"[Match3Input] 尝试交换: ({self.DragStartX},{self.DragStartY}) -> ({targetX},{targetY})");
 
             // 尝试交换
             self.TrySwapTilesAsync(board, self.DragStartX, self.DragStartY, targetX, targetY).NoContext();
