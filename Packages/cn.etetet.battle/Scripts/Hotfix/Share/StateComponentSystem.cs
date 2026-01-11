@@ -197,8 +197,13 @@ namespace ET
             {
                 EntityHero owner = self.OwnerRef;
                 if (owner == null) return;
-                
-                EventSystem.Instance.Publish(owner.GetScene(), new SetEntityState
+
+                // 直接通过GroupRef获取场景，避免调用EntityHeroSystem
+                EntityGroup group = owner.GroupRef;
+                BattleSceneComponent scene = group?.BattleFieldRef;
+                if (scene == null) return;
+
+                EventSystem.Instance.Publish(scene, new SetEntityState
                 {
                     EntityId = owner.HeroId,
                     state = (int)state,
@@ -216,7 +221,12 @@ namespace ET
                 EntityHero owner = self.OwnerRef;
                 if (owner == null) return;
 
-                EventSystem.Instance.Publish(owner.GetScene(), new UnsetEntityState
+                // 直接通过GroupRef获取场景，避免调用EntityHeroSystem
+                EntityGroup group = owner.GroupRef;
+                BattleSceneComponent scene = group?.BattleFieldRef;
+                if (scene == null) return;
+
+                EventSystem.Instance.Publish(scene, new UnsetEntityState
                 {
                     EntityId = owner.HeroId,
                     state = (int)state,

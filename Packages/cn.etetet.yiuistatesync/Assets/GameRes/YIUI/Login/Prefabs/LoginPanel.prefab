@@ -1172,7 +1172,7 @@ MonoBehaviour:
   PkgName: Login
   ResName: LoginPanel
   UICodeType: 0
-  WindowOption: 0
+  WindowOption: 1536
   PanelLayer: 3
   PanelOption: 4
   PanelStackOption: 2

@@ -84,7 +84,7 @@ namespace ET
 		/// <summary>最大目标数量</summary>
 		public int MaxTargetNum { get; set; }
 		/// <summary>对目标效果块</summary>
-		public int EffectBlocks { get; set; }
+		public int[] EffectBlocks { get; set; }
 		/// <summary>生成AuraID组 Tips用</summary>
 		public int[] Auras { get; set; }
 		/// <summary>伤害类型</summary>

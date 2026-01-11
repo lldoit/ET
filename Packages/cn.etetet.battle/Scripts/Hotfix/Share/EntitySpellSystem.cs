@@ -59,12 +59,12 @@ namespace ET
         /// <summary>
         /// 初始化技能
         /// </summary>
-        public static void Init(this EntitySpell self, EntityHero caster, EntityHero target, DREntitySpellEntry entry,int amount)
+        public static void Init(this EntitySpell self, EntityHero caster, EntityHero target, DREntitySpellEntry entry, int amount)
         {
             self.Entry = entry;
             self.CasterRef = caster;
             self.SelectTargetRef = target;
-           // self.SpellType = type;
+            // self.SpellType = type;
             self.Amount = amount;
             self.TotalSpellResult = 0;
             self.Targets?.Clear();
@@ -159,13 +159,23 @@ namespace ET
                     break;
 
                 case SelectTargetType.Friend_Single:
-                    if (self.IsFriendTargetValid(selectTarget) && selectTarget.GetCamp() == caster.GetCamp())
-                        self.Targets.Add(selectTarget);
+                    // 直接访问字段，避免调用EntityHeroSystem
+                    {
+                        EntityGroup selectGroup = selectTarget.GroupRef;
+                        EntityGroup casterGroup = caster.GroupRef;
+                        if (self.IsFriendTargetValid(selectTarget) && selectGroup?.Camp == casterGroup?.Camp)
+                            self.Targets.Add(selectTarget);
+                    }
                     break;
 
                 case SelectTargetType.Enemy_Single:
-                    if (self.IsHostTargetValid(selectTarget) && selectTarget.GetCamp() != caster.GetCamp())
-                        self.Targets.Add(selectTarget);
+                    // 直接访问字段，避免调用EntityHeroSystem
+                    {
+                        EntityGroup selectGroup2 = selectTarget.GroupRef;
+                        EntityGroup casterGroup2 = caster.GroupRef;
+                        if (self.IsHostTargetValid(selectTarget) && selectGroup2?.Camp != casterGroup2?.Camp)
+                            self.Targets.Add(selectTarget);
+                    }
                     break;
 
                 case SelectTargetType.Friend_All:
@@ -182,7 +192,8 @@ namespace ET
 
         private static void FindAllFriends(this EntitySpell self, EntityHero caster)
         {
-            EntityGroup group = caster.GetGroup();
+            // 直接访问字段，避免调用EntityHeroSystem
+            EntityGroup group = caster.GroupRef;
             if (group == null) return;
 
             foreach (var entityRef in group.Entitys)
@@ -195,7 +206,9 @@ namespace ET
 
         private static void FindAllEnemies(this EntitySpell self, EntityHero caster)
         {
-            EntityGroup otherGroup = caster.GetOtherGroup();
+            // 直接访问字段，避免调用EntityHeroSystem
+            EntityGroup group = caster.GroupRef;
+            EntityGroup otherGroup = group?.OtherGroupRef;
             if (otherGroup == null) return;
 
             foreach (var entityRef in otherGroup.Entitys)
@@ -324,9 +337,17 @@ namespace ET
         private static void CastEnd(this EntitySpell self)
         {
             // 技能结束消息
-            EventSystem.Instance.Publish(self.CasterRef.Entity.GetScene(), new EntityCastSpell()
+            // 直接访问字段获取场景，避免调用EntityHeroSystem
+            EntityHero caster = self.CasterRef;
+            if (caster == null) return;
+
+            EntityGroup group = caster.GroupRef;
+            BattleSceneComponent scene = group?.BattleFieldRef;
+            if (scene == null) return;
+
+            EventSystem.Instance.Publish(scene, new EntityCastSpell()
             {
-                CasterId = self.CasterRef.Entity.HeroId,
+                CasterId = caster.HeroId,
                 SpellId = self.Entry.Id,
                 DamageInfos = self.TargetDmgInfos
             });
@@ -355,7 +376,13 @@ namespace ET
             if (caster == null || target == null || spellEntry == null)
                 return ECombatErr.TargetState;
 
-            if (caster.GetCamp() != target.GetCamp())
+            // 直接访问字段获取阵营，避免调用EntityHeroSystem
+            EntityGroup casterGroup = caster.GroupRef;
+            EntityGroup targetGroup = target.GroupRef;
+            ECamp casterCamp = casterGroup?.Camp ?? ECamp.None;
+            ECamp targetCamp = targetGroup?.Camp ?? ECamp.None;
+
+            if (casterCamp != targetCamp)
             {
                 StateComponent casterStateCom = caster.StateCom.Entity;
                 StateComponent targetStateCom = target.StateCom.Entity;
@@ -391,7 +418,13 @@ namespace ET
                     return;
 
                 case SpellCost.Energy:
-                    caster.ModEnergy(-self.Entry.CostValue);
+                    // 内联能量修改逻辑，避免调用EntityHeroSystem
+                    int costValue = self.Entry.CostValue;
+                    caster.Energy -= costValue;
+                    if (caster.Energy > 100)
+                        caster.Energy = 100;
+                    if (caster.Energy < 0)
+                        caster.Energy = 0;
                     break;
 
                     // 其他消耗类型可以在此扩展...

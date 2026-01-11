@@ -8,6 +8,8 @@ namespace ET
     /// 遵循ET框架ECS规范
     /// </summary>
     [FriendOf(typeof(EntityGroup))]
+    [FriendOf(typeof(EntityHero))]
+    [FriendOf(typeof(StateComponent))]
     [EntitySystemOf(typeof(EntityGroup))]
     public static partial class EntityGroupSystem
     {
@@ -22,7 +24,7 @@ namespace ET
         {
 
         }
-        
+
         /// <summary>
         /// 获取阵营
         /// </summary>
@@ -54,7 +56,7 @@ namespace ET
         {
             return self.BattleFieldRef;
         }
-        
+
         /// <summary>
         /// 初始化队伍
         /// </summary>
@@ -74,9 +76,16 @@ namespace ET
         /// </summary>
         public static bool IsValid(this EntityGroup self)
         {
-            foreach (var entity in self.Entitys)
+            foreach (var entityRef in self.Entitys)
             {
-                if (entity.Entity.IsValid())
+                EntityHero hero = entityRef;
+                if (hero == null) continue;
+                if (hero.Delete) continue;
+
+                // 内联有效性判断逻辑，避免调用EntityHeroSystem
+                StateComponent stateCom = hero.StateCom;
+                if (stateCom == null) return true;
+                if (!stateCom.HasCombatState(EEntityState.Dead) && !stateCom.HasCombatState(EEntityState.Escape))
                     return true;
             }
             return false;
@@ -88,9 +97,20 @@ namespace ET
         public static int GetValidEntityNum(this EntityGroup self)
         {
             int num = 0;
-            foreach (var entity in self.Entitys)
+            foreach (var entityRef in self.Entitys)
             {
-                if (entity.Entity.IsValid())
+                EntityHero hero = entityRef;
+                if (hero == null) continue;
+                if (hero.Delete) continue;
+
+                // 内联有效性判断逻辑，避免调用EntityHeroSystem
+                StateComponent stateCom = hero.StateCom;
+                if (stateCom == null)
+                {
+                    num++;
+                    continue;
+                }
+                if (!stateCom.HasCombatState(EEntityState.Dead) && !stateCom.HasCombatState(EEntityState.Escape))
                     num++;
             }
             return num;

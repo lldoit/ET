@@ -33,8 +33,8 @@ namespace ET
             
             // 注意：三消棋盘已在 BattleSceneHelper.InitializeMatch3BoardAsync 中初始化
             // TODO: 初始化敌人
-            self.RedGroup.Entity.Init(ECamp.Red, self, new List<int>{}); 
-            self.BlueGroup.Entity.Init(ECamp.Blue, self, new List<int>{}); 
+            //self.RedGroup.Entity.Init(ECamp.Red, self, new List<int>{}); 
+            //self.BlueGroup.Entity.Init(ECamp.Blue, self, new List<int>{}); 
             // TODO: 初始化三消棋盘
             // TODO: 发布战斗开始事件
             
