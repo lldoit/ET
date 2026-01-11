@@ -69,9 +69,10 @@ internal class CodeGenerator : ScriptableObject {
     internal void Generate() {
         #if !PRIME_TWEEN_EXPERIMENTAL
         throw new Exception("add PRIME_TWEEN_EXPERIMENTAL to defines");
-        #endif
+        #else
         generateMethods();
         generateDotweenMethods();
+        #endif
     }
 
     const string generatorBeginLabel = "// CODE GENERATOR BEGIN";
