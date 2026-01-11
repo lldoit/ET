@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace ET
 {
     [FriendOf(typeof(BattleSceneComponent))]
@@ -9,6 +11,8 @@ namespace ET
         {
             self.CurrentTurn = 0;
             self.BattleState = 0; // 准备中
+            self.RedGroup = self.AddComponent<EntityGroup>();
+            self.BlueGroup = self.AddComponent<EntityGroup>();
         }
 
         [EntitySystem]
@@ -28,6 +32,8 @@ namespace ET
             self.BattleState = 1; // 进行中
             
             // TODO: 初始化敌人
+            self.RedGroup.Entity.Init(ECamp.Red, self, new List<int>{}); 
+            self.BlueGroup.Entity.Init(ECamp.Blue, self, new List<int>{}); 
             // TODO: 初始化三消棋盘
             // TODO: 发布战斗开始事件
             

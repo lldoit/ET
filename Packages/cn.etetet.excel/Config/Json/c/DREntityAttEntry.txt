@@ -1,0 +1,3 @@
+{"dict": [
+[1, {"_t":"DREntityAttEntry","_id":1,"MeleeAttack":0,"MagicAttack":0,"MeleeDefence":0,"MagicDefence":0,"MaxHP":0,"Speed":0,"Crit":0,"Resilience":0,"Block":0,"Broken":0,"NumLives":0,"Dodge":0,"PctDmgInc":0,"PctDmgDec":0,"PctHealInc":0,"StrikeBack":0,"JoinAttack":0,"SchoolTaken1":0,"SchoolTaken2":0,"SchoolTaken3":0,"SchoolTaken4":0,"SchoolTaken5":0,"SchoolTaken6":0,"HeroAtts0":0,"HeroAtts1":0,"HeroAtts2":0,"HeroAtts3":0}],
+]}

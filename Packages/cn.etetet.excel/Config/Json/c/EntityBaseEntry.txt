@@ -1,0 +1,3 @@
+{"dict": [
+[1, {"_t":"EntityBaseEntry","_id":1,"Name":"","EntityAttEntry":0,"Level":0,"Star":0,"Score":0,"ClassId":0,"InitAurasAndSpell":[0],"MeleeSpell":0,"SpellOrder":0,"NormalSpell":0,"SpecialSpell":0,"ModelEntry":0,"Scale":0}],
+]}
