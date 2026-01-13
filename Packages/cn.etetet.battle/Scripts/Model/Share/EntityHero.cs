@@ -14,12 +14,12 @@ namespace ET
         /// 英雄Id
         /// </summary>
         public int HeroId;
-        
+
         /// <summary>
         /// 静态属性
         /// </summary>
         public DREntityBaseEntry Entry;
-        
+
         /// <summary>
         /// 等级
         /// </summary>
@@ -29,7 +29,7 @@ namespace ET
         /// 觉醒等级
         /// </summary>
         public int WakeUpLv;
-        
+
         /// <summary>
         /// 评分
         /// </summary>
@@ -50,6 +50,16 @@ namespace ET
         /// </summary>
         public int Energy;
 
+        /// <summary>
+        /// 满能量值
+        /// </summary>
+        public int MaxEnergy;
+
+        /// <summary>
+        /// 英雄颜色（对应糖果颜色）
+        /// </summary>
+        public int HeroColor;
+
 
         /// 所属队伍引用
         /// </summary>
@@ -59,7 +69,7 @@ namespace ET
         /// 实体配置Id
         /// </summary>
         public int EntryId;
-        
+
         /// <summary>
         /// 属性控制器
         /// </summary>
@@ -69,6 +79,6 @@ namespace ET
         /// 状态控制器
         /// </summary>
         public EntityRef<StateComponent> StateCom;
-        
+
     }
 }

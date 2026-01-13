@@ -30,7 +30,7 @@ namespace ET.Client
     public struct AfterCreateBattleScene
     {
     }
-    
+
     /// <summary>
     /// 战斗结束事件
     /// </summary>
@@ -53,3 +53,5 @@ namespace ET.Client
         public string Source;
     }
 }
+
+
