@@ -15,7 +15,7 @@ namespace ET.Client
             self.RectTransform = rectTransform;
             self.Image = rectTransform.GetComponent<UnityEngine.UI.Image>();
             self.Animator = rectTransform.GetComponent<Animator>();
-            
+
             // 查找技能图标子对象
             var skillIconTransform = rectTransform.Find("SkillIcon");
             if (skillIconTransform != null)
@@ -41,6 +41,28 @@ namespace ET.Client
             if (self.Animator != null && self.RectTransform != null && self.RectTransform.gameObject.activeSelf)
             {
                 self.Animator.SetTrigger("Kill");
+            }
+        }
+
+        /// <summary>
+        /// 播放按下动画
+        /// </summary>
+        public static void PlayPressAnimation(this SkillCandyViewComponent self)
+        {
+            if (self.Animator != null && self.RectTransform != null && self.RectTransform.gameObject.activeSelf)
+            {
+                self.Animator.SetTrigger("Pressed");
+            }
+        }
+
+        /// <summary>
+        /// 播放松开动画
+        /// </summary>
+        public static void PlayUnpressAnimation(this SkillCandyViewComponent self)
+        {
+            if (self.Animator != null && self.RectTransform != null && self.RectTransform.gameObject.activeSelf)
+            {
+                self.Animator.SetTrigger("Unpressed");
             }
         }
 
@@ -75,7 +97,7 @@ namespace ET.Client
             {
                 self.RectTransform.localScale = Vector3.one;
                 self.RectTransform.localRotation = Quaternion.identity;
-                
+
                 if (self.Image != null)
                 {
                     var color = self.Image.color;

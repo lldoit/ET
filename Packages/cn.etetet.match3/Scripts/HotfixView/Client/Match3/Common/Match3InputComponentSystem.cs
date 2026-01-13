@@ -63,6 +63,65 @@ namespace ET.Client
             {
                 self.OnPointerUpUI(board);
             }
+            // 拖拽中 - 检测是否拖到另一个瓦片
+            else if (self.IsDragging && Input.GetMouseButton(0))
+            {
+                self.OnDraggingUI(board);
+            }
+        }
+
+        /// <summary>
+        /// UI模式拖拽中处理 - 检测是否拖到另一个有效瓦片
+        /// </summary>
+        private static void OnDraggingUI(this Match3InputComponent self, Match3BoardComponent board)
+        {
+            if (self.UIBoardRoot == null) return;
+
+            Vector2 screenPos = Input.mousePosition;
+            Camera camera = self.UICanvas?.renderMode == RenderMode.ScreenSpaceOverlay ? null : self.UICanvas?.worldCamera;
+
+            if (!RectTransformUtility.ScreenPointToLocalPointInRectangle(
+                self.UIBoardRoot, screenPos, camera, out Vector2 localPos))
+            {
+                return;
+            }
+
+            // 计算当前拖拽位置的瓦片坐标
+            if (!self.UILocalPositionToTile(board, localPos, out int targetX, out int targetY))
+            {
+                return;
+            }
+
+            // 确保不是起始瓦片
+            if (targetX == self.DragStartX && targetY == self.DragStartY)
+            {
+                return;
+            }
+
+            // 检查是否相邻（不允许对角线）
+            int dx = Mathf.Abs(targetX - self.DragStartX);
+            int dy = Mathf.Abs(targetY - self.DragStartY);
+
+            if (dx > 1 || dy > 1 || (dx == 1 && dy == 1))
+            {
+                return;
+            }
+
+            // 检查目标瓦片是否有效
+            var targetTile = board.GetTile(targetX, targetY);
+            if (targetTile == null)
+            {
+                return;
+            }
+
+            // 拖拽到另一个有效瓦片，播放Unpressed动画
+            self.PlayTileUnpressAnimation(board);
+
+            // 停止拖拽状态
+            self.IsDragging = false;
+
+            // 尝试交换
+            self.TrySwapTilesAsync(board, self.DragStartX, self.DragStartY, targetX, targetY).NoContext();
         }
 
         /// <summary>
@@ -102,6 +161,9 @@ namespace ET.Client
             var tile = board.GetTile(x, y);
             if (tile == null) return;
 
+            // 直接播放press动画
+            self.PlayTilePressAnimation(tile, x, y);
+
             // 记录拖拽起点
             self.DragStartWorldPos = new Vector3(localPos.x, localPos.y, 0);
 
@@ -128,10 +190,75 @@ namespace ET.Client
         }
 
         /// <summary>
+        /// 播放瓦片按下动画
+        /// </summary>
+        private static void PlayTilePressAnimation(this Match3InputComponent self, Tile tile, int x, int y)
+        {
+            if (tile == null) return;
+
+            // 记录当前按下的瓦片坐标
+            self.PressedTileX = x;
+            self.PressedTileY = y;
+
+            // 普通糖果
+            var candyView = tile.GetComponent<CandyViewComponent>();
+            if (candyView != null)
+            {
+                candyView.PlayPressAnimation();
+                return;
+            }
+
+            // 技能糖果
+            var skillCandyView = tile.GetComponent<SkillCandyViewComponent>();
+            if (skillCandyView != null)
+            {
+                skillCandyView.PlayPressAnimation();
+                return;
+            }
+        }
+
+        /// <summary>
+        /// 播放瓦片松开动画
+        /// </summary>
+        private static void PlayTileUnpressAnimation(this Match3InputComponent self, Match3BoardComponent board)
+        {
+            if (self.PressedTileX < 0 || self.PressedTileY < 0) return;
+
+            var tile = board.GetTile(self.PressedTileX, self.PressedTileY);
+            if (tile == null)
+            {
+                self.PressedTileX = -1;
+                self.PressedTileY = -1;
+                return;
+            }
+
+            // 普通糖果
+            var candyView = tile.GetComponent<CandyViewComponent>();
+            if (candyView != null)
+            {
+                candyView.PlayUnpressAnimation();
+            }
+
+            // 技能糖果
+            var skillCandyView = tile.GetComponent<SkillCandyViewComponent>();
+            if (skillCandyView != null)
+            {
+                skillCandyView.PlayUnpressAnimation();
+            }
+
+            // 重置按下坐标
+            self.PressedTileX = -1;
+            self.PressedTileY = -1;
+        }
+
+        /// <summary>
         /// UI模式指针释放处理
         /// </summary>
         private static void OnPointerUpUI(this Match3InputComponent self, Match3BoardComponent board)
         {
+            // 播放松开动画
+            self.PlayTileUnpressAnimation(board);
+
             if (!self.IsDragging)
             {
                 return;

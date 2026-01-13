@@ -84,6 +84,12 @@ namespace ET.Client
         /// </summary>
         public Canvas UICanvas;
 
+        /// <summary>
+        /// 当前按下的瓦片坐标（用于播放Unpressed动画）
+        /// </summary>
+        public int PressedTileX = -1;
+        public int PressedTileY = -1;
+
         #endregion
     }
 }

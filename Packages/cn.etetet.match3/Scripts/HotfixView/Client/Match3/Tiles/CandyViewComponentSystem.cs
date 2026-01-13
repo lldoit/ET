@@ -37,6 +37,28 @@ namespace ET.Client
         }
 
         /// <summary>
+        /// 播放按下动画
+        /// </summary>
+        public static void PlayPressAnimation(this CandyViewComponent self)
+        {
+            if (self.Animator != null && self.RectTransform != null && self.RectTransform.gameObject.activeSelf)
+            {
+                self.Animator.SetTrigger("Pressed");
+            }
+        }
+
+        /// <summary>
+        /// 播放松开动画
+        /// </summary>
+        public static void PlayUnpressAnimation(this CandyViewComponent self)
+        {
+            if (self.Animator != null && self.RectTransform != null && self.RectTransform.gameObject.activeSelf)
+            {
+                self.Animator.SetTrigger("Unpressed");
+            }
+        }
+
+        /// <summary>
         /// 设置Sprite
         /// </summary>
         public static void SetSprite(this CandyViewComponent self, Sprite sprite)
@@ -67,7 +89,7 @@ namespace ET.Client
             {
                 self.RectTransform.localScale = Vector3.one;
                 self.RectTransform.localRotation = Quaternion.identity;
-                
+
                 if (self.Image != null)
                 {
                     var color = self.Image.color;

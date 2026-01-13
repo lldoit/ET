@@ -178,7 +178,8 @@ namespace ET
                 });
             }
 
-            // 消除匹配中的瓦片
+            // 收集所有需要消除的瓦片，同时爆炸
+            var tilesToExplode = new List<(Tile tile, int x, int y)>();
             foreach (var tileDef in match.tiles)
             {
                 // 如果是特殊糖果生成位置，跳过
@@ -190,9 +191,77 @@ namespace ET
                 var tile = self.GetTile(tileDef.x, tileDef.y);
                 if (tile != null)
                 {
-                    await self.ExplodeTileAsync(tile, tileDef.x, tileDef.y);
+                    tilesToExplode.Add((tile, tileDef.x, tileDef.y));
                 }
             }
+
+            // 同时爆炸所有瓦片
+            if (tilesToExplode.Count > 0)
+            {
+                await self.ExplodeTilesSimultaneouslyAsync(tilesToExplode);
+            }
+        }
+
+        /// <summary>
+        /// 同时爆炸多个瓦片（所有瓦片一起爆炸，而不是依次爆炸）
+        /// </summary>
+        /// <param name="self">棋盘组件</param>
+        /// <param name="tiles">需要爆炸的瓦片列表（包含tile, x, y）</param>
+        public static async ETTask ExplodeTilesSimultaneouslyAsync(this Match3BoardComponent self, List<(Tile tile, int x, int y)> tiles)
+        {
+            if (tiles == null || tiles.Count == 0)
+            {
+                return;
+            }
+
+            // 共享visited集合，防止同一个瓦片被多次处理
+            var visited = new HashSet<long>();
+
+            // 同步处理所有瓦片的爆炸逻辑（不await，让动画同时播放）
+            foreach (var (tile, x, y) in tiles)
+            {
+                if (tile == null || visited.Contains(tile.Id))
+                {
+                    continue;
+                }
+                visited.Add(tile.Id);
+
+                // 更新游戏状态
+                self.UpdateGameStateForTile(tile);
+
+                // 播放爆炸音效
+                var chocolateComp = tile.GetComponent<ChocolateComponent>();
+                var marshmallowComp = tile.GetComponent<MarshmallowComponent>();
+                if (chocolateComp != null)
+                {
+                    EventSystem.Instance.Publish(self.Scene(), new PlaySoundEvent { SoundType = "ChocolateBreak" });
+                }
+                else if (marshmallowComp != null)
+                {
+                    EventSystem.Instance.Publish(self.Scene(), new PlaySoundEvent { SoundType = "MarshmallowBreak" });
+                }
+
+                // 处理元素消除（冰/蜂蜜/糖浆）
+                self.DestroyElements(x, y);
+
+                // 处理周围特殊方块消除
+                self.DestroySpecialBlocks(tile);
+
+                // 播放爆炸特效（通过事件通知HotfixView层）
+                EventSystem.Instance.Publish(self.Scene(), new PlayTileExplosionEvent
+                {
+                    TileId = tile.Id,
+                    X = x,
+                    Y = y
+                });
+
+                // 销毁瓦片
+                self.SetTile(x, y, null);
+                tile.Dispose();
+            }
+
+            // 统一等待一次爆炸动画时间
+            await self.Root().GetComponent<TimerComponent>().WaitAsync(100);
         }
 
         /// <summary>
