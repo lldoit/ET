@@ -111,7 +111,7 @@ namespace ET.Match3.Editor
                 GUILayout.Space(15);
 
                 EditorGUILayout.BeginHorizontal();
-                
+
                 // 左侧：通用设置和道具设置
                 EditorGUILayout.BeginVertical(GUILayout.Width(350));
                 DrawGeneralSettings();
@@ -179,7 +179,7 @@ namespace ET.Match3.Editor
                 Score2 = 2000,
                 Score3 = 3000,
                 AwardSpecialCandies = false,
-                AwardedSpecialCandyType = AwardedSpecialCandyType.Striped,
+                AwardedSpecialCandyType = AwardedSpecialCandyType.Skill,
                 CollectableChance = 10,
                 Tiles = new List<LevelTile>(),
                 Goals = new List<Goal>(),
@@ -358,11 +358,11 @@ namespace ET.Match3.Editor
             {
                 EditorGUILayout.BeginHorizontal();
                 EditorGUILayout.LabelField(GetBoosterDisplayName(booster), GUILayout.Width(EditorGUIUtility.labelWidth));
-                
+
                 bool enabled = currentLevel.AvailableBoosters.GetValueOrDefault(booster);
                 bool newEnabled = EditorGUILayout.Toggle(enabled);
                 currentLevel.AvailableBoosters[booster] = newEnabled;
-                
+
                 EditorGUILayout.EndHorizontal();
             }
         }
@@ -388,7 +388,7 @@ namespace ET.Match3.Editor
             EditorGUILayout.HelpBox("配置玩家需要完成的目标", MessageType.Info);
 
             EditorGUILayout.BeginHorizontal();
-            
+
             EditorGUILayout.BeginVertical(GUILayout.Width(200));
             if (goalList != null)
             {
@@ -645,8 +645,6 @@ namespace ET.Match3.Editor
             {
                 case CandyColor.Blue: return "蓝色";
                 case CandyColor.Green: return "绿色";
-                case CandyColor.Orange: return "橙色";
-                case CandyColor.Purple: return "紫色";
                 case CandyColor.Red: return "红色";
                 case CandyColor.Yellow: return "黄色";
                 default: return color.ToString();
@@ -768,7 +766,7 @@ namespace ET.Match3.Editor
 
             var tile = currentLevel.Tiles[index];
             string textureName = GetTileTextureName(tile);
-            
+
             GUIContent content;
             if (tileTextures.TryGetValue(textureName, out var texture))
             {
@@ -851,8 +849,6 @@ namespace ET.Match3.Editor
             {
                 case CandyType.BlueCandy: return "B";
                 case CandyType.GreenCandy: return "G";
-                case CandyType.OrangeCandy: return "O";
-                case CandyType.PurpleCandy: return "P";
                 case CandyType.RedCandy: return "R";
                 case CandyType.YellowCandy: return "Y";
                 case CandyType.RandomCandy: return "?";

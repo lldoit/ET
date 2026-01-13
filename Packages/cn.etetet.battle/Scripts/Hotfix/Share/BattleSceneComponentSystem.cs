@@ -11,8 +11,8 @@ namespace ET
         {
             self.CurrentTurn = 0;
             self.BattleState = 0; // 准备中
-            self.RedGroup = self.AddComponent<EntityGroup>();
-            self.BlueGroup = self.AddComponent<EntityGroup>();
+            self.RedGroup = self.AddChild<EntityGroup>();
+            self.BlueGroup = self.AddChild<EntityGroup>();
         }
 
         [EntitySystem]
@@ -30,14 +30,14 @@ namespace ET
         {
             self.LevelId = levelId;
             self.BattleState = 1; // 进行中
-            
+
             // 注意：三消棋盘已在 BattleSceneHelper.InitializeMatch3BoardAsync 中初始化
             // TODO: 初始化敌人
             //self.RedGroup.Entity.Init(ECamp.Red, self, new List<int>{}); 
             //self.BlueGroup.Entity.Init(ECamp.Blue, self, new List<int>{}); 
             // TODO: 初始化三消棋盘
             // TODO: 发布战斗开始事件
-            
+
             await ETTask.CompletedTask;
         }
 
@@ -49,11 +49,11 @@ namespace ET
         public static async ETTask EndBattle(this BattleSceneComponent self, bool isVictory)
         {
             self.BattleState = isVictory ? 2 : 3;
-            
+
             // 发布战斗结束事件，UI层可以订阅此事件显示结算界面
             Scene scene = self.IScene as Scene;
             EventSystem.Instance.Publish(scene, new ET.Client.BattleEndEvent { IsVictory = isVictory });
-            
+
             await ETTask.CompletedTask;
         }
     }

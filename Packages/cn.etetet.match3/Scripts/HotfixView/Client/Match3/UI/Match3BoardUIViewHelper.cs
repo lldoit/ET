@@ -7,7 +7,8 @@ namespace ET.Client
     /// 提供UI渲染模式下的视图创建和特效播放等功能
     /// </summary>
     [FriendOf(typeof(Match3BoardComponent))]
-    [FriendOf(typeof(UITilePoolComponent))]
+    [FriendOf(typeof(TilePoolComponent))]
+    [FriendOf(typeof(TileView))]
     [FriendOf(typeof(CandyComponent))]
     [FriendOf(typeof(SkillCandyComponent))]
     [FriendOf(typeof(SpecialBlockComponent))]
@@ -19,106 +20,160 @@ namespace ET.Client
         /// </summary>
         public static Vector2 GetUITilePosition(this Match3BoardComponent self, int x, int y)
         {
-            var uiTilePool = self.Scene().GetComponent<UITilePoolComponent>();
-            if (uiTilePool == null) return Vector2.zero;
-            
-            return uiTilePool.GetUITilePosition(x, y, self.Level.Width, self.Level.Height);
+            var tilePool = self.Scene().GetComponent<TilePoolComponent>();
+            if (tilePool == null) return Vector2.zero;
+
+            return tilePool.GetUITilePosition(x, y, self.Level.Width, self.Level.Height);
         }
 
         /// <summary>
         /// 为瓦片创建UI视图
         /// </summary>
-        public static void CreateUITileView(this Match3BoardComponent self, Tile tile, Vector2 position)
+        public static void CreateTileView(this Match3BoardComponent self, Tile tile, Vector2 position)
         {
             if (tile == null) return;
-            
-            // 检查是否已有UITileView
-            if (tile.GetComponent<UITileView>() != null) return;
-            
-            var uiTilePool = self.Scene().GetComponent<UITilePoolComponent>();
-            if (uiTilePool == null) return;
-            
+
+            // 检查是否已有TileView
+            if (tile.GetComponent<TileView>() != null) return;
+
+            var scene = self.Scene();
+            var tilePool = scene.GetComponent<TilePoolComponent>();
+            if (tilePool == null) return;
+
             GameObject tileObj = null;
             GameObject prefab = null;
-            
+
             // 1. 技能糖果
             var skillCandy = tile.GetComponent<SkillCandyComponent>();
             if (skillCandy != null)
             {
-                (tileObj, prefab) = uiTilePool.CreateUISkillCandyView(skillCandy.Color, position);
+                Log.Info($"[TileView] 创建技能糖果视图 color={skillCandy.Color}");
+                (tileObj, prefab) = tilePool.CreateUISkillCandyView(skillCandy.Color, position);
                 if (tileObj != null)
                 {
                     var rt = tileObj.GetComponent<RectTransform>();
-                    tile.AddComponent<UISkillCandyViewComponent, RectTransform>(rt);
+                    tile.AddComponent<SkillCandyViewComponent, RectTransform>(rt);
+                    Log.Info($"[TileView] 技能糖果视图创建成功 obj={tileObj.name}");
+                }
+                else
+                {
+                    Log.Warning($"[TileView] 技能糖果视图创建失败 color={skillCandy.Color}");
                 }
             }
-            
+
+
             // 2. 彩色炸弹
             if (tileObj == null)
             {
                 var colorBomb = tile.GetComponent<ColorBombComponent>();
                 if (colorBomb != null)
                 {
-                    (tileObj, prefab) = uiTilePool.CreateUIColorBombView(position);
+                    (tileObj, prefab) = tilePool.CreateUIColorBombView(position);
                     if (tileObj != null)
                     {
                         var rt = tileObj.GetComponent<RectTransform>();
-                        tile.AddComponent<UIColorBombViewComponent, RectTransform>(rt);
+                        tile.AddComponent<ColorBombViewComponent, RectTransform>(rt);
                     }
                 }
             }
-            
+
             // 3. 普通糖果
             if (tileObj == null)
             {
                 var candy = tile.GetComponent<CandyComponent>();
                 if (candy != null)
                 {
-                    (tileObj, prefab) = uiTilePool.CreateUICandyView(candy.Color, position);
+                    (tileObj, prefab) = tilePool.CreateUICandyView(candy.Color, position);
                     if (tileObj != null)
                     {
                         var rt = tileObj.GetComponent<RectTransform>();
-                        tile.AddComponent<UICandyViewComponent, RectTransform>(rt);
+                        tile.AddComponent<CandyViewComponent, RectTransform>(rt);
                     }
                 }
             }
-            
+
             // 4. 特殊方块
             if (tileObj == null)
             {
                 var specialBlock = tile.GetComponent<SpecialBlockComponent>();
                 if (specialBlock != null)
                 {
-                    (tileObj, prefab) = uiTilePool.CreateUISpecialBlockView(specialBlock.Type, position);
+                    (tileObj, prefab) = tilePool.CreateUISpecialBlockView(specialBlock.Type, position);
                     if (tileObj != null)
                     {
                         var rt = tileObj.GetComponent<RectTransform>();
-                        tile.AddComponent<UISpecialBlockViewComponent, RectTransform>(rt);
+                        tile.AddComponent<SpecialBlockViewComponent, RectTransform>(rt);
                     }
                 }
             }
-            
-            // 5. 收集物
+
+            // 5. 巧克力
+            if (tileObj == null)
+            {
+                var chocolate = tile.GetComponent<ChocolateComponent>();
+                if (chocolate != null)
+                {
+                    (tileObj, prefab) = tilePool.CreateUIChocolateView(position);
+                    if (tileObj != null)
+                    {
+                        var rt = tileObj.GetComponent<RectTransform>();
+                        tile.AddComponent<ChocolateViewComponent, RectTransform>(rt);
+                    }
+                }
+            }
+
+            // 6. 棉花糖
+            if (tileObj == null)
+            {
+                var marshmallow = tile.GetComponent<MarshmallowComponent>();
+                if (marshmallow != null)
+                {
+                    (tileObj, prefab) = tilePool.CreateUIMarshmallowView(position);
+                    if (tileObj != null)
+                    {
+                        var rt = tileObj.GetComponent<RectTransform>();
+                        tile.AddComponent<MarshmallowViewComponent, RectTransform>(rt);
+                    }
+                }
+            }
+
+            // 7. 不可破坏方块
+            if (tileObj == null)
+            {
+                var unbreakable = tile.GetComponent<UnbreakableComponent>();
+                if (unbreakable != null)
+                {
+                    (tileObj, prefab) = tilePool.CreateUIUnbreakableView(position);
+                    if (tileObj != null)
+                    {
+                        var rt = tileObj.GetComponent<RectTransform>();
+                        tile.AddComponent<UnbreakableViewComponent, RectTransform>(rt);
+                    }
+                }
+            }
+
+            // 8. 收集物
             if (tileObj == null)
             {
                 var collectable = tile.GetComponent<CollectableComponent>();
                 if (collectable != null)
                 {
-                    (tileObj, prefab) = uiTilePool.CreateUICollectableView(collectable.Type, position);
+                    (tileObj, prefab) = tilePool.CreateUICollectableView(collectable.Type, position);
                     if (tileObj != null)
                     {
                         var rt = tileObj.GetComponent<RectTransform>();
-                        tile.AddComponent<UICollectableViewComponent, RectTransform>(rt);
+                        tile.AddComponent<CollectableViewComponent, RectTransform>(rt);
                     }
                 }
             }
-            
-            // 创建UITileView基类组件
+
+            // 创建TileView基类组件
             if (tileObj != null)
             {
                 var rt = tileObj.GetComponent<RectTransform>();
-                var uiTileView = tile.AddComponent<UITileView, RectTransform>(rt);
+                var uiTileView = tile.AddComponent<TileView, RectTransform>(rt);
                 uiTileView.Prefab = prefab;
+                uiTileView.GameObject = tileObj;
             }
         }
 
@@ -128,53 +183,62 @@ namespace ET.Client
         public static void PlayUITileExplosionEffect(this Match3BoardComponent self, Tile tile, Vector2 uiPosition)
         {
             if (tile == null) return;
-            
-            var uiFxPool = self.GetComponent<UIFxPoolComponent>();
-            
+
+            var uiFxPool = self.GetComponent<FxPoolComponent>();
+
+            // 获取瓦片的世界坐标用于粒子特效
+            Vector3 worldPos = Vector3.zero;
+            var uiTileView = tile.GetComponent<TileView>();
+            if (uiTileView != null && uiTileView.RectTransform != null)
+            {
+                worldPos = uiTileView.RectTransform.position;
+            }
+
             // 普通糖果
             var candy = tile.GetComponent<CandyComponent>();
             if (candy != null)
             {
-                var candyView = tile.GetComponent<UICandyViewComponent>();
+                var candyView = tile.GetComponent<CandyViewComponent>();
                 candyView?.PlayExplodeAnimation();
-                uiFxPool?.PlayCandyExplosion(candy.Color, uiPosition);
+                uiFxPool?.PlayCandyExplosion(candy.Color, worldPos);
                 return;
             }
-            
+
             // 技能糖果
             var skillCandy = tile.GetComponent<SkillCandyComponent>();
             if (skillCandy != null)
             {
-                var skillView = tile.GetComponent<UISkillCandyViewComponent>();
+                var skillView = tile.GetComponent<SkillCandyViewComponent>();
                 skillView?.PlayExplodeAnimation();
-                uiFxPool?.PlaySkillCandyExplosion(uiPosition);
+                uiFxPool?.PlaySkillCandyExplosion(worldPos);
                 return;
             }
-            
+
             // 彩色炸弹
             var colorBomb = tile.GetComponent<ColorBombComponent>();
             if (colorBomb != null)
             {
-                var bombView = tile.GetComponent<UIColorBombViewComponent>();
+                var bombView = tile.GetComponent<ColorBombViewComponent>();
                 bombView?.PlayExplodeAnimation();
-                uiFxPool?.PlayColorBombExplosion(uiPosition);
+                uiFxPool?.PlayColorBombExplosion(worldPos);
                 return;
             }
-            
+
+
             // 特殊方块
             var specialBlock = tile.GetComponent<SpecialBlockComponent>();
             if (specialBlock != null)
             {
-                var blockView = tile.GetComponent<UISpecialBlockViewComponent>();
+                var blockView = tile.GetComponent<SpecialBlockViewComponent>();
                 blockView?.PlayExplodeAnimation();
                 return;
             }
-            
+
             // 收集物
             var collectable = tile.GetComponent<CollectableComponent>();
             if (collectable != null)
             {
-                var collectableView = tile.GetComponent<UICollectableViewComponent>();
+                var collectableView = tile.GetComponent<CollectableViewComponent>();
                 collectableView?.PlayCollectAnimation();
                 return;
             }

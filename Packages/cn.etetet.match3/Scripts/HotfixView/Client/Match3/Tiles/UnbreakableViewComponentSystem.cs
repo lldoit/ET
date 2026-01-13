@@ -5,37 +5,34 @@ namespace ET.Client
     /// <summary>
     /// 不可破坏视图组件系统
     /// </summary>
+    [FriendOf(typeof(UnbreakableViewComponent))]
     [EntitySystemOf(typeof(UnbreakableViewComponent))]
     public static partial class UnbreakableViewComponentSystem
     {
         [EntitySystem]
-        private static void Awake(this UnbreakableViewComponent self, GameObject gameObject)
+        private static void Awake(this UnbreakableViewComponent self, RectTransform rectTransform)
         {
-            self.GameObject = gameObject;
-            self.Animator = gameObject.GetComponent<Animator>();
-            self.SpriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+            self.RectTransform = rectTransform;
+            self.Image = rectTransform.GetComponent<UnityEngine.UI.Image>();
+            self.Animator = rectTransform.GetComponent<Animator>();
         }
 
         [EntitySystem]
         private static void Destroy(this UnbreakableViewComponent self)
         {
-            if (self.GameObject != null)
-            {
-                UnityEngine.Object.Destroy(self.GameObject);
-                self.GameObject = null;
-            }
+            self.RectTransform = null;
+            self.Image = null;
             self.Animator = null;
-            self.SpriteRenderer = null;
         }
 
         /// <summary>
-        /// 设置精灵
+        /// 设置Sprite
         /// </summary>
         public static void SetSprite(this UnbreakableViewComponent self, Sprite sprite)
         {
-            if (self.SpriteRenderer != null)
+            if (self.Image != null)
             {
-                self.SpriteRenderer.sprite = sprite;
+                self.Image.sprite = sprite;
             }
         }
 
@@ -44,9 +41,9 @@ namespace ET.Client
         /// </summary>
         public static void SetColor(this UnbreakableViewComponent self, Color color)
         {
-            if (self.SpriteRenderer != null)
+            if (self.Image != null)
             {
-                self.SpriteRenderer.color = color;
+                self.Image.color = color;
             }
         }
 
@@ -55,21 +52,18 @@ namespace ET.Client
         /// </summary>
         public static void ResetView(this UnbreakableViewComponent self)
         {
-            if (self.GameObject != null)
+            if (self.RectTransform != null)
             {
-                self.GameObject.transform.localScale = Vector3.one;
-                self.GameObject.transform.localRotation = Quaternion.identity;
-                
-                if (self.SpriteRenderer != null)
+                self.RectTransform.localScale = Vector3.one;
+                self.RectTransform.localRotation = Quaternion.identity;
+
+                if (self.Image != null)
                 {
-                    var color = self.SpriteRenderer.color;
+                    var color = self.Image.color;
                     color.a = 1.0f;
-                    self.SpriteRenderer.color = color;
+                    self.Image.color = color;
                 }
             }
         }
     }
 }
-
-
-

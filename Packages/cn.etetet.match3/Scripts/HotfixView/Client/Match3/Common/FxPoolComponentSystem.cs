@@ -71,8 +71,6 @@ namespace ET.Client
             // 加载普通糖果爆炸特效
             self.BlueCandyExplosion = await LoadPrefabAsync("BlueCandyMatchParticles");
             self.GreenCandyExplosion = await LoadPrefabAsync("GreenCandyMatchParticles");
-            self.OrangeCandyExplosion = await LoadPrefabAsync("OrangeCandyMatchParticles");
-            self.PurpleCandyExplosion = await LoadPrefabAsync("PurpleCandyMatchParticles");
             self.RedCandyExplosion = await LoadPrefabAsync("RedCandyMatchParticles");
             self.YellowCandyExplosion = await LoadPrefabAsync("YellowCandyMatchParticles");
 
@@ -111,8 +109,6 @@ namespace ET.Client
             self.WarmUp(self.BlueCandyExplosion, 5);
             self.WarmUp(self.GreenCandyExplosion, 5);
             self.WarmUp(self.YellowCandyExplosion, 5);
-            self.WarmUp(self.OrangeCandyExplosion, 5);
-            self.WarmUp(self.PurpleCandyExplosion, 5);
             self.WarmUp(self.SpawnParticles, 5);
         }
 
@@ -147,8 +143,6 @@ namespace ET.Client
             {
                 CandyColor.Blue => self.BlueCandyExplosion,
                 CandyColor.Green => self.GreenCandyExplosion,
-                CandyColor.Orange => self.OrangeCandyExplosion,
-                CandyColor.Purple => self.PurpleCandyExplosion,
                 CandyColor.Red => self.RedCandyExplosion,
                 CandyColor.Yellow => self.YellowCandyExplosion,
                 _ => self.RedCandyExplosion

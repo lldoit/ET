@@ -19,8 +19,6 @@ namespace ET.Match3.Editor
     {
         Blue,
         Green,
-        Orange,
-        Purple,
         Red,
         Yellow
     }
@@ -32,8 +30,6 @@ namespace ET.Match3.Editor
     {
         BlueCandy,
         GreenCandy,
-        OrangeCandy,
-        PurpleCandy,
         RedCandy,
         YellowCandy,
         RandomCandy
@@ -56,24 +52,10 @@ namespace ET.Match3.Editor
     /// </summary>
     public enum SpecialCandyType
     {
-        BlueCandyHorizontalStriped,
-        GreenCandyHorizontalStriped,
-        OrangeCandyHorizontalStriped,
-        PurpleCandyHorizontalStriped,
-        RedCandyHorizontalStriped,
-        YellowCandyHorizontalStriped,
-        BlueCandyVerticalStriped,
-        GreenCandyVerticalStriped,
-        OrangeCandyVerticalStriped,
-        PurpleCandyVerticalStriped,
-        RedCandyVerticalStriped,
-        YellowCandyVerticalStriped,
-        BlueCandyWrapped,
-        GreenCandyWrapped,
-        OrangeCandyWrapped,
-        PurpleCandyWrapped,
-        RedCandyWrapped,
-        YellowCandyWrapped,
+        BlueSkillCandy,
+        GreenSkillCandy,
+        RedSkillCandy,
+        YellowSkillCandy,
         ColorBomb
     }
 
@@ -112,8 +94,7 @@ namespace ET.Match3.Editor
     /// </summary>
     public enum AwardedSpecialCandyType
     {
-        Striped,
-        Wrapped,
+        Skill,
         ColorBomb
     }
 

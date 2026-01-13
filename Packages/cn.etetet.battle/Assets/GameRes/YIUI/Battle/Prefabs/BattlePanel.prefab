@@ -448,7 +448,7 @@ GameObject:
   - component: {fileID: 3230326619477712646}
   - component: {fileID: 3230326619477712640}
   - component: {fileID: 3230326619477712641}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -586,7 +586,7 @@ GameObject:
   - component: {fileID: 3230326619692975897}
   - component: {fileID: 3230326619692975899}
   - component: {fileID: 3230326619692975896}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Icon
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -660,7 +660,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3230326619975588685}
   - component: {fileID: 3230326619975588684}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Group_LeftMenu
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -724,7 +724,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3230326620139492535}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Time
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -763,7 +763,7 @@ GameObject:
   - component: {fileID: 3230326620415188588}
   - component: {fileID: 3230326620415188590}
   - component: {fileID: 3230326620415188591}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Background
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -836,7 +836,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3230326620601295076}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Play_UI_Action
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -878,7 +878,7 @@ GameObject:
   - component: {fileID: 3230326620861150379}
   - component: {fileID: 3230326620861150373}
   - component: {fileID: 3230326620861150378}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1110,28 +1110,56 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7290927059871650764}
-  m_Layer: 0
+  - component: {fileID: 2600090123360974111}
+  m_Layer: 5
   m_Name: BoardCenter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7290927059871650764
-Transform:
+--- !u!224 &7290927059871650764
+RectTransform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9017097906270809407}
-  serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: -300, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3230326620601295076}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: -300}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!223 &2600090123360974111
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9017097906270809407}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 0
+  m_SortingOrder: 0
+  m_TargetDisplay: 0
 --- !u!1001 &2664316399760133793
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1459,10 +1487,20 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3230326619975588685}
     m_Modifications:
+    - target: {fileID: 1662836908154858495, guid: a8b2037f358ad4f5e85166353bb42d9d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 4834738910536128998, guid: a8b2037f358ad4f5e85166353bb42d9d,
         type: 3}
       propertyPath: m_Name
       value: Button_Convex_Rectangle_01_s_Gray
+      objectReference: {fileID: 0}
+    - target: {fileID: 4834738910536128998, guid: a8b2037f358ad4f5e85166353bb42d9d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7081625013764708244, guid: a8b2037f358ad4f5e85166353bb42d9d,
         type: 3}
@@ -1590,6 +1628,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 1662836908154858495, guid: a8b2037f358ad4f5e85166353bb42d9d,
         type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 1662836908154858495, guid: a8b2037f358ad4f5e85166353bb42d9d,
+        type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
@@ -1597,6 +1640,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Button_Convex_Rectangle_01_s_Gray (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 4834738910536128998, guid: a8b2037f358ad4f5e85166353bb42d9d,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 7081625013764708244, guid: a8b2037f358ad4f5e85166353bb42d9d,
         type: 3}
@@ -1726,10 +1774,20 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3230326620601295076}
     m_Modifications:
+    - target: {fileID: 6979038496163428207, guid: f58a0e21916594d64a9536893d543ad0,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 6979038496253249249, guid: f58a0e21916594d64a9536893d543ad0,
         type: 3}
       propertyPath: m_Name
       value: Title_LineTopBottom_03_Yellow
+      objectReference: {fileID: 0}
+    - target: {fileID: 6979038496253249249, guid: f58a0e21916594d64a9536893d543ad0,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6979038496253249249, guid: f58a0e21916594d64a9536893d543ad0,
         type: 3}
@@ -1841,6 +1899,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6979038496765299042, guid: f58a0e21916594d64a9536893d543ad0,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 6979038497056929036, guid: f58a0e21916594d64a9536893d543ad0,
         type: 3}
       propertyPath: m_text
@@ -1850,6 +1913,21 @@ PrefabInstance:
         type: 3}
       propertyPath: 'm_ActiveFontFeatures.Array.data[0]'
       value: 1801810542
+      objectReference: {fileID: 0}
+    - target: {fileID: 6979038497056929038, guid: f58a0e21916594d64a9536893d543ad0,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6979038497430808363, guid: f58a0e21916594d64a9536893d543ad0,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6979038497503464720, guid: f58a0e21916594d64a9536893d543ad0,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1870,10 +1948,20 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 3230326619975588685}
     m_Modifications:
+    - target: {fileID: 885599524427204320, guid: ad7fa8c46bbe34e0cb4a52dfc65ae941,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 6359553422244738297, guid: ad7fa8c46bbe34e0cb4a52dfc65ae941,
         type: 3}
       propertyPath: m_Name
       value: Button_Convex_Rectangle_01_s_Green
+      objectReference: {fileID: 0}
+    - target: {fileID: 6359553422244738297, guid: ad7fa8c46bbe34e0cb4a52dfc65ae941,
+        type: 3}
+      propertyPath: m_Layer
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 8727731053293271691, guid: ad7fa8c46bbe34e0cb4a52dfc65ae941,
         type: 3}

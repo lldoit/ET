@@ -23,8 +23,8 @@ namespace ET.Client
                 return;
             }
 
-            Vector3 worldPosition = match3Board.GetTileWorldPosition(args.X, args.Y);
-            match3Board.PlayTileExplosionEffect(tile, worldPosition);
+            // UI渲染模式
+            match3Board.PlayUITileExplosionEffectAt(tile, args.X, args.Y);
 
             await ETTask.CompletedTask;
         }
@@ -44,23 +44,13 @@ namespace ET.Client
                 return;
             }
 
-            var fxPool = match3Board.GetComponent<FxPoolComponent>();
-            if (fxPool == null)
-            {
-                return;
-            }
-
-            Vector3 worldPosition = match3Board.GetTileWorldPosition(args.X, args.Y);
-
             // 确保创建瓦片视图（修复生成特殊糖果时的空白问题）
             var tile = match3Board.GetTile(args.X, args.Y);
             if (tile != null)
             {
-                Vector3 localPosition = match3Board.GetTileLocalPosition(args.X, args.Y);
-                match3Board.CreateTileView(tile, localPosition);
+                Vector2 uiPosition = match3Board.GetUITilePosition(args.X, args.Y);
+                match3Board.CreateTileView(tile, uiPosition);
             }
-
-            fxPool.PlaySpawnParticles(worldPosition);
 
             await ETTask.CompletedTask;
         }
@@ -70,7 +60,9 @@ namespace ET.Client
     /// 技能糖果特效事件处理器
     /// </summary>
     [Event(SceneType.All)]
+    [FriendOf(typeof(TilePoolComponent))]
     public class PlaySkillCandyEffectEventHandler : AEvent<Scene, PlaySkillCandyEffectEvent>
+
     {
         protected override async ETTask Run(Scene scene, PlaySkillCandyEffectEvent args)
         {
@@ -80,14 +72,28 @@ namespace ET.Client
                 return;
             }
 
-            var fxPool = match3Board.GetComponent<FxPoolComponent>();
-            if (fxPool == null)
+            var uiFxPool = match3Board.GetComponent<FxPoolComponent>();
+            if (uiFxPool == null)
             {
                 return;
             }
 
-            Vector3 worldPosition = match3Board.GetTileWorldPosition(args.X, args.Y);
-            fxPool.PlaySkillCandyExplosion(worldPosition);
+            // 获取瓦片的世界位置
+            var tilePool = scene.GetComponent<TilePoolComponent>();
+            if (tilePool != null && tilePool.TileContainer != null)
+            {
+                var tile = match3Board.GetTile(args.X, args.Y);
+                Vector3 worldPos = Vector3.zero;
+                if (tile != null)
+                {
+                    var uiTileView = tile.GetComponent<TileView>();
+                    if (uiTileView != null && uiTileView.RectTransform != null)
+                    {
+                        worldPos = uiTileView.RectTransform.position;
+                    }
+                }
+                uiFxPool.PlaySkillCandyExplosion(worldPos);
+            }
 
             await ETTask.CompletedTask;
         }

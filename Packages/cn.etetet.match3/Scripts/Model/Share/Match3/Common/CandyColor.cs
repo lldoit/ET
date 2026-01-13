@@ -7,8 +7,6 @@ namespace ET
     {
         Blue,
         Green,
-        Orange,
-        Purple,
         Red,
         Yellow
     }

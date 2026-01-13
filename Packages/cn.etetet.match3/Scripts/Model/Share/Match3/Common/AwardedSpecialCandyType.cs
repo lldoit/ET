@@ -5,9 +5,7 @@ namespace ET
     /// </summary>
     public enum AwardedSpecialCandyType
     {
-        Striped,
-        Wrapped,
+        Skill,
         ColorBomb
     }
 }
-

@@ -3,29 +3,26 @@ using UnityEngine;
 namespace ET.Client
 {
     /// <summary>
-    /// 收集物视图组件系统
+    /// UI收集物视图组件系统
     /// </summary>
+    [FriendOf(typeof(CollectableViewComponent))]
     [EntitySystemOf(typeof(CollectableViewComponent))]
     public static partial class CollectableViewComponentSystem
     {
         [EntitySystem]
-        private static void Awake(this CollectableViewComponent self, GameObject gameObject)
+        private static void Awake(this CollectableViewComponent self, RectTransform rectTransform)
         {
-            self.GameObject = gameObject;
-            self.Animator = gameObject.GetComponent<Animator>();
-            self.SpriteRenderer = gameObject.GetComponent<SpriteRenderer>();
+            self.RectTransform = rectTransform;
+            self.Image = rectTransform.GetComponent<UnityEngine.UI.Image>();
+            self.Animator = rectTransform.GetComponent<Animator>();
         }
 
         [EntitySystem]
         private static void Destroy(this CollectableViewComponent self)
         {
-            if (self.GameObject != null)
-            {
-                UnityEngine.Object.Destroy(self.GameObject);
-                self.GameObject = null;
-            }
+            self.RectTransform = null;
+            self.Image = null;
             self.Animator = null;
-            self.SpriteRenderer = null;
         }
 
         /// <summary>
@@ -33,54 +30,10 @@ namespace ET.Client
         /// </summary>
         public static void PlayCollectAnimation(this CollectableViewComponent self)
         {
-            if (self.GameObject != null && self.GameObject.activeSelf && self.Animator != null)
+            if (self.Animator != null && self.RectTransform != null && self.RectTransform.gameObject.activeSelf)
             {
                 self.Animator.SetTrigger("Collect");
             }
         }
-
-        /// <summary>
-        /// 设置精灵
-        /// </summary>
-        public static void SetSprite(this CollectableViewComponent self, Sprite sprite)
-        {
-            if (self.SpriteRenderer != null)
-            {
-                self.SpriteRenderer.sprite = sprite;
-            }
-        }
-
-        /// <summary>
-        /// 设置颜色
-        /// </summary>
-        public static void SetColor(this CollectableViewComponent self, Color color)
-        {
-            if (self.SpriteRenderer != null)
-            {
-                self.SpriteRenderer.color = color;
-            }
-        }
-
-        /// <summary>
-        /// 重置视图状态
-        /// </summary>
-        public static void ResetView(this CollectableViewComponent self)
-        {
-            if (self.GameObject != null)
-            {
-                self.GameObject.transform.localScale = Vector3.one;
-                self.GameObject.transform.localRotation = Quaternion.identity;
-                
-                if (self.SpriteRenderer != null)
-                {
-                    var color = self.SpriteRenderer.color;
-                    color.a = 1.0f;
-                    self.SpriteRenderer.color = color;
-                }
-            }
-        }
     }
 }
-
-
-

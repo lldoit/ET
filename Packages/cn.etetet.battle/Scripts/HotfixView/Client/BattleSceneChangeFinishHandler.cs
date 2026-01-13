@@ -13,6 +13,7 @@ namespace ET.Client
             
             // 先打开战斗面板（在Loading后面准备好）
             await scene.YIUIRoot().OpenPanelAsync<BattlePanelComponent>();
+            //await scene.YIUIRoot().OpenPanelAsync<Match3BoardPanelComponent>();
             
             // 再关闭Loading面板，减少视觉上的空白卡顿
             await scene.YIUIMgr().ClosePanelAsync("LoadingPanelComponent");

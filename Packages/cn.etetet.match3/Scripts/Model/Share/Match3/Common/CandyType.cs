@@ -7,8 +7,6 @@ namespace ET
     {
         BlueCandy,
         GreenCandy,
-        OrangeCandy,
-        PurpleCandy,
         RedCandy,
         YellowCandy,
         RandomCandy

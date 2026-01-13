@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: abd89676b9e9306488c5b1413447855f
+guid: ea1edc7da6adc4f3cb2f8c3031ef5b2f
 timeCreated: 1514395470
 licenseType: Store
 NativeFormatImporter:
@@ -7,10 +7,3 @@ NativeFormatImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 111083
-  packageName: Candy Match 3 Kit
-  packageVersion: 3.0.0
-  assetPath: Assets/CandyMatch3Kit/Prefabs/Candies/YellowCandy.prefab
-  uploadId: 805118

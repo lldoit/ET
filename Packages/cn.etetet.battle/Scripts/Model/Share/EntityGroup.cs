@@ -17,7 +17,7 @@ namespace ET
     /// 实体组 - 队伍组件，只包含数据，不包含方法
     /// 所有逻辑请使用 EntityGroupSystem 扩展方法
     /// </summary>
-    [ComponentOf(typeof(BattleSceneComponent))]
+    [ChildOf(typeof(BattleSceneComponent))]
     public class EntityGroup : Entity, IAwake, IDestroy
     {
         /// <summary>
@@ -34,12 +34,12 @@ namespace ET
         /// 战力评分
         /// </summary>
         public int GroupScore;
-        
+
         /// <summary>
         /// 出战实体列表
         /// </summary>
-        public List< EntityRef<EntityHero>> Entitys;
-        
+        public List<EntityRef<EntityHero>> Entitys;
+
         /// <summary>
         /// 敌方队伍引用
         /// </summary>

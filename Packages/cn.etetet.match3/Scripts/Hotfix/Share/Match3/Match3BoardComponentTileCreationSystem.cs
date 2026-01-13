@@ -36,37 +36,32 @@ namespace ET
                         tile.AddComponent<CandyComponent, CandyColor>((CandyColor)((int)levelTile.CandyType));
                     }
                     break;
-                    
+
                 case LevelTileType.SpecialCandy:
                     // 创建特殊糖果
                     tile = self.AddChild<Tile, int, int>(x, y);
-                    var specialCandyType = (int)levelTile.SpecialCandyType;
 
-                    // 横向条纹糖果 (0-5)
-                    if (specialCandyType >= 0 && specialCandyType <= (int)SpecialCandyType.YellowCandyHorizontalStriped)
+                    switch (levelTile.SpecialCandyType)
                     {
-                        var color = (CandyColor)(specialCandyType % 6);
-                        tile.AddComponent<SkillCandyComponent, CandyColor>(color);
-                    }
-                    // 纵向条纹糖果 (6-11)
-                    else if (specialCandyType <= (int)SpecialCandyType.YellowCandyVerticalStriped)
-                    {
-                        var color = (CandyColor)(specialCandyType % 6);
-                        tile.AddComponent<SkillCandyComponent, CandyColor>(color);
-                    }
-                    // 包装糖果 (12-17)
-                    else if (specialCandyType <= (int)SpecialCandyType.YellowCandyWrapped)
-                    {
-                        var color = (CandyColor)(specialCandyType % 6);
-                        tile.AddComponent<SkillCandyComponent, CandyColor>(color);
-                    }
-                    // 彩色炸弹 (18)
-                    else
-                    {
-                        tile.AddComponent<ColorBombComponent>();
+                        case SpecialCandyType.BlueSkillCandy:
+                            tile.AddComponent<SkillCandyComponent, CandyColor>(CandyColor.Blue);
+                            break;
+                        case SpecialCandyType.GreenSkillCandy:
+                            tile.AddComponent<SkillCandyComponent, CandyColor>(CandyColor.Green);
+                            break;
+                        case SpecialCandyType.RedSkillCandy:
+                            tile.AddComponent<SkillCandyComponent, CandyColor>(CandyColor.Red);
+                            break;
+                        case SpecialCandyType.YellowSkillCandy:
+                            tile.AddComponent<SkillCandyComponent, CandyColor>(CandyColor.Yellow);
+                            break;
+                        case SpecialCandyType.ColorBomb:
+                            tile.AddComponent<ColorBombComponent>();
+                            break;
                     }
                     break;
-                    
+
+
                 case LevelTileType.SpecialBlock:
                     // 创建特殊方块
                     tile = self.AddChild<Tile, int, int>(x, y);
@@ -85,7 +80,7 @@ namespace ET
                             break;
                     }
                     break;
-                    
+
                 case LevelTileType.Collectable:
                     // 创建收集物
                     tile = self.AddChild<Tile, int, int>(x, y);

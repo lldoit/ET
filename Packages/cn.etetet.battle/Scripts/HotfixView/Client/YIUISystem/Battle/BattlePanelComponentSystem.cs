@@ -9,16 +9,20 @@ namespace ET.Client
     /// Author  LL
     /// Date    2026.1.8
     /// Desc    战斗界面面板系统
+    /// UI空间渲染模式
     /// </summary>
     [FriendOf(typeof(BattlePanelComponent))]
+    [FriendOf(typeof(Match3BoardComponent))]
     [FriendOf(typeof(Match3InputComponent))]
+    [FriendOf(typeof(TilePoolComponent))]
+    [FriendOf(typeof(FxPoolComponent))]
     public static partial class BattlePanelComponentSystem
     {
         /// <summary>
         /// 退出战斗确认来源标识
         /// </summary>
         public const string ConfirmSource_ExitBattle = "ExitBattle";
-        
+
         [EntitySystem]
         private static void YIUIInitialize(this BattlePanelComponent self)
         {
@@ -32,56 +36,90 @@ namespace ET.Client
         [EntitySystem]
         private static async ETTask<bool> YIUIOpen(this BattlePanelComponent self)
         {
-            // 使用 u_ComBoardCenterTransform 的世界坐标设置 BoardRoot 位置
-            // BoardRoot 保持在世界空间独立渲染，不作为 UI 子节点
-            if (self.u_ComBoardCenterTransform != null)
+            var currentScenesComponent = self.Root().GetComponent<CurrentScenesComponent>();
+            var battleScene = currentScenesComponent?.Scene;
+            var board = battleScene?.GetComponent<Match3BoardComponent>();
+
+            if (board == null)
             {
-                var currentScenesComponent = self.Root().GetComponent<CurrentScenesComponent>();
-                var battleScene = currentScenesComponent?.Scene;
-                var tilePool = battleScene?.GetComponent<TilePoolComponent>();
-                if (tilePool != null)
-                {
-                    tilePool.SetBoardRootPosition(self.u_ComBoardCenterTransform.position, 0.4f);
-                }
-                
-                // 获取 Canvas 的相机并设置给 Match3InputComponent
-                // 因为棋盘在 UI 坐标系中，需要使用 UI 相机进行射线检测
-                var canvas = self.u_ComBoardCenterTransform.GetComponentInParent<Canvas>();
-                if (canvas != null)
-                {
-                    Camera uiCamera = canvas.worldCamera;
-                    if (uiCamera == null && canvas.renderMode == RenderMode.ScreenSpaceOverlay)
-                    {
-                        // ScreenSpaceOverlay 模式使用 Camera.main
-                        uiCamera = Camera.main;
-                    }
-                    
-                    var board = battleScene?.GetComponent<Match3BoardComponent>();
-                    var inputComponent = board?.GetComponent<Match3InputComponent>();
-                    if (inputComponent != null && uiCamera != null)
-                    {
-                        inputComponent.GameCamera = uiCamera;
-                        Log.Info($"[BattlePanel] 设置 Match3InputComponent 相机: {uiCamera.name}");
-                    }
-                }
+                Log.Warning("[BattlePanel] Match3BoardComponent 未找到");
+                await ETTask.CompletedTask;
+                return true;
             }
-            
+
+            // UI渲染模式初始化
+            await self.InitializeUIRenderMode(battleScene, board);
+
             await ETTask.CompletedTask;
             return true;
         }
 
+        /// <summary>
+        /// 初始化UI渲染模式
+        /// </summary>
+        private static async ETTask InitializeUIRenderMode(this BattlePanelComponent self, Scene battleScene, Match3BoardComponent board)
+        {
+            if (self.u_ComBoardCenterTransform == null)
+            {
+                Log.Warning("[BattlePanel] u_ComBoardCenterTransform 未设置，无法初始化UI渲染模式");
+                return;
+            }
+
+            // 获取或转换为RectTransform
+            var boardRectTransform = self.u_ComBoardCenterTransform.GetComponent<RectTransform>();
+            if (boardRectTransform == null)
+            {
+                Log.Warning("[BattlePanel] BoardCenter 缺少 RectTransform");
+                return;
+            }
+
+            // 获取Canvas
+            var canvas = self.u_ComBoardCenterTransform.GetComponentInParent<Canvas>();
+
+            // 获取TilePoolComponent
+            var uiTilePool = battleScene.GetComponent<TilePoolComponent>();
+
+            // 设置UITilePool的根节点
+            uiTilePool.BoardRoot = boardRectTransform;
+            uiTilePool.TileSize = new Vector2(Match3RenderConfig.UITileSize, Match3RenderConfig.UITileSize);
+            uiTilePool.TileSpacing = new Vector2(Match3RenderConfig.UITileSpacing, Match3RenderConfig.UITileSpacing);
+
+            // 初始化UITilePool
+            await uiTilePool.InitializeAsync();
+
+            // 创建UI棋盘视图（瓦片）
+            await board.InitializeBoardUIViewAsync(board.Level);
+
+            // 设置Match3InputComponent的UI相关字段
+            var inputComponent = board?.GetComponent<Match3InputComponent>();
+            if (inputComponent != null)
+            {
+                inputComponent.InitializeUI(
+                    uiTilePool.TileContainer,
+                    canvas,
+                    uiTilePool.TileSize,
+                    uiTilePool.TileSpacing
+                );
+                Log.Info("[BattlePanel] UI模式 - 输入组件初始化完成");
+            }
+
+            // 初始化特效池
+            var uiFxPool = board.GetComponent<FxPoolComponent>();
+
+            // 设置特效容器
+            uiFxPool.FxContainer = boardRectTransform;
+            await uiFxPool.InitializeAsync();
+
+            Log.Info("[BattlePanel] UI渲染模式初始化完成");
+        }
+
         #region YIUIEvent开始
-        
+
         [YIUIInvoke(BattlePanelComponent.OnEventBackInvoke)]
         private static void OnEventBackInvoke(this BattlePanelComponent self)
         {
             BattleSceneHelper.ExitBattleAsync(self.Root()).NoContext();
-            self.YIUIMgr().ClosePanel<BattlePanelComponent>();;
-            /*// 打开确认弹窗，使用来源标识
-            self.YIUIMgr().Root.OpenPanelAsync<ConfirmPopupPanelComponent, string, string, string>(
-                "Title",
-                "Exit?",
-                ConfirmSource_ExitBattle).NoContext();*/
+            self.YIUIMgr().ClosePanel<BattlePanelComponent>(); ;
         }
         #endregion YIUIEvent结束
     }

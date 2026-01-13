@@ -37,7 +37,7 @@ namespace ET.Client
             self.UIPanel.Priority = 100;
             self.UIPanel.CachePanelTime = 10;
 
-            self.u_ComBoardCenterTransform = self.UIBase.ComponentTable.FindComponent<UnityEngine.Transform>("u_ComBoardCenterTransform");
+            self.u_ComBoardCenterTransform = self.UIBase.ComponentTable.FindComponent<UnityEngine.RectTransform>("u_ComBoardCenterTransform");
             self.u_EventBack = self.UIBase.EventTable.FindEvent<UIEventP0>("u_EventBack");
             self.u_EventBackHandle = self.u_EventBack.Add(self,BattlePanelComponent.OnEventBackInvoke);
 

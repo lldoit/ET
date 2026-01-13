@@ -17,39 +17,15 @@ namespace ET.Client
         private static void Awake(this TilePoolComponent self)
         {
             self.TilePools = new Dictionary<GameObject, Queue<GameObject>>();
+            self.UIPrefabPools = new Dictionary<GameObject, Queue<GameObject>>();
 
             // 创建对象池根节点
             var poolRootObj = new GameObject("TilePoolRoot");
             poolRootObj.transform.SetParent(null);
             self.PoolRoot = poolRootObj.transform;
-
-            // 创建棋盘根节点（在世界空间独立渲染，位置由 SetBoardRootPosition 设置）
-            var boardRootObj = new GameObject("BoardRoot");
-            boardRootObj.transform.SetParent(null);
-            boardRootObj.transform.position = Vector3.zero;
-            boardRootObj.transform.localScale = Vector3.one;
-            self.BoardRoot = boardRootObj.transform;
         }
 
-        /// <summary>
-        /// 设置棋盘根节点的世界坐标位置（不作为子节点）
-        /// 用于将 BoardRoot 定位到 UI 元素的世界坐标，同时保持独立渲染
-        /// </summary>
-        /// <param name="worldPosition">世界坐标位置</param>
-        /// <param name="scale">缩放比例（默认 0.5）</param>
-        public static void SetBoardRootPosition(this TilePoolComponent self, Vector3 worldPosition, float scale = 0.5f)
-        {
-            if (self.BoardRoot == null)
-            {
-                Log.Error("[TilePool] BoardRoot 未初始化");
-                return;
-            }
 
-            self.BoardRoot.position = worldPosition;
-            self.BoardRoot.localScale = new Vector3(scale, scale, scale);
-
-            Log.Info($"[TilePool] BoardRoot 位置: {worldPosition}, 缩放: {scale}");
-        }
 
         [EntitySystem]
         private static void Destroy(this TilePoolComponent self)
@@ -59,13 +35,6 @@ namespace ET.Client
             {
                 UnityEngine.Object.Destroy(self.PoolRoot.gameObject);
                 self.PoolRoot = null;
-            }
-
-            // 清理棋盘
-            if (self.BoardRoot != null)
-            {
-                UnityEngine.Object.Destroy(self.BoardRoot.gameObject);
-                self.BoardRoot = null;
             }
 
             // 清理对象池字典
@@ -85,6 +54,43 @@ namespace ET.Client
                 self.TilePools.Clear();
             }
 
+            // 清理UI对象池
+            if (self.UIPrefabPools != null)
+            {
+                foreach (var pool in self.UIPrefabPools.Values)
+                {
+                    while (pool.Count > 0)
+                    {
+                        var obj = pool.Dequeue();
+                        if (obj != null)
+                        {
+                            UnityEngine.Object.Destroy(obj);
+                        }
+                    }
+                }
+                self.UIPrefabPools.Clear();
+            }
+
+            // 清理UI容器
+            if (self.TileContainer != null)
+            {
+                UnityEngine.Object.Destroy(self.TileContainer.gameObject);
+                self.TileContainer = null;
+            }
+
+            if (self.CellContainer != null)
+            {
+                UnityEngine.Object.Destroy(self.CellContainer.gameObject);
+                self.CellContainer = null;
+            }
+
+            if (self.UIPoolRoot != null)
+            {
+                UnityEngine.Object.Destroy(self.UIPoolRoot.gameObject);
+                self.UIPoolRoot = null;
+            }
+
+            self.BoardRoot = null;
             self.IsInitialized = false;
         }
 
@@ -135,16 +141,12 @@ namespace ET.Client
             // 加载普通糖果 Prefab
             self.BlueCandyPrefab = await LoadPrefabAsync("BlueCandy");
             self.GreenCandyPrefab = await LoadPrefabAsync("GreenCandy");
-            self.OrangeCandyPrefab = await LoadPrefabAsync("OrangeCandy");
-            self.PurpleCandyPrefab = await LoadPrefabAsync("PurpleCandy");
             self.RedCandyPrefab = await LoadPrefabAsync("RedCandy");
             self.YellowCandyPrefab = await LoadPrefabAsync("YellowCandy");
 
             // 加载技能糖果 Prefab
             self.BlueSkillCandyPrefab = await LoadPrefabAsync("SkillBlueCandy");
             self.GreenSkillCandyPrefab = await LoadPrefabAsync("SkillGreenCandy");
-            self.OrangeSkillCandyPrefab = await LoadPrefabAsync("SkillOrangeCandy");
-            self.PurpleSkillCandyPrefab = await LoadPrefabAsync("SkillPurpleCandy");
             self.RedSkillCandyPrefab = await LoadPrefabAsync("SkillRedCandy");
             self.YellowSkillCandyPrefab = await LoadPrefabAsync("SkillYellowCandy");
 
@@ -168,6 +170,298 @@ namespace ET.Client
             Log.Info("[TilePool] 瓦片池初始化完成");
         }
 
+        #region UI初始化和方法
+
+        /// <summary>
+        /// 初始化UI容器
+        /// </summary>
+        public static void InitializeUIContainers(this TilePoolComponent self)
+        {
+            if (self.BoardRoot == null) return;
+
+            // 创建背景格子容器
+            if (self.CellContainer == null)
+            {
+                var cellContainerGo = new GameObject("CellContainer");
+                self.CellContainer = cellContainerGo.AddComponent<RectTransform>();
+                self.CellContainer.SetParent(self.BoardRoot, false);
+                self.CellContainer.anchorMin = new Vector2(0.5f, 0.5f);
+                self.CellContainer.anchorMax = new Vector2(0.5f, 0.5f);
+                self.CellContainer.pivot = new Vector2(0.5f, 0.5f);
+                self.CellContainer.anchoredPosition = Vector2.zero;
+                self.CellContainer.sizeDelta = Vector2.zero;
+            }
+
+            // 创建瓦片容器
+            if (self.TileContainer == null)
+            {
+                var tileContainerGo = new GameObject("TileContainer");
+                self.TileContainer = tileContainerGo.AddComponent<RectTransform>();
+                self.TileContainer.SetParent(self.BoardRoot, false);
+                self.TileContainer.anchorMin = new Vector2(0.5f, 0.5f);
+                self.TileContainer.anchorMax = new Vector2(0.5f, 0.5f);
+                self.TileContainer.pivot = new Vector2(0.5f, 0.5f);
+                self.TileContainer.anchoredPosition = Vector2.zero;
+                self.TileContainer.sizeDelta = Vector2.zero;
+            }
+
+            // 创建对象池容器（隐藏）
+            if (self.UIPoolRoot == null)
+            {
+                var poolRootGo = new GameObject("UITilePool");
+                self.UIPoolRoot = poolRootGo.AddComponent<RectTransform>();
+                self.UIPoolRoot.SetParent(self.BoardRoot.root, false);
+                poolRootGo.SetActive(false);
+            }
+        }
+
+        /// <summary>
+        /// 获取UI瓦片位置
+        /// </summary>
+        public static Vector2 GetUITilePosition(this TilePoolComponent self, int x, int y, int boardWidth, int boardHeight)
+        {
+            float cellWidth = self.TileSize.x + self.TileSpacing.x;
+            float cellHeight = self.TileSize.y + self.TileSpacing.y;
+
+            // 居中偏移
+            float offsetX = -(boardWidth - 1) * cellWidth / 2;
+            float offsetY = (boardHeight - 1) * cellHeight / 2;
+
+            float posX = offsetX + x * cellWidth;
+            float posY = offsetY - y * cellHeight;
+
+            return new Vector2(posX, posY);
+        }
+
+        /// <summary>
+        /// 从预制体创建或获取UI瓦片对象
+        /// </summary>
+        public static GameObject GetUITileFromPrefab(this TilePoolComponent self, GameObject prefab, Vector2 position, string name = null)
+        {
+            if (prefab == null) return null;
+
+            // 检查对象池
+            if (!self.UIPrefabPools.TryGetValue(prefab, out var pool))
+            {
+                pool = new Queue<GameObject>();
+                self.UIPrefabPools[prefab] = pool;
+            }
+
+            GameObject tileObj;
+            if (pool.Count > 0)
+            {
+                tileObj = pool.Dequeue();
+                tileObj.SetActive(true);
+            }
+            else
+            {
+                // 实例化预制体
+                tileObj = UnityEngine.Object.Instantiate(prefab);
+                if (!string.IsNullOrEmpty(name))
+                {
+                    tileObj.name = name;
+                }
+            }
+
+            // 设置父节点
+            if (self.TileContainer != null)
+            {
+                tileObj.transform.SetParent(self.TileContainer, false);
+            }
+
+            // 设置位置
+            var rectTransform = tileObj.GetComponent<RectTransform>();
+            if (rectTransform != null)
+            {
+                rectTransform.anchoredPosition = position;
+                rectTransform.sizeDelta = self.TileSize;
+            }
+
+            return tileObj;
+        }
+
+        /// <summary>
+        /// 回收UI瓦片到对象池
+        /// </summary>
+        public static void ReturnUITileToPool(this TilePoolComponent self, GameObject tileObj, GameObject prefab)
+        {
+            if (tileObj == null || prefab == null) return;
+
+            if (!self.UIPrefabPools.TryGetValue(prefab, out var pool))
+            {
+                pool = new Queue<GameObject>();
+                self.UIPrefabPools[prefab] = pool;
+            }
+
+            tileObj.SetActive(false);
+            if (self.UIPoolRoot != null)
+            {
+                tileObj.transform.SetParent(self.UIPoolRoot, false);
+            }
+            pool.Enqueue(tileObj);
+        }
+
+        /// <summary>
+        /// 创建UI糖果视图
+        /// </summary>
+        public static (GameObject, GameObject) CreateUICandyView(this TilePoolComponent self, CandyColor color, Vector2 position)
+        {
+            var prefab = self.GetCandyPrefab(color);
+            if (prefab == null)
+            {
+                Log.Warning($"[TilePool] 未找到颜色 {color} 的糖果预制体");
+                return (null, null);
+            }
+
+            var tileObj = self.GetUITileFromPrefab(prefab, position, $"Candy_{color}");
+            return (tileObj, prefab);
+        }
+
+        /// <summary>
+        /// 创建UI技能糖果视图
+        /// </summary>
+        public static (GameObject, GameObject) CreateUISkillCandyView(this TilePoolComponent self, CandyColor color, Vector2 position)
+        {
+            var prefab = self.GetSkillCandyPrefab(color);
+            if (prefab == null)
+            {
+                Log.Warning($"[TilePool] 未找到颜色 {color} 的技能糖果预制体");
+                return (null, null);
+            }
+
+            var tileObj = self.GetUITileFromPrefab(prefab, position, $"SkillCandy_{color}");
+            return (tileObj, prefab);
+        }
+
+        /// <summary>
+        /// 创建UI彩色炸弹视图
+        /// </summary>
+        public static (GameObject, GameObject) CreateUIColorBombView(this TilePoolComponent self, Vector2 position)
+        {
+            var prefab = self.ColorBombPrefab;
+            if (prefab == null)
+            {
+                Log.Warning("[TilePool] 未找到彩色炸弹预制体");
+                return (null, null);
+            }
+
+            var tileObj = self.GetUITileFromPrefab(prefab, position, "ColorBomb");
+            return (tileObj, prefab);
+        }
+
+        /// <summary>
+        /// 创建UI特殊方块视图
+        /// </summary>
+        public static (GameObject, GameObject) CreateUISpecialBlockView(this TilePoolComponent self, SpecialBlockType type, Vector2 position)
+        {
+            var prefab = self.GetSpecialBlockPrefab(type);
+            if (prefab == null)
+            {
+                Log.Warning($"[TilePool] 未找到类型 {type} 的特殊方块预制体");
+                return (null, null);
+            }
+
+            var tileObj = self.GetUITileFromPrefab(prefab, position, $"SpecialBlock_{type}");
+            return (tileObj, prefab);
+        }
+
+        /// <summary>
+        /// 创建UI收集物视图
+        /// </summary>
+        public static (GameObject, GameObject) CreateUICollectableView(this TilePoolComponent self, CollectableType type, Vector2 position)
+        {
+            var prefab = self.GetCollectablePrefab(type);
+            if (prefab == null)
+            {
+                Log.Warning($"[TilePool] 未找到类型 {type} 的收集物预制体");
+                return (null, null);
+            }
+
+            var tileObj = self.GetUITileFromPrefab(prefab, position, $"Collectable_{type}");
+            return (tileObj, prefab);
+        }
+
+        /// <summary>
+        /// 创建UI巧克力视图
+        /// </summary>
+        public static (GameObject, GameObject) CreateUIChocolateView(this TilePoolComponent self, Vector2 position)
+        {
+            var prefab = self.ChocolatePrefab;
+            if (prefab == null)
+            {
+                Log.Warning("[TilePool] 未找到巧克力预制体");
+                return (null, null);
+            }
+
+            var tileObj = self.GetUITileFromPrefab(prefab, position, "Chocolate");
+            return (tileObj, prefab);
+        }
+
+        /// <summary>
+        /// 创建UI棉花糖视图
+        /// </summary>
+        public static (GameObject, GameObject) CreateUIMarshmallowView(this TilePoolComponent self, Vector2 position)
+        {
+            var prefab = self.MarshmallowPrefab;
+            if (prefab == null)
+            {
+                Log.Warning("[TilePool] 未找到棉花糖预制体");
+                return (null, null);
+            }
+
+            var tileObj = self.GetUITileFromPrefab(prefab, position, "Marshmallow");
+            return (tileObj, prefab);
+        }
+
+        /// <summary>
+        /// 创建UI不可破坏方块视图
+        /// </summary>
+        public static (GameObject, GameObject) CreateUIUnbreakableView(this TilePoolComponent self, Vector2 position)
+        {
+            var prefab = self.UnbreakablePrefab;
+            if (prefab == null)
+            {
+                Log.Warning("[TilePool] 未找到不可破坏方块预制体");
+                return (null, null);
+            }
+
+            var tileObj = self.GetUITileFromPrefab(prefab, position, "Unbreakable");
+            return (tileObj, prefab);
+        }
+
+        /// <summary>
+        /// 创建UI背景格子
+        /// </summary>
+        public static GameObject CreateUIBgCell(this TilePoolComponent self, int x, int y, Vector2 position)
+        {
+            // 棋盘格交替颜色
+            bool isLight = (x + y) % 2 == 0;
+            var prefab = isLight ? self.LightBgTilePrefab : self.DarkBgTilePrefab;
+
+            if (prefab == null) return null;
+
+            // 背景格子直接实例化，不需要对象池
+            var cellObj = UnityEngine.Object.Instantiate(prefab);
+            cellObj.name = $"BgCell_{x}_{y}";
+
+            if (self.CellContainer != null)
+            {
+                cellObj.transform.SetParent(self.CellContainer, false);
+            }
+
+            var rt = cellObj.GetComponent<RectTransform>();
+            if (rt != null)
+            {
+                rt.anchoredPosition = position;
+                rt.sizeDelta = self.TileSize;
+            }
+
+            return cellObj;
+        }
+
+        #endregion
+
+
         /// <summary>
         /// 获取普通糖果 Prefab
         /// </summary>
@@ -177,8 +471,6 @@ namespace ET.Client
             {
                 CandyColor.Blue => self.BlueCandyPrefab,
                 CandyColor.Green => self.GreenCandyPrefab,
-                CandyColor.Orange => self.OrangeCandyPrefab,
-                CandyColor.Purple => self.PurpleCandyPrefab,
                 CandyColor.Red => self.RedCandyPrefab,
                 CandyColor.Yellow => self.YellowCandyPrefab,
                 _ => self.RedCandyPrefab
@@ -210,14 +502,9 @@ namespace ET.Client
                 tileObj = UnityEngine.Object.Instantiate(prefab);
             }
 
-            // 统一设置父节点到 BoardRoot
-            if (tileObj != null && self.BoardRoot != null)
-            {
-                tileObj.transform.SetParent(self.BoardRoot, false);
-            }
-
             return tileObj;
         }
+
 
         /// <summary>
         /// 回收瓦片到对象池
@@ -280,8 +567,6 @@ namespace ET.Client
             {
                 CandyColor.Blue => self.BlueSkillCandyPrefab,
                 CandyColor.Green => self.GreenSkillCandyPrefab,
-                CandyColor.Orange => self.OrangeSkillCandyPrefab,
-                CandyColor.Purple => self.PurpleSkillCandyPrefab,
                 CandyColor.Red => self.RedSkillCandyPrefab,
                 CandyColor.Yellow => self.YellowSkillCandyPrefab,
                 _ => self.RedSkillCandyPrefab

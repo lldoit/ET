@@ -17,17 +17,52 @@ namespace ET.Client
         /// </summary>
         public Transform PoolRoot;
 
+        #region UI相关字段
+
         /// <summary>
-        /// 棋盘根节点（用于放置活动瓦片）
+        /// 棋盘UI根节点
         /// </summary>
-        public Transform BoardRoot;
+        public RectTransform BoardRoot;
+
+        /// <summary>
+        /// 背景格子容器
+        /// </summary>
+        public RectTransform CellContainer;
+
+        /// <summary>
+        /// 瓦片容器（用于可移动的瓦片）
+        /// </summary>
+        public RectTransform TileContainer;
+
+        /// <summary>
+        /// UI对象池根节点（隐藏）
+        /// </summary>
+        public RectTransform UIPoolRoot;
+
+        /// <summary>
+        /// 瓦片尺寸（像素）
+        /// </summary>
+        public Vector2 TileSize;
+
+        /// <summary>
+        /// 瓦片间距（像素）
+        /// </summary>
+        public Vector2 TileSpacing;
+
+        /// <summary>
+        /// UI对象池字典
+        /// Key: 源Prefab, Value: 可用对象队列
+        /// </summary>
+        public Dictionary<GameObject, Queue<GameObject>> UIPrefabPools;
+
+        #endregion
+
+
 
         #region 普通糖果Prefab
 
         public GameObject BlueCandyPrefab;
         public GameObject GreenCandyPrefab;
-        public GameObject OrangeCandyPrefab;
-        public GameObject PurpleCandyPrefab;
         public GameObject RedCandyPrefab;
         public GameObject YellowCandyPrefab;
 
@@ -37,8 +72,6 @@ namespace ET.Client
 
         public GameObject BlueSkillCandyPrefab;
         public GameObject GreenSkillCandyPrefab;
-        public GameObject OrangeSkillCandyPrefab;
-        public GameObject PurpleSkillCandyPrefab;
         public GameObject RedSkillCandyPrefab;
         public GameObject YellowSkillCandyPrefab;
 

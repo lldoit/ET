@@ -1,11 +1,10 @@
-using PrimeTween;
 using UnityEngine;
 
 namespace ET.Client
 {
     /// <summary>
     /// 道具动画事件处理器
-    /// 根据道具类型播放对应的动画效果
+    /// 根据道具类型播放对应的动画效果（UI模式）
     /// </summary>
     [Event(SceneType.Battle)]
     public class BoosterAnimationEventHandler : AEvent<Scene, BoosterAnimationEvent>
@@ -19,61 +18,40 @@ namespace ET.Client
                 return;
             }
 
-            // 获取目标世界坐标
-            Vector3 worldPosition = match3Board.GetTileWorldPosition(args.TargetX, args.TargetY);
+            // 获取UI特效池
+            var uiFxPool = match3Board.GetComponent<FxPoolComponent>();
+            if (uiFxPool == null)
+            {
+                return;
+            }
+
+            // 获取瓦片的世界坐标
+            Vector3 worldPos = Vector3.zero;
+            var tile = match3Board.GetTile(args.TargetX, args.TargetY);
+            if (tile != null)
+            {
+                var uiTileView = tile.GetComponent<TileView>();
+                if (uiTileView != null && uiTileView.RectTransform != null)
+                {
+                    worldPos = uiTileView.RectTransform.position;
+                }
+            }
 
             switch (args.BoosterType)
             {
                 case BoosterType.Bomb:
-                    await PlayBombAnimationAsync(scene, worldPosition, args.Duration);
+                    uiFxPool.PlaySkillCandyExplosion(worldPos);
                     break;
 
                 case BoosterType.ColorBomb:
-                    await PlayColorBombUseAnimationAsync(scene, worldPosition, args.Duration);
+                    uiFxPool.PlayColorBombExplosion(worldPos);
                     break;
 
                 default:
                     break;
             }
-        }
 
-        /// <summary>
-        /// 播放炸弹道具动画
-        /// </summary>
-        private static async ETTask PlayBombAnimationAsync(Scene scene, Vector3 position, float duration)
-        {
-            // 获取特效池
-            var match3Board = scene.GetComponent<Match3BoardComponent>();
-            var fxPool = match3Board?.GetComponent<FxPoolComponent>();
-            if (fxPool == null)
-            {
-                return;
-            }
-
-            // 播放炸弹爆炸特效
-            // 使用技能糖果爆炸特效（大范围爆炸）
-            fxPool.PlaySkillCandyExplosion(position);
-
-            await scene.Root().GetComponent<TimerComponent>().WaitAsync((long)(duration * 1000));
-        }
-
-        /// <summary>
-        /// 播放彩色炸弹道具使用动画
-        /// </summary>
-        private static async ETTask PlayColorBombUseAnimationAsync(Scene scene, Vector3 position, float duration)
-        {
-            // 获取特效池
-            var match3Board = scene.GetComponent<Match3BoardComponent>();
-            var fxPool = match3Board?.GetComponent<FxPoolComponent>();
-            if (fxPool == null)
-            {
-                return;
-            }
-
-            // 播放生成特效
-            fxPool.PlaySpawnParticles(position);
-
-            await scene.Root().GetComponent<TimerComponent>().WaitAsync((long)(duration * 1000));
+            await scene.Root().GetComponent<TimerComponent>().WaitAsync((long)(args.Duration * 1000));
         }
     }
 }

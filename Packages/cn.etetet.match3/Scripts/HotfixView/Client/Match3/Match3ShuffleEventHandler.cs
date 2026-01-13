@@ -5,7 +5,7 @@ namespace ET.Client
 {
     /// <summary>
     /// Match3洗牌事件处理器
-    /// 使用PrimeTween播放瓦片洗牌动画
+    /// 使用PrimeTween播放瓦片洗牌动画（UI模式）
     /// </summary>
     [Event(SceneType.Battle)]
     public class Match3ShuffleEventHandler : AEvent<Scene, Match3ShuffleEvent>
@@ -34,24 +34,20 @@ namespace ET.Client
                     continue;
                 }
 
-                var tileView = tile.GetComponent<TileView>();
-                if (tileView == null || tileView.GameObject == null)
+                // UI渲染模式
+                var uiTileView = tile.GetComponent<TileView>();
+                if (uiTileView == null || uiTileView.RectTransform == null)
                 {
                     continue;
                 }
 
-                var transform = tileView.GameObject.transform;
-                
-                // 获取目标世界坐标
-                Vector3 targetPosition = match3Board.GetTileWorldPosition(moveInfo.ToX, moveInfo.ToY);
-                
-                // 设置位置
-                transform.position = targetPosition;
-                
-                // 创建缩放动画序列：先缩小到0.5，再恢复到1
+                Vector2 targetPosition = match3Board.GetUITilePosition(moveInfo.ToX, moveInfo.ToY);
+                uiTileView.RectTransform.anchoredPosition = targetPosition;
+
+                // 创建缩放动画序列
                 var sequence = Sequence.Create();
-                _ = sequence.Chain(Tween.Scale(transform, 0.5f, args.Duration * 0.5f, Ease.InQuad));
-                _ = sequence.Chain(Tween.Scale(transform, 1f, args.Duration * 0.5f, Ease.OutQuad));
+                _ = sequence.Chain(Tween.Scale(uiTileView.RectTransform, 0.5f, args.Duration * 0.5f, Ease.InQuad));
+                _ = sequence.Chain(Tween.Scale(uiTileView.RectTransform, 1f, args.Duration * 0.5f, Ease.OutQuad));
             }
 
             // 等待动画完成

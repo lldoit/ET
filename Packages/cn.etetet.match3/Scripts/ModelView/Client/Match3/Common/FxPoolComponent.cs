@@ -10,13 +10,26 @@ namespace ET.Client
     [ComponentOf(typeof(Match3BoardComponent))]
     public class FxPoolComponent : Entity, IAwake, IDestroy
     {
+        #region UI渲染相关字段
+
+        /// <summary>
+        /// 特效容器（UI模式下为RectTransform）
+        /// </summary>
+        public RectTransform FxContainer;
+
+        /// <summary>
+        /// 特效的世界空间根节点
+        /// 粒子特效在世界空间渲染，但位置跟随UI
+        /// </summary>
+        public Transform FxWorldRoot;
+
+        #endregion
+
         /// <summary>
         /// 普通糖果爆炸特效（按颜色）
         /// </summary>
         public GameObject BlueCandyExplosion;
         public GameObject GreenCandyExplosion;
-        public GameObject OrangeCandyExplosion;
-        public GameObject PurpleCandyExplosion;
         public GameObject RedCandyExplosion;
         public GameObject YellowCandyExplosion;
 

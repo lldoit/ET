@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 99d1a24500be67842ba2de6161b834ee
+guid: 19339f11f842b49729c6e0e1a5269d21
 timeCreated: 1514395470
 licenseType: Store
 NativeFormatImporter:
@@ -7,10 +7,3 @@ NativeFormatImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 111083
-  packageName: Candy Match 3 Kit
-  packageVersion: 3.0.0
-  assetPath: Assets/CandyMatch3Kit/Prefabs/Candies/WrappedYellowCandy.prefab
-  uploadId: 805118

@@ -34,7 +34,7 @@ namespace ET.Client
             self.UIPanel.Layer = EPanelLayer.Panel;
             self.UIPanel.PanelOption = EPanelOption.TimeCache;
             self.UIPanel.StackOption = EPanelStackOption.VisibleTween;
-            self.UIPanel.Priority = 0;
+            self.UIPanel.Priority = 10;
             self.UIPanel.CachePanelTime = 10;
 
 

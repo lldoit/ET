@@ -14,7 +14,7 @@
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "PurpleCandy",
+            "CandyType": "GreenCandy",
             "SpecialCandyType": "BlueCandyHorizontalStriped",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
@@ -22,7 +22,7 @@
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "PurpleCandy",
+            "CandyType": "GreenCandy",
             "SpecialCandyType": "BlueCandyHorizontalStriped",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
@@ -38,7 +38,7 @@
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "PurpleCandy",
+            "CandyType": "RedCandy",
             "SpecialCandyType": "BlueCandyHorizontalStriped",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
@@ -46,7 +46,7 @@
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "PurpleCandy",
+            "CandyType": "GreenCandy",
             "SpecialCandyType": "BlueCandyHorizontalStriped",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
@@ -54,7 +54,7 @@
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "OrangeCandy",
+            "CandyType": "RedCandy",
             "SpecialCandyType": "BlueCandyHorizontalStriped",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
@@ -62,7 +62,7 @@
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "PurpleCandy",
+            "CandyType": "YellowCandy",
             "SpecialCandyType": "BlueCandyHorizontalStriped",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
@@ -94,7 +94,7 @@
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "OrangeCandy",
+            "CandyType": "RedCandy",
             "SpecialCandyType": "BlueCandyHorizontalStriped",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
@@ -102,7 +102,7 @@
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "OrangeCandy",
+            "CandyType": "RedCandy",
             "SpecialCandyType": "BlueCandyHorizontalStriped",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
@@ -182,7 +182,7 @@
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "OrangeCandy",
+            "CandyType": "YellowCandy",
             "SpecialCandyType": "BlueCandyHorizontalStriped",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
@@ -222,7 +222,7 @@
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "PurpleCandy",
+            "CandyType": "RedCandy",
             "SpecialCandyType": "BlueCandyHorizontalStriped",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
@@ -230,7 +230,7 @@
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "OrangeCandy",
+            "CandyType": "YellowCandy",
             "SpecialCandyType": "BlueCandyHorizontalStriped",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
@@ -262,7 +262,7 @@
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "PurpleCandy",
+            "CandyType": "RedCandy",
             "SpecialCandyType": "BlueCandyHorizontalStriped",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
@@ -286,7 +286,7 @@
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "PurpleCandy",
+            "CandyType": "YellowCandy",
             "SpecialCandyType": "BlueCandyHorizontalStriped",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"

@@ -208,20 +208,22 @@ namespace ET.Client
         /// <param name="self">道具视图组件</param>
         /// <param name="boosterType">使用的道具类型</param>
         /// <param name="tile">被消除的瓦片</param>
-        /// <param name="worldPosition">世界坐标位置</param>
+        /// <param name="worldPosition">世界坐标位置（UI模式下忽略）</param>
         public static async ETTask ShowTileDestroyedByBoosterAsync(this BoosterViewComponent self, BoosterType boosterType, Tile tile, Vector3 worldPosition)
         {
             // 获取棋盘组件并播放瓦片对应的消除特效
             var match3Board = self.Root().GetComponent<Match3BoardComponent>();
             if (match3Board != null && tile != null)
             {
-                // 根据瓦片类型（CandyComponent/SkillCandyComponent/ColorBombComponent等）
-                // 自动播放对应的消除特效
-                match3Board.PlayTileExplosionEffect(tile, worldPosition);
+                // UI模式：使用瓦片坐标播放特效
+                int x = tile.GetX();
+                int y = tile.GetY();
+                match3Board.PlayUITileExplosionEffectAt(tile, x, y);
             }
 
             await ETTask.CompletedTask;
         }
+
     }
 }
 

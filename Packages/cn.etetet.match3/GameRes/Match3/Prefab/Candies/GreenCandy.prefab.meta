@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 87af08003e264714a894ff53cfb780c0
+guid: b021b292b671e4ac0b759b859baec679
 timeCreated: 1514395470
 licenseType: Store
 NativeFormatImporter:
@@ -7,10 +7,3 @@ NativeFormatImporter:
   userData: 
   assetBundleName: 
   assetBundleVariant: 
-AssetOrigin:
-  serializedVersion: 1
-  productId: 111083
-  packageName: Candy Match 3 Kit
-  packageVersion: 3.0.0
-  assetPath: Assets/CandyMatch3Kit/Prefabs/Candies/GreenCandy.prefab
-  uploadId: 805118
