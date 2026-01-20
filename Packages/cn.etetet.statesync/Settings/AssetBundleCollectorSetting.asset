@@ -102,6 +102,14 @@ MonoBehaviour:
         FilterRuleName: CollectPrefab
         AssetTags: 
         UserData: 
+      - CollectPath: Packages/cn.etetet.battle/Assets/GameRes/Prefab/Hero
+        CollectorGUID: ca0a3042bebaf4e2ca31f90264d9d623
+        CollectorType: 0
+        AddressRuleName: AddressByFolderAndFileName
+        PackRuleName: PackSeparately
+        FilterRuleName: CollectAll
+        AssetTags: 
+        UserData: 
     - GroupName: YIUI
       GroupDesc: 
       AssetTags: 

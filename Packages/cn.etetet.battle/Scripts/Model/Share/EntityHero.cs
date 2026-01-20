@@ -7,7 +7,7 @@ namespace ET
     /// 英雄实体 - 只包含数据，不包含方法
     /// 所有逻辑请使用 EntityHeroSystem 扩展方法
     /// </summary>
-    [ComponentOf(typeof(EntityGroup))]
+    [ChildOf(typeof(EntityGroup))]
     public class EntityHero : Entity, IAwake<int>, IDestroy
     {
         /// <summary>

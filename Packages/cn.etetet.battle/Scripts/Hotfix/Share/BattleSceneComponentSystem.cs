@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using ET.Client;
 
 namespace ET
 {
@@ -52,8 +53,8 @@ namespace ET
             }
 
             // TODO: 根据关卡配置初始化英雄和敌人
-            // self.InitializeHeroes(levelId);
-            // self.InitializeEnemies(levelId);
+            self.InitializeHeroes(levelId);
+            self.InitializeEnemies(levelId);
 
             // 启动回合管理器
             TurnManagerComponent turnManager = self.GetComponent<TurnManagerComponent>();
@@ -101,7 +102,7 @@ namespace ET
             if (playerGroup == null)
                 return null;
 
-            EntityHero hero = playerGroup.AddComponent<EntityHero, int>(heroId);
+            EntityHero hero = playerGroup.AddChild<EntityHero, int>(heroId);
             hero.HeroColor = heroColor;
             hero.MaxEnergy = maxEnergy;
             hero.Energy = 0;
@@ -111,6 +112,8 @@ namespace ET
             // 添加Buff组件
             BuffComponent buffCom = hero.AddComponent<BuffComponent>();
             buffCom.SetOwner(hero);
+            
+            EventSystem.Instance.Publish(self.Scene(), new AfterEntityHeroCreate() {Hero = hero});
 
             return hero;
         }
@@ -129,7 +132,7 @@ namespace ET
             if (enemyGroup == null)
                 return null;
 
-            EntityHero enemy = enemyGroup.AddComponent<EntityHero, int>(heroId);
+            EntityHero enemy = enemyGroup.AddChild<EntityHero, int>(heroId);
             enemy.MaxEnergy = maxEnergy;
             enemy.Energy = 0;
             enemy.GroupRef = enemyGroup;
@@ -144,6 +147,30 @@ namespace ET
             buffCom.SetOwner(enemy);
 
             return enemy;
+        }
+
+        /// <summary>
+        /// 根据关卡配置初始化玩家英雄
+        /// </summary>
+        /// <param name="self">战斗场景组件</param>
+        /// <param name="levelId">关卡ID</param>
+        private static void InitializeHeroes(this BattleSceneComponent self, int levelId)
+        {
+            // TODO: 根据关卡配置表获取英雄配置
+            // 目前使用默认配置进行测试
+            // 后续需要从配置表读取英雄ID、颜色、能量等信息
+        }
+
+        /// <summary>
+        /// 根据关卡配置初始化敌方单位
+        /// </summary>
+        /// <param name="self">战斗场景组件</param>
+        /// <param name="levelId">关卡ID</param>
+        private static void InitializeEnemies(this BattleSceneComponent self, int levelId)
+        {
+            // TODO: 根据关卡配置表获取敌人配置
+            // 目前使用默认配置进行测试
+            // 后续需要从配置表读取敌人ID、攻击间隔、能量等信息
         }
     }
 }

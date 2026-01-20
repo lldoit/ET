@@ -44,9 +44,15 @@ namespace ET.Client
             // 获取root场景
             Scene root = self.Root();
             
-            // 进入战斗场景，传入关卡ID（TODO: 实际应该传入选择的关卡ID）
-            int levelId = 1;
-            await BattleSceneHelper.EnterBattleAsync(root, levelId);
+            // 从关卡配置获取三消关卡ID
+            StageConfig stageConfig = StageConfigCategory.Instance.GetOne();
+            if (stageConfig == null)
+            {
+                Log.Error("关卡配置为空，无法进入战斗");
+                return;
+            }
+
+            await BattleSceneHelper.EnterBattleAsync(root, stageConfig.Id);
         }
         #endregion YIUIEvent结束
     }

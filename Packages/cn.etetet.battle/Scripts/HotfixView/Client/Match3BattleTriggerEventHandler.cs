@@ -27,7 +27,7 @@ namespace ET.Client
             }
 
             // 触发回合处理
-            await turnManager.OnMatch3Combo(args.Color, args.MatchCount, args.IsSkillCandy);
+            await turnManager.OnMatch3Combo(args.Color, args.MatchCount, args.IsSkillCandy, args.TilePositions);
         }
     }
 }

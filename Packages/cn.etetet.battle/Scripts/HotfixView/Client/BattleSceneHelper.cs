@@ -8,8 +8,6 @@ namespace ET.Client
     [FriendOf(typeof(TilePoolComponent))]
     [FriendOf(typeof(Match3BoardComponent))]
     public static class BattleSceneHelper
-
-
     {
         /// <summary>
         /// 进入战斗场景
@@ -40,9 +38,11 @@ namespace ET.Client
 
             // 添加战斗组件
             BattleSceneComponent battle = battleScene.AddComponent<BattleSceneComponent>();
+            
+            StageConfig stageConfig = StageConfigCategory.Instance.Get(levelId);
 
             // 初始化三消棋盘
-            await InitializeMatch3BoardAsync(battleScene, levelId);
+            await InitializeMatch3BoardAsync(battleScene, stageConfig.Match3LevelId);
 
             // 开始战斗
             await battle.StartBattle(levelId);

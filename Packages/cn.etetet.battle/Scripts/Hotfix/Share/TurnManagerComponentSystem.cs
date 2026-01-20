@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace ET
@@ -87,7 +88,8 @@ namespace ET
         /// <param name="color">消除的糖果颜色</param>
         /// <param name="matchCount">消除数量</param>
         /// <param name="isSkillCandy">是否为技能糖果</param>
-        public static async ETTask OnMatch3Combo(this TurnManagerComponent self, int color, int matchCount, bool isSkillCandy = false)
+        /// <param name="tilePositions">本次消除的棋盘坐标</param>
+        public static async ETTask OnMatch3Combo(this TurnManagerComponent self, int color, int matchCount, bool isSkillCandy = false, List<Match3TilePosition> tilePositions = null)
         {
             if (!self.IsBattleRunning)
                 return;
@@ -135,17 +137,17 @@ namespace ET
 
             // 技能释放顺序：普通攻击 → 小技能(NormalSpell) → 大技能(SpecialSpell)
 
+            targetHero = targetHeroRef;
+
             if (isSkillCandy)
             {
                 // 技能糖果消除：触发NormalSpell（次数=消除数量）
-                targetHero = targetHeroRef;
                 await self.ExecuteNormalSpell(targetHero, matchCount);
             }
             else
             {
-                // 普通糖果消除：触发普通攻击（次数=消除数量）
-                targetHero = targetHeroRef;
-                await self.ExecuteNormalAttacks(targetHero, matchCount);
+                // 普通糖果消除：直接伤害敌方目标（不释放普通攻击）
+                await self.ApplyNormalCandyDamage(targetHero, matchCount, tilePositions);
             }
 
             // 4. 检查满能量释放大技能(SpecialSpell)
@@ -241,6 +243,64 @@ namespace ET
                 // 等待一小段时间（用于动画）
                 await self.Root().GetComponent<TimerComponent>().WaitAsync(100);
             }
+        }
+
+        /// <summary>
+        /// 普通糖果直接对目标造成伤害（不走普通攻击技能）
+        /// </summary>
+        private static async ETTask ApplyNormalCandyDamage(this TurnManagerComponent self, EntityHero attacker, int matchCount, List<Match3TilePosition> tilePositions)
+        {
+            if (attacker == null || matchCount <= 0)
+                return;
+
+            EntityRef<TurnManagerComponent> selfRef = self;
+            EntityRef<EntityHero> attackerRef = attacker;
+
+            BattleSceneComponent battleScene = self.BattleSceneRef;
+            if (battleScene == null)
+                return;
+
+            EntityGroup enemyGroup = battleScene.BlueGroup;
+            if (enemyGroup == null)
+                return;
+
+            EntityHero target = self.FindValidTarget(enemyGroup);
+            if (target == null)
+                return;
+
+            AttComponent attackerAtt = attacker.AttCom.Entity;
+            AttComponent targetAtt = target.AttCom.Entity;
+            if (attackerAtt == null || targetAtt == null)
+                return;
+
+            int effectiveCount = tilePositions?.Count ?? matchCount;
+            int attack = Math.Max(1, attackerAtt.GetAttValue(EAttType.AttackMelee));
+            int defence = Math.Max(1, targetAtt.GetAttValue(EAttType.DefenceMelee));
+            int baseDamage = (int)(attack / (1.0 * defence + attack) * attack);
+            int totalDamage = Math.Max(1, baseDamage) * Math.Max(1, effectiveCount);
+
+            targetAtt.ModAttValue(EAttType.CurHP, -totalDamage);
+
+            self = selfRef;
+            attacker = attackerRef;
+
+            Scene scene = battleScene.IScene as Scene;
+            EventSystem.Instance.Publish(scene, new EntityCastSpell
+            {
+                CasterId = attacker?.HeroId ?? 0,
+                SpellId = 0,
+                DamageInfos = new List<DamageInfo>
+                {
+                    new DamageInfo
+                    {
+                        TargetId = target.HeroId,
+                        Damage = totalDamage,
+                        SpellResult = (int)SpellResult.Damage
+                    }
+                }
+            });
+
+            await self.Root().GetComponent<TimerComponent>().WaitAsync(100);
         }
 
         /// <summary>

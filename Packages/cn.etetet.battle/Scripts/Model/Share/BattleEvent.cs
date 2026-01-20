@@ -77,27 +77,6 @@ namespace ET
     }
 
     /// <summary>
-    /// 三消战斗触发事件
-    /// </summary>
-    public struct Match3BattleTriggerEvent
-    {
-        /// <summary>
-        /// 消除的糖果颜色
-        /// </summary>
-        public int Color;
-
-        /// <summary>
-        /// 消除数量
-        /// </summary>
-        public int MatchCount;
-
-        /// <summary>
-        /// 是否为技能糖果（消除技能糖果触发NormalSpell）
-        /// </summary>
-        public bool IsSkillCandy;
-    }
-
-    /// <summary>
     /// Buff添加事件
     /// </summary>
     public struct BuffAddedEvent
@@ -134,4 +113,3 @@ namespace ET
         public int BuffId;
     }
 }
-

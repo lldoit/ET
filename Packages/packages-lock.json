@@ -350,6 +350,14 @@
         "com.unity.sharp-zip-lib": "1.3.4-preview"
       }
     },
+    "com.kybernetik.animancer": {
+      "version": "file:com.kybernetik.animancer",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.modules.animation": "1.0.0"
+      }
+    },
     "com.kyrylokuzyk.primetween": {
       "version": "file:com.kyrylokuzyk.primetween",
       "depth": 0,

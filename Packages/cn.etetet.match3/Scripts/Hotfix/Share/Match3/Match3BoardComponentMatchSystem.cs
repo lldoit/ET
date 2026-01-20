@@ -30,14 +30,6 @@ namespace ET
             }
             EventSystem.Instance.Publish(self.Scene(), new PlayMatchSoundEvent { MatchCount = totalTiles });
 
-            // 记录消除前的分数，用于计算本次获得的分数
-            int scoreBefore = self.GameState.Score;
-            int totalTilesCleared = 0;
-            foreach (var match in matches)
-            {
-                totalTilesCleared += match.tiles.Count;
-            }
-
             // 增加连续消除计数
             self.ConsecutiveCascades++;
 
@@ -55,18 +47,15 @@ namespace ET
                 {
                     complimentType = ComplimentType.Super;
                 }
-                else if (cascadeCount >= 2)
+                else
                 {
                     complimentType = ComplimentType.Good;
                 }
 
-                if (complimentType.HasValue)
+                EventSystem.Instance.Publish(self.Scene(), new ShowComplimentEvent
                 {
-                    EventSystem.Instance.Publish(self.Scene(), new ShowComplimentEvent
-                    {
-                        ComplimentType = complimentType.Value
-                    });
-                }
+                    ComplimentType = complimentType.Value
+                });
             }
 
             foreach (var match in matches)
@@ -80,17 +69,7 @@ namespace ET
                 Score = self.GameState.Score,
                 CascadeCount = self.ConsecutiveCascades
             });
-
-            // 发布战斗伤害事件（供 battle 包订阅）
-            int scoreGained = self.GameState.Score - scoreBefore;
-            EventSystem.Instance.Publish(self.Root(), new Match3ComboDamageEvent
-            {
-                ComboCount = self.ConsecutiveCascades,
-                TotalTilesCleared = totalTilesCleared,
-                ScoreGained = scoreGained
-            });
         }
-
 
         /// <summary>
         /// 处理单个匹配
@@ -198,7 +177,74 @@ namespace ET
             // 同时爆炸所有瓦片
             if (tilesToExplode.Count > 0)
             {
+                // 按普通/技能糖果分别通知战斗系统
+                self.PublishBattleTriggers(tilesToExplode);
+
                 await self.ExplodeTilesSimultaneouslyAsync(tilesToExplode);
+            }
+        }
+
+        /// <summary>
+        /// 将本次待爆炸的糖果分类型推送给战斗系统
+        /// </summary>
+        private static void PublishBattleTriggers(this Match3BoardComponent self, List<(Tile tile, int x, int y)> tilesToExplode)
+        {
+            List<Match3TilePosition> normalPositions = null;
+            List<Match3TilePosition> skillPositions = null;
+            CandyColor? normalColor = null;
+            CandyColor? skillColor = null;
+
+            foreach (var (tile, x, y) in tilesToExplode)
+            {
+                if (tile == null)
+                {
+                    continue;
+                }
+
+                var skillCandy = tile.GetComponent<SkillCandyComponent>();
+                if (skillCandy != null)
+                {
+                    skillColor ??= skillCandy.GetColor();
+                    (skillPositions ??= new List<Match3TilePosition>()).Add(new Match3TilePosition
+                    {
+                        X = x,
+                        Y = y
+                    });
+                    continue;
+                }
+
+                var candy = tile.GetComponent<CandyComponent>();
+                if (candy != null)
+                {
+                    normalColor ??= candy.GetColor();
+                    (normalPositions ??= new List<Match3TilePosition>()).Add(new Match3TilePosition
+                    {
+                        X = x,
+                        Y = y
+                    });
+                }
+            }
+
+            if (normalPositions != null && normalPositions.Count > 0 && normalColor.HasValue)
+            {
+                EventSystem.Instance.Publish(self.Scene(), new Match3BattleTriggerEvent
+                {
+                    Color = (int)normalColor.Value,
+                    MatchCount = normalPositions.Count,
+                    IsSkillCandy = false,
+                    TilePositions = normalPositions
+                });
+            }
+
+            if (skillPositions != null && skillPositions.Count > 0 && skillColor.HasValue)
+            {
+                EventSystem.Instance.Publish(self.Scene(), new Match3BattleTriggerEvent
+                {
+                    Color = (int)skillColor.Value,
+                    MatchCount = skillPositions.Count,
+                    IsSkillCandy = true,
+                    TilePositions = skillPositions
+                });
             }
         }
 

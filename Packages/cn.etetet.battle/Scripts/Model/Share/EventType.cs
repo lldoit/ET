@@ -52,6 +52,11 @@ namespace ET.Client
         /// </summary>
         public string Source;
     }
+
+    public struct AfterEntityHeroCreate
+    {
+        public EntityHero Hero;
+    }
 }
 
 

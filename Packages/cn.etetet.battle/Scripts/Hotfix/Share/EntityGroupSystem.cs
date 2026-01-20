@@ -67,7 +67,7 @@ namespace ET
 
             foreach (int entityId in entityIds)
             {
-                self.Entitys.Add(self.AddComponent<EntityHero, int>(entityId));
+                self.Entitys.Add(self.AddChild<EntityHero, int>(entityId));
             }
         }
 
