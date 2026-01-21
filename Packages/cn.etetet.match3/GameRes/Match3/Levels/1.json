@@ -8,342 +8,342 @@
     "Score2": 2000,
     "Score3": 3000,
     "AwardSpecialCandies": false,
-    "AwardedSpecialCandyType": "Striped",
+    "AwardedSpecialCandyType": "Skill",
     "CollectableChance": 10,
     "Tiles": [
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "GreenCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "GreenCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "RedCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "RedCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "GreenCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "RedCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "YellowCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "BlueCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "BlueCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "YellowCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "RedCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "RedCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "YellowCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "RedCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "BlueCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "GreenCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "BlueCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "GreenCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "BlueCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "YellowCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "RedCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "YellowCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "BlueCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "RedCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
-            "SpecialBlockType": "Marshmallow",
-            "CollectableType": "Cherry"
-        },
-        {
-            "TileType": "SpecialCandy",
-            "ElementType": "None",
-            "CandyType": "BlueCandy",
-            "SpecialCandyType": "ColorBomb",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "RedCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "RedCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "YellowCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "YellowCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "YellowCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "GreenCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "RedCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "BlueCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "GreenCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "YellowCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "BlueCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "BlueCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "GreenCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "GreenCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "YellowCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "BlueCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         },
         {
             "TileType": "Candy",
             "ElementType": "None",
-            "CandyType": "GreenCandy",
-            "SpecialCandyType": "BlueCandyHorizontalStriped",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
+            "SpecialBlockType": "Marshmallow",
+            "CollectableType": "Cherry"
+        },
+        {
+            "TileType": "Candy",
+            "ElementType": "None",
+            "CandyType": "RandomCandy",
+            "SpecialCandyType": "BlueSkillCandy",
             "SpecialBlockType": "Marshmallow",
             "CollectableType": "Cherry"
         }

@@ -145,6 +145,8 @@ namespace ET
             // 添加Buff组件
             BuffComponent buffCom = enemy.AddComponent<BuffComponent>();
             buffCom.SetOwner(enemy);
+            
+            EventSystem.Instance.Publish(self.Scene(), new AfterEntityHeroCreate() {Hero = enemy});
 
             return enemy;
         }

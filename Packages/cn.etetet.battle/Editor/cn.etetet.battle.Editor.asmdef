@@ -1,0 +1,19 @@
+{
+    "name": "cn.etetet.battle.Editor",
+    "rootNamespace": "ET.Editor",
+    "references": [
+        "ET.YIUIFramework",
+        "ET.ModelView"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,71 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c602b309b07c547af962f7599a61048d, type: 3}
+  m_Name: BattleFormationConfig
+  m_EditorClassIdentifier: 
+  PlayerFormation:
+    Name: "\u73A9\u5BB6\u65B9"
+    Slots:
+    - Index: 0
+      Position: {x: -156.86275, y: 488.5621}
+      FacingLeft: 0
+    - Index: 1
+      Position: {x: -356.20917, y: 488.5621}
+      FacingLeft: 0
+    - Index: 2
+      Position: {x: -153.59477, y: 305.55557}
+      FacingLeft: 0
+    - Index: 3
+      Position: {x: -349.67322, y: 305.55557}
+      FacingLeft: 0
+  EnemyFormation1:
+    Name: "\u654C\u65B91\u4EBA"
+    Slots:
+    - Index: 0
+      Position: {x: 300, y: 0}
+      FacingLeft: 1
+  EnemyFormation2:
+    Name: "\u654C\u65B92\u4EBA"
+    Slots:
+    - Index: 0
+      Position: {x: 300, y: 75}
+      FacingLeft: 1
+    - Index: 1
+      Position: {x: 300, y: -75}
+      FacingLeft: 1
+  EnemyFormation3:
+    Name: "\u654C\u65B93\u4EBA"
+    Slots:
+    - Index: 0
+      Position: {x: 300, y: 100}
+      FacingLeft: 1
+    - Index: 1
+      Position: {x: 300, y: 0}
+      FacingLeft: 1
+    - Index: 2
+      Position: {x: 300, y: -100}
+      FacingLeft: 1
+  EnemyFormation4:
+    Name: "\u654C\u65B94\u4EBA"
+    Slots:
+    - Index: 0
+      Position: {x: 179.73857, y: 485.29413}
+      FacingLeft: 1
+    - Index: 1
+      Position: {x: 362.74512, y: 498.36603}
+      FacingLeft: 1
+    - Index: 2
+      Position: {x: 186.27452, y: 295.75165}
+      FacingLeft: 1
+    - Index: 3
+      Position: {x: 369.28107, y: 302.2876}
+      FacingLeft: 1

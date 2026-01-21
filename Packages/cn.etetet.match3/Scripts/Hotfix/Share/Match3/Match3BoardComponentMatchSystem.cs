@@ -10,7 +10,6 @@ namespace ET
     [FriendOf(typeof(Tile))]
     [FriendOf(typeof(SkillCandyComponent))]
     public static partial class Match3BoardComponentMatchSystem
-
     {
         /// <summary>
         /// 处理匹配（消除并生成特殊糖果）

@@ -29,26 +29,17 @@ public static async ETTask EnterBattleScene(Scene currentScene, int levelId)
 
 ### 2. 在 Match3 包中发布事件
 
-在 match3 包的消除逻辑中添加事件发布：
+在 match3 包的消除逻辑中为普通/技能糖果分别发布战斗触发事件：
 
 ```csharp
-// cn.etetet.match3/Scripts/HotfixView/Client/Match3BoardComponentMatchSystem.cs
-public static async ETTask ProcessMatchesAsync(this Match3BoardComponent self)
+// Match3BoardComponentMatchSystem 里根据消除的糖果类型推送
+EventSystem.Instance.Publish(self.Scene(), new Match3BattleTriggerEvent
 {
-    // ... 原有消除逻辑 ...
-    
-    int totalCleared = matches.Count;
-    int comboCount = self.GetComponent<ComboTrackerComponent>()?.CurrentCombo ?? 0;
-    
-    // 发布事件给 battle 包
-    EventSystem.Instance.Publish(self.Scene(), new Match3ComboDamageEvent
-    {
-        ComboCount = comboCount,
-        TotalTilesCleared = totalCleared
-    });
-    
-    await ETTask.CompletedTask;
-}
+    Color = (int)candyColor,
+    MatchCount = tilesToExplode.Count,
+    IsSkillCandy = false,
+    TilePositions = tilePositions
+});
 ```
 
 ### 3. 处理战斗结果
@@ -100,11 +91,11 @@ Scene (战斗场景)
    ↓
 2. Match3 检测到消除
    ↓
-3. Match3 发布 Match3ComboDamageEvent
+3. Match3 发布 Match3BattleTriggerEvent（分普通/技能，携带坐标）
    ↓
-4. Battle 订阅事件 (Match3ComboDamageEventHandler)
+4. Battle 订阅事件 (Match3BattleTriggerEventHandler)
    ↓
-5. Battle 计算伤害并应用到敌人
+5. Battle 计算能量与伤害并应用到敌人
    ↓
 6. 更新敌人UI (血条、伤害数字)
    ↓

@@ -110,7 +110,66 @@ namespace ET.Client
             uiFxPool.FxContainer = boardRectTransform;
             await uiFxPool.InitializeAsync();
 
+            // 初始化站位组件
+            await self.InitializeFormation(battleScene, boardRectTransform);
+
+            // 初始化滚动背景组件
+            await self.InitializeScrollingBackground(battleScene);
+
             Log.Info("[BattlePanel] UI渲染模式初始化完成");
+        }
+
+        /// <summary>
+        /// 初始化滚动背景组件
+        /// </summary>
+        private static async ETTask InitializeScrollingBackground(this BattlePanelComponent self, Scene battleScene)
+        {
+            // 查找ScrollingBackground MonoBehaviour
+            var panelTransform = self.UIBase.OwnerRectTransform;
+            var scrollingBgGO = panelTransform.Find("Background");
+            if (scrollingBgGO == null)
+            {
+                Log.Warning("[BattlePanel] 未找到Background节点，跳过滚动背景初始化");
+                return;
+            }
+
+            var controller = scrollingBgGO.GetComponent<ScrollingBackground>();
+            if (controller == null)
+            {
+                Log.Warning("[BattlePanel] Background节点缺少ScrollingBackground组件");
+                return;
+            }
+
+            // 添加或获取组件
+            var scrollBgComponent = battleScene.GetComponent<ScrollingBackgroundComponent>();
+            if (scrollBgComponent == null)
+            {
+                scrollBgComponent = battleScene.AddComponent<ScrollingBackgroundComponent>();
+            }
+
+            // 初始化
+            scrollBgComponent.Initialize(controller);
+            scrollBgComponent.StartScrolling();
+            Log.Info("[BattlePanel] 滚动背景组件初始化完成");
+
+            await ETTask.CompletedTask;
+        }
+
+        /// <summary>
+        /// 初始化站位组件
+        /// </summary>
+        private static async ETTask InitializeFormation(this BattlePanelComponent self, Scene battleScene, RectTransform battleRoot)
+        {
+            // 添加或获取站位组件
+            var formationComponent = battleScene.GetComponent<FormationComponent>();
+            if (formationComponent == null)
+            {
+                formationComponent = battleScene.AddComponent<FormationComponent>();
+            }
+
+            // 初始化站位组件
+            await formationComponent.InitializeAsync(battleRoot);
+            Log.Info("[BattlePanel] 站位组件初始化完成");
         }
 
         #region YIUIEvent开始

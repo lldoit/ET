@@ -32,14 +32,15 @@ Battle 包通过事件系统与 Match3 包通信：
 
 ### 1. 订阅三消事件
 ```csharp
-// Battle 包订阅 Match3 的消除事件
+// Battle 包订阅 Match3 的消除事件（普通/技能分开推送）
 [Event(SceneType.Current)]
-public class Match3ComboDamageEventHandler : AEvent<Match3ComboDamageEvent>
+public class Match3BattleTriggerEventHandler : AEvent<Scene, Match3BattleTriggerEvent>
 {
-    protected override async ETTask Run(Scene scene, Match3ComboDamageEvent args)
+    protected override async ETTask Run(Scene scene, Match3BattleTriggerEvent args)
     {
-        // 计算伤害并应用到敌人
-        await ETTask.CompletedTask;
+        // 根据糖果类型驱动能量与伤害
+        TurnManagerComponent turnManager = scene.GetComponent<TurnManagerComponent>();
+        await turnManager.OnMatch3Combo(args.Color, args.MatchCount, args.IsSkillCandy, args.TilePositions);
     }
 }
 ```
