@@ -110,6 +110,14 @@ MonoBehaviour:
         FilterRuleName: CollectAll
         AssetTags: 
         UserData: 
+      - CollectPath: Packages/cn.etetet.battle/Assets/GameRes/Config
+        CollectorGUID: 8f3e6b77b67384748bc354268ce52304
+        CollectorType: 0
+        AddressRuleName: AddressByFileName
+        PackRuleName: PackDirectory
+        FilterRuleName: CollectAll
+        AssetTags: 
+        UserData: 
     - GroupName: YIUI
       GroupDesc: 
       AssetTags: 
