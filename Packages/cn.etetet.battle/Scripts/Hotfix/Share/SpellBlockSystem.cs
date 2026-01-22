@@ -76,14 +76,21 @@ namespace ET
                 Damage = totalDamage,
                 SpellResult = (int)SpellResult.Damage,
             };
-            
-            if (target.GetAttValue(EAttType.CurHP) <= 0)
+
+            // 直接访问AttCom获取血量，避免调用EntityHeroSystem
+            int curHp = targetAtt.GetAttValue(EAttType.CurHP);
+            if (curHp <= 0)
             {
                 dmgInfo.SpellResult |= (int)SpellResult.Kill;
 
-                target.OnDead(caster);
+                // 内联OnDead逻辑，避免调用EntityHeroSystem
+                StateComponent stateCom = target.StateCom.Entity;
+                if (stateCom != null && !stateCom.HasCombatState(EEntityState.Dead))
+                {
+                    targetAtt.SetCurHP(0);
+                }
             }
-            
+
             spell.TargetDmgInfos.Add(dmgInfo);
 
             return true;
@@ -100,7 +107,7 @@ namespace ET
             AttComponent targetAtt = target.AttCom.Entity;
             if (targetAtt == null)
                 return false;
-            
+
             EntityHero caster = spell.CasterRef;
             if (caster == null)
                 return false;
@@ -115,14 +122,21 @@ namespace ET
                 Damage = totalDamage,
                 SpellResult = (int)SpellResult.Damage,
             };
-            
-            if (target.GetAttValue(EAttType.CurHP) <= 0)
+
+            // 直接访问AttCom获取血量，避免调用EntityHeroSystem
+            int curHp = targetAtt.GetAttValue(EAttType.CurHP);
+            if (curHp <= 0)
             {
                 dmgInfo.SpellResult |= (int)SpellResult.Kill;
 
-                target.OnDead(caster);
+                // 内联OnDead逻辑，避免调用EntityHeroSystem
+                StateComponent stateCom = target.StateCom.Entity;
+                if (stateCom != null && !stateCom.HasCombatState(EEntityState.Dead))
+                {
+                    targetAtt.SetCurHP(0);
+                }
             }
-            
+
             spell.TargetDmgInfos.Add(dmgInfo);
 
             return true;
