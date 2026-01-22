@@ -59,6 +59,7 @@ namespace ET
         Trigger = 1 << 5,
         PhysicsDamage = 1 << 6,
         MagicDamage = 1 << 7,
+        Kill = 1 << 8, 
     }
     
     public enum SelectTargetType

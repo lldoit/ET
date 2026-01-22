@@ -70,12 +70,21 @@ namespace ET
             // 应用伤害
             targetAtt.ModAttValue(EAttType.CurHP, -totalDamage);
 
-            spell.TargetDmgInfos.Add(new DamageInfo()
+            var dmgInfo = new DamageInfo()
             {
                 TargetId = target.HeroId,
                 Damage = totalDamage,
                 SpellResult = (int)SpellResult.Damage,
-            });
+            };
+            
+            if (target.GetAttValue(EAttType.CurHP) <= 0)
+            {
+                dmgInfo.SpellResult |= (int)SpellResult.Kill;
+
+                target.OnDead(caster);
+            }
+            
+            spell.TargetDmgInfos.Add(dmgInfo);
 
             return true;
         }
@@ -91,17 +100,30 @@ namespace ET
             AttComponent targetAtt = target.AttCom.Entity;
             if (targetAtt == null)
                 return false;
+            
+            EntityHero caster = spell.CasterRef;
+            if (caster == null)
+                return false;
 
             int totalDamage = entry.Param[0];
 
             targetAtt.ModAttValue(EAttType.CurHP, -totalDamage);
 
-            spell.TargetDmgInfos.Add(new DamageInfo()
+            var dmgInfo = new DamageInfo()
             {
                 TargetId = target.HeroId,
                 Damage = totalDamage,
                 SpellResult = (int)SpellResult.Damage,
-            });
+            };
+            
+            if (target.GetAttValue(EAttType.CurHP) <= 0)
+            {
+                dmgInfo.SpellResult |= (int)SpellResult.Kill;
+
+                target.OnDead(caster);
+            }
+            
+            spell.TargetDmgInfos.Add(dmgInfo);
 
             return true;
         }

@@ -124,6 +124,17 @@ namespace ET
             if (self.Energy < 0)
                 self.Energy = 0;
         }
+        
+        public static void OnDead(this EntityHero self, EntityHero caster)
+        {
+            if (self.StateCom.Entity.HasCombatState(EEntityState.Dead))
+                return;
+
+            self.AttCom.Entity.SetCurHP(0);
+            
+            //Group.OnEntityDead(this);
+           // CombatCom.OnDead();
+        }
 
         public static int CastActiveSpell(this EntityHero self, DREntitySpellEntry spellEntry, EntityHero target, int amount = 0)
         {
