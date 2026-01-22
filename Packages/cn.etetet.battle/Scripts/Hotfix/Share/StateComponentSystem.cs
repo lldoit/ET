@@ -200,7 +200,7 @@ namespace ET
 
                 // 直接通过GroupRef获取场景，避免调用EntityHeroSystem
                 EntityGroup group = owner.GroupRef;
-                BattleSceneComponent scene = group?.BattleFieldRef;
+                var scene = group?.BattleFieldRef.Entity.Scene();
                 if (scene == null) return;
 
                 EventSystem.Instance.Publish(scene, new SetEntityState
@@ -223,7 +223,7 @@ namespace ET
 
                 // 直接通过GroupRef获取场景，避免调用EntityHeroSystem
                 EntityGroup group = owner.GroupRef;
-                BattleSceneComponent scene = group?.BattleFieldRef;
+                var scene = group?.BattleFieldRef.Entity.Scene();
                 if (scene == null) return;
 
                 EventSystem.Instance.Publish(scene, new UnsetEntityState

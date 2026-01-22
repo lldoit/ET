@@ -9,13 +9,10 @@ namespace ET.Client
     {
         protected override async ETTask Run(Scene scene, BattleSceneChangeFinish args)
         {
-            Log.Info("战斗场景切换完成，打开战斗面板并隐藏Loading界面");
-            
-            // 先打开战斗面板（在Loading后面准备好）
-            await scene.YIUIRoot().OpenPanelAsync<BattlePanelComponent>();
-            //await scene.YIUIRoot().OpenPanelAsync<Match3BoardPanelComponent>();
-            
-            // 再关闭Loading面板，减少视觉上的空白卡顿
+            Log.Info("战斗场景切换完成，隐藏Loading界面");
+
+            // BattlePanel已在BattleSceneHelper.EnterBattleAsync中打开
+            // 这里只需要关闭Loading面板
             await scene.YIUIMgr().ClosePanelAsync("LoadingPanelComponent");
         }
     }

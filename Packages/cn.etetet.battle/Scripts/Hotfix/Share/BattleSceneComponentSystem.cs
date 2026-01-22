@@ -161,6 +161,10 @@ namespace ET
             // TODO: 根据关卡配置表获取英雄配置
             // 目前使用默认配置进行测试
             // 后续需要从配置表读取英雄ID、颜色、能量等信息
+            self.AddPlayerHero(1, 1);
+            self.AddPlayerHero(1, 2);
+            self.AddPlayerHero(1, 3);
+            self.AddPlayerHero(1, 4);
         }
 
         /// <summary>

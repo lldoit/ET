@@ -194,7 +194,7 @@ namespace ET.Editor
             if (System.IO.File.Exists(PREVIEW_SCENE_PATH))
             {
                 EditorSceneManager.OpenScene(PREVIEW_SCENE_PATH);
-                
+
                 previewRoot = GameObject.Find("[Preview] Canvas");
             }
             else
@@ -296,14 +296,15 @@ namespace ET.Editor
                 Debug.LogWarning("[站位预览] 未设置角色预制体，将使用占位符");
             }
 
-            // 查找角色容器（Unit节点）
-            Transform heroContainer = battlePanelInstance.transform;
+            // 获取BattlePanel的RectTransform用于坐标转换
+            RectTransform battlePanelRect = battlePanelInstance.GetComponent<RectTransform>();
 
             // 创建玩家方角色
             for (int i = 0; i < previewPlayerCount; i++)
             {
                 var slot = config.GetPlayerSlot(i);
-                CreateHeroAtPosition(heroContainer, slot.Position, slot.FacingLeft, $"[Preview] Player_{i + 1}", Color.blue);
+                Vector3 worldPos = UIToWorldPosition(battlePanelRect, slot.Position);
+                CreateHeroAtPosition(worldPos, slot.FacingLeft, $"[Preview] Player_{i + 1}", Color.blue);
             }
 
             // 创建敌方角色
@@ -311,33 +312,52 @@ namespace ET.Editor
             for (int i = 0; i < previewEnemyCount && i < enemyFormation.SlotCount; i++)
             {
                 var slot = enemyFormation.GetSlot(i);
-                CreateHeroAtPosition(heroContainer, slot.Position, slot.FacingLeft, $"[Preview] Enemy_{i + 1}", Color.red);
+                Vector3 worldPos = UIToWorldPosition(battlePanelRect, slot.Position);
+                CreateHeroAtPosition(worldPos, slot.FacingLeft, $"[Preview] Enemy_{i + 1}", Color.red);
             }
         }
 
-        private void CreateHeroAtPosition(Transform parent, Vector2 position, bool facingLeft, string name, Color labelColor)
+        /// <summary>
+        /// 将UI坐标转换为世界坐标
+        /// </summary>
+        private Vector3 UIToWorldPosition(RectTransform rectTransform, Vector2 uiPosition)
+        {
+            if (rectTransform == null)
+            {
+                return new Vector3(uiPosition.x, uiPosition.y, 0);
+            }
+
+            // 将相对于RectTransform中心的UI坐标转换为世界坐标
+            Vector3 worldPos = rectTransform.TransformPoint(new Vector3(uiPosition.x, uiPosition.y, 0));
+            return worldPos;
+        }
+
+        private void CreateHeroAtPosition(Vector3 worldPosition, bool facingLeft, string name, Color labelColor)
         {
             GameObject heroInstance;
 
             if (heroPrefab != null)
             {
-                heroInstance = (GameObject)PrefabUtility.InstantiatePrefab(heroPrefab, parent);
+                // 创建在场景根节点，不放在Canvas下
+                heroInstance = (GameObject)PrefabUtility.InstantiatePrefab(heroPrefab);
             }
             else
             {
-                // 创建一个UI占位符
-                heroInstance = new GameObject(name);
-                heroInstance.transform.SetParent(parent, false);
+                // 创建一个简单的3D占位符
+                heroInstance = GameObject.CreatePrimitive(PrimitiveType.Capsule);
+                heroInstance.transform.localScale = new Vector3(0.5f, 1f, 0.5f);
 
-                var image = heroInstance.AddComponent<UnityEngine.UI.Image>();
-                image.color = new Color(labelColor.r, labelColor.g, labelColor.b, 0.5f);
-
-                var rt = heroInstance.GetComponent<RectTransform>();
-                rt.sizeDelta = new Vector2(100, 150);
+                var renderer = heroInstance.GetComponent<MeshRenderer>();
+                if (renderer != null)
+                {
+                    renderer.sharedMaterial = new Material(Shader.Find("Standard"));
+                    renderer.sharedMaterial.color = labelColor;
+                }
             }
 
             heroInstance.name = name;
-            heroInstance.transform.localPosition = new Vector3(position.x, position.y, 0);
+            // 设置世界坐标位置
+            heroInstance.transform.position = worldPosition;
 
             // 设置朝向
             Vector3 scale = heroInstance.transform.localScale;

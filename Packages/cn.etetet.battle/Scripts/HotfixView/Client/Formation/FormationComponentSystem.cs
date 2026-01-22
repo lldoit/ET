@@ -44,7 +44,7 @@ namespace ET.Client
             }
 
             // 加载站位配置
-            var loader = self.Scene().GetComponent<ResourcesLoaderComponent>();
+            var loader = self.Root().Scene().GetComponent<ResourcesLoaderComponent>();
             if (loader != null)
             {
                 self.FormationConfig = await loader.LoadAssetAsync<BattleFormationConfig>(self.ConfigAssetPath);
@@ -59,6 +59,17 @@ namespace ET.Client
             }
 
             await ETTask.CompletedTask;
+        }
+
+        /// <summary>
+        /// 设置战斗界面根节点（用于坐标转换）
+        /// </summary>
+        /// <param name="self">站位组件</param>
+        /// <param name="battleRoot">战斗界面根节点</param>
+        public static void SetBattleRoot(this FormationComponent self, RectTransform battleRoot)
+        {
+            self.BattleRoot = battleRoot;
+            Log.Info($"[Formation] BattleRoot已设置: {(battleRoot != null ? battleRoot.name : "null")}");
         }
 
         /// <summary>
@@ -169,6 +180,39 @@ namespace ET.Client
         public static int GetPlayerSlotCount(this FormationComponent self)
         {
             return self.FormationConfig?.PlayerSlotCount ?? 0;
+        }
+
+        /// <summary>
+        /// 将UI坐标转换为世界坐标
+        /// </summary>
+        /// <param name="self">站位组件</param>
+        /// <param name="uiPosition">UI坐标（相对于BattleRoot中心）</param>
+        /// <returns>世界坐标</returns>
+        public static Vector3 UIToWorldPosition(this FormationComponent self, Vector2 uiPosition)
+        {
+            if (self.BattleRoot == null)
+            {
+                Log.Warning("[Formation] BattleRoot未设置，无法进行坐标转换");
+                return new Vector3(uiPosition.x, uiPosition.y, 0);
+            }
+
+            // 将本地坐标转换为世界坐标
+            Vector3 worldPos = self.BattleRoot.TransformPoint(new Vector3(uiPosition.x, uiPosition.y, 0));
+            return worldPos;
+        }
+
+        /// <summary>
+        /// 获取站位的世界坐标
+        /// </summary>
+        /// <param name="self">站位组件</param>
+        /// <param name="camp">阵营</param>
+        /// <param name="slotIndex">站位索引</param>
+        /// <param name="totalCount">该阵营总人数</param>
+        /// <returns>世界坐标</returns>
+        public static Vector3 GetSlotWorldPosition(this FormationComponent self, ECamp camp, int slotIndex, int totalCount = 4)
+        {
+            Vector2 uiPos = self.GetSlotPosition(camp, slotIndex, totalCount);
+            return self.UIToWorldPosition(uiPos);
         }
     }
 }

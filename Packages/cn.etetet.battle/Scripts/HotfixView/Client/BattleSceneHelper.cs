@@ -38,13 +38,19 @@ namespace ET.Client
 
             // 添加战斗组件
             BattleSceneComponent battle = battleScene.AddComponent<BattleSceneComponent>();
-            
+
             StageConfig stageConfig = StageConfigCategory.Instance.Get(levelId);
 
             // 初始化三消棋盘
             await InitializeMatch3BoardAsync(battleScene, stageConfig.Match3LevelId);
 
-            // 开始战斗
+            // 初始化站位组件（需要在StartBattle之前，因为StartBattle会创建角色）
+            await InitializeFormationAsync(battleScene);
+
+            // 先打开战斗面板，获取BattleRoot用于坐标转换（必须在StartBattle之前）
+            await battleScene.YIUIRoot().OpenPanelAsync<BattlePanelComponent>();
+
+            // 开始战斗（创建角色，此时BattleRoot已设置，可以正确转换坐标）
             await battle.StartBattle(levelId);
 
             // 发布战斗场景完成事件（可隐藏 Loading）
@@ -114,6 +120,23 @@ namespace ET.Client
             }
 
             Log.Info($"[BattleSceneHelper] 三消棋盘初始化完成，宽度: {level.Width}，高度: {level.Height}");
+        }
+
+        /// <summary>
+        /// 初始化站位组件
+        /// </summary>
+        /// <param name="scene">战斗场景</param>
+        private static async ETTask InitializeFormationAsync(Scene scene)
+        {
+            Log.Info("[BattleSceneHelper] 开始初始化站位组件");
+
+            // 添加站位组件
+            var formationComponent = scene.AddComponent<FormationComponent>();
+
+            // 初始化站位组件（暂时不传入BattleRoot，后续由BattlePanel初始化时设置）
+            await formationComponent.InitializeAsync(null);
+
+            Log.Info("[BattleSceneHelper] 站位组件初始化完成");
         }
 
         /// <summary>

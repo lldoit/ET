@@ -111,7 +111,7 @@ namespace ET.Client
             await uiFxPool.InitializeAsync();
 
             // 初始化站位组件
-            await self.InitializeFormation(battleScene, boardRectTransform);
+            await self.InitializeFormation(battleScene, self.UIBase.OwnerRectTransform);
 
             // 初始化滚动背景组件
             await self.InitializeScrollingBackground(battleScene);
@@ -126,7 +126,7 @@ namespace ET.Client
         {
             // 查找ScrollingBackground MonoBehaviour
             var panelTransform = self.UIBase.OwnerRectTransform;
-            var scrollingBgGO = panelTransform.Find("Background");
+            var scrollingBgGO = self.u_ComBackgroundRectTransform;
             if (scrollingBgGO == null)
             {
                 Log.Warning("[BattlePanel] 未找到Background节点，跳过滚动背景初始化");
@@ -149,27 +149,30 @@ namespace ET.Client
 
             // 初始化
             scrollBgComponent.Initialize(controller);
-            scrollBgComponent.StartScrolling();
+            //scrollBgComponent.StartScrolling();
             Log.Info("[BattlePanel] 滚动背景组件初始化完成");
 
             await ETTask.CompletedTask;
         }
 
         /// <summary>
-        /// 初始化站位组件
+        /// 初始化站位组件的UI根节点
         /// </summary>
         private static async ETTask InitializeFormation(this BattlePanelComponent self, Scene battleScene, RectTransform battleRoot)
         {
-            // 添加或获取站位组件
+            // 获取站位组件（在BattleSceneHelper中已添加）
             var formationComponent = battleScene.GetComponent<FormationComponent>();
             if (formationComponent == null)
             {
-                formationComponent = battleScene.AddComponent<FormationComponent>();
+                Log.Warning("[BattlePanel] 站位组件未找到，可能初始化顺序有问题");
+                return;
             }
 
-            // 初始化站位组件
-            await formationComponent.InitializeAsync(battleRoot);
-            Log.Info("[BattlePanel] 站位组件初始化完成");
+            // 设置BattleRoot用于坐标转换
+            formationComponent.SetBattleRoot(battleRoot);
+            Log.Info("[BattlePanel] 站位组件BattleRoot设置完成");
+
+            await ETTask.CompletedTask;
         }
 
         #region YIUIEvent开始

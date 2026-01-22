@@ -342,7 +342,7 @@ namespace ET
             if (caster == null) return;
 
             EntityGroup group = caster.GroupRef;
-            BattleSceneComponent scene = group?.BattleFieldRef;
+            var scene = group?.BattleFieldRef.Entity.Scene();
             if (scene == null) return;
 
             EventSystem.Instance.Publish(scene, new EntityCastSpell()

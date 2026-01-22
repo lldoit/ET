@@ -5,7 +5,7 @@ namespace ET
     /// 管理整个战斗流程，包括敌人、英雄、回合等
     /// </summary>
     [ComponentOf(typeof(Scene))]
-    public class BattleSceneComponent : Entity, IAwake, IDestroy, IScene
+    public class BattleSceneComponent : Entity, IAwake, IDestroy
     {
         /// <summary>
         /// 当前战斗关卡ID
