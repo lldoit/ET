@@ -106,8 +106,6 @@ namespace ET
     [ChildOf(typeof(EntityHero))]
     public class EntitySpell : Entity, IAwake, IDestroy
     {
-        
-
         /// <summary>
         /// 技能配置
         /// </summary>

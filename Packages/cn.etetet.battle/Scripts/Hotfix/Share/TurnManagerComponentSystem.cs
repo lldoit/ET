@@ -82,96 +82,125 @@ namespace ET
         #region 三消触发处理
 
         /// <summary>
-        /// 处理三消消除事件
+        /// 批量处理三消消除事件（在消除结束后调用）
         /// </summary>
-        /// <param name="self">回合管理器</param>
-        /// <param name="color">消除的糖果颜色</param>
-        /// <param name="matchCount">消除数量</param>
-        /// <param name="isSkillCandy">是否为技能糖果</param>
-        /// <param name="tilePositions">本次消除的棋盘坐标</param>
-        public static async ETTask OnMatch3Combo(this TurnManagerComponent self, int color, int matchCount, bool isSkillCandy = false, List<Match3TilePosition> tilePositions = null)
+        public static async ETTask ApplyMatch3Review(this TurnManagerComponent self, List<Match3BattleTriggerEvent> triggers)
         {
-            if (!self.IsBattleRunning)
+            if (!self.IsBattleRunning || triggers == null || triggers.Count == 0)
                 return;
 
             // 保存EntityRef用于await后访问
             EntityRef<TurnManagerComponent> selfRef = self;
 
-            Log.Info($"[TurnManager] 三消触发 - 颜色: {color}, 数量: {matchCount}, 技能糖果: {isSkillCandy}");
-
             BattleSceneComponent battleScene = self.BattleSceneRef;
-            if (battleScene == null)
-                return;
-
+            if (battleScene == null) return;
             EntityGroup playerGroup = battleScene.RedGroup;
-            if (playerGroup == null)
-                return;
+            if (playerGroup == null) return;
 
-            // 1. 找到对应颜色的英雄
-            EntityHero targetHero = self.FindHeroByColor(playerGroup, color);
-            if (targetHero == null)
+            // 1. 预处理：增加能量 & 收集所有行动
+            // 普通糖果：Color -> (Count, Positions)
+            var normalActions = new Dictionary<int, (int count, List<Match3TilePosition> positions)>();
+            // 技能糖果：List<(Color, Count)>
+            var skillActions = new List<(int color, int count)>();
+
+            foreach (var trigger in triggers)
             {
-                Log.Warning($"[TurnManager] 未找到颜色 {color} 对应的英雄");
-                return;
-            }
+                // 找到对应颜色的英雄
+                EntityHero targetHero = self.FindHeroByColor(playerGroup, trigger.Color);
+                if (targetHero == null) continue;
 
-            EntityRef<EntityHero> targetHeroRef = targetHero;
+                // 增加英雄能量
+                int oldEnergy = targetHero.Energy;
+                targetHero.ModEnergy(trigger.MatchCount);
 
-            // 2. 增加英雄能量
-            int oldEnergy = targetHero.Energy;
-            targetHero.ModEnergy(matchCount);
-
-            // 发布能量变化事件
-            Scene scene = battleScene.IScene as Scene;
-            EventSystem.Instance.Publish(scene, new EnergyChangedEvent
-            {
-                HeroId = targetHero.Id,
-                OldEnergy = oldEnergy,
-                NewEnergy = targetHero.Energy,
-                MaxEnergy = targetHero.MaxEnergy
-            });
-
-            // 3. 进入玩家行动阶段
-            self = selfRef;
-            self.CurrentPhase = ETurnPhase.PlayerAction;
-
-            // 技能释放顺序：普通攻击 → 小技能(NormalSpell) → 大技能(SpecialSpell)
-
-            targetHero = targetHeroRef;
-
-            if (isSkillCandy)
-            {
-                // 技能糖果消除：触发NormalSpell（次数=消除数量）
-                await self.ExecuteNormalSpell(targetHero, matchCount);
-            }
-            else
-            {
-                // 普通糖果消除：直接伤害敌方目标（不释放普通攻击）
-                await self.ApplyNormalCandyDamage(targetHero, matchCount, tilePositions);
-            }
-
-            // 4. 检查满能量释放大技能(SpecialSpell)
-            self = selfRef;
-            targetHero = targetHeroRef;
-            if (targetHero != null && targetHero.Energy >= targetHero.MaxEnergy)
-            {
-                await self.ExecuteSpecialSpell(targetHero);
-                targetHero = targetHeroRef;
-                if (targetHero != null)
+                // 发布能量变化事件
+                Scene scene = battleScene.IScene as Scene;
+                EventSystem.Instance.Publish(scene, new EnergyChangedEvent
                 {
-                    targetHero.Energy = 0; // 重置能量
+                    HeroId = targetHero.Id,
+                    OldEnergy = oldEnergy,
+                    NewEnergy = targetHero.Energy,
+                    MaxEnergy = targetHero.MaxEnergy
+                });
+
+                // 分类收集
+                if (trigger.IsSkillCandy)
+                {
+                    skillActions.Add((trigger.Color, trigger.MatchCount));
+                }
+                else
+                {
+                    if (!normalActions.ContainsKey(trigger.Color))
+                    {
+                        normalActions[trigger.Color] = (0, new List<Match3TilePosition>());
+                    }
+                    var (currentCount, currentList) = normalActions[trigger.Color];
+                    currentCount += trigger.MatchCount;
+                    if (trigger.TilePositions != null)
+                    {
+                        currentList.AddRange(trigger.TilePositions);
+                    }
+                    normalActions[trigger.Color] = (currentCount, currentList);
                 }
             }
 
-            // 5. 检查战斗结束
+            // 2. 进入玩家行动阶段
             self = selfRef;
+            self.CurrentPhase = ETurnPhase.PlayerAction;
+
+            // 3. 执行普通糖果伤害 (合并后执行)
+            foreach (var kvp in normalActions)
+            {
+                int color = kvp.Key;
+                var (count, positions) = kvp.Value;
+
+                EntityHero hero = self.FindHeroByColor(playerGroup, color);
+                if (hero != null)
+                {
+                    await self.ApplyNormalCandyDamage(hero, count, positions);
+                }
+                self = selfRef;
+            }
+
+            // 4. 执行技能糖果释放 (顺序执行)
+            foreach (var (color, count) in skillActions)
+            {
+                EntityHero hero = self.FindHeroByColor(playerGroup, color);
+                if (hero != null)
+                {
+                    await self.ExecuteNormalSpell(hero, count);
+                }
+                self = selfRef;
+            }
+
+            // 5. 检查满能量释放大技能(SpecialSpell)
+            // 遍历所有英雄检查能量
+            if (playerGroup.Entitys != null)
+            {
+                foreach (var heroRef in playerGroup.Entitys)
+                {
+                    EntityHero hero = heroRef;
+                    if (hero != null && hero.Energy >= hero.MaxEnergy)
+                    {
+                        await self.ExecuteSpecialSpell(hero);
+                        hero = heroRef; // Refresh ref just in case
+                        if (hero != null)
+                        {
+                            hero.Energy = 0;
+                        }
+                    }
+                    self = selfRef;
+                }
+            }
+
+            // 6. 检查战斗结束
             if (self.CheckBattleEnd())
                 return;
 
-            // 6. 处理敌方回合
+            // 7. 处理敌方回合
             await self.ProcessEnemyTurn();
 
-            // 7. 回合结束，进入下一回合
+            // 8. 回合结束，进入下一回合
             self = selfRef;
             self.NextTurn();
         }
@@ -248,7 +277,7 @@ namespace ET
         /// <summary>
         /// 普通糖果直接对目标造成伤害（不走普通攻击技能）
         /// </summary>
-        private static async ETTask ApplyNormalCandyDamage(this TurnManagerComponent self, EntityHero attacker, int matchCount, List<Match3TilePosition> tilePositions)
+        public static async ETTask ApplyNormalCandyDamage(this TurnManagerComponent self, EntityHero attacker, int matchCount, List<Match3TilePosition> tilePositions)
         {
             if (attacker == null || matchCount <= 0)
                 return;
@@ -268,8 +297,8 @@ namespace ET
             if (target == null)
                 return;
 
-            AttComponent attackerAtt = attacker.AttCom.Entity;
-            AttComponent targetAtt = target.AttCom.Entity;
+            AttComponent attackerAtt = attacker.AttCom;
+            AttComponent targetAtt = target.AttCom;
             if (attackerAtt == null || targetAtt == null)
                 return;
 
@@ -284,8 +313,7 @@ namespace ET
             self = selfRef;
             attacker = attackerRef;
 
-            Scene scene = battleScene.IScene as Scene;
-            EventSystem.Instance.Publish(scene, new EntityCastSpell
+            EventSystem.Instance.Publish(battleScene.Scene(), new EntityCastSpell
             {
                 CasterId = attacker?.HeroId ?? 0,
                 SpellId = 0,
@@ -309,7 +337,7 @@ namespace ET
         /// <param name="self">回合管理器</param>
         /// <param name="hero">英雄</param>
         /// <param name="count">释放次数</param>
-        private static async ETTask ExecuteNormalSpell(this TurnManagerComponent self, EntityHero hero, int count)
+        public static async ETTask ExecuteNormalSpell(this TurnManagerComponent self, EntityHero hero, int count)
         {
             if (hero == null)
                 return;
@@ -354,7 +382,7 @@ namespace ET
         /// <summary>
         /// 执行大技能（满能量触发）
         /// </summary>
-        private static async ETTask ExecuteSpecialSpell(this TurnManagerComponent self, EntityHero hero)
+        public static async ETTask ExecuteSpecialSpell(this TurnManagerComponent self, EntityHero hero)
         {
             if (hero == null)
                 return;
@@ -412,7 +440,7 @@ namespace ET
         /// <summary>
         /// 处理敌方回合
         /// </summary>
-        private static async ETTask ProcessEnemyTurn(this TurnManagerComponent self)
+        public static async ETTask ProcessEnemyTurn(this TurnManagerComponent self)
         {
             EntityRef<TurnManagerComponent> selfRef = self;
 
@@ -514,7 +542,7 @@ namespace ET
         /// <summary>
         /// 进入下一回合
         /// </summary>
-        private static void NextTurn(this TurnManagerComponent self)
+        public static void NextTurn(this TurnManagerComponent self)
         {
             self.CurrentTurn++;
             self.CurrentPhase = ETurnPhase.WaitingPlayerInput;

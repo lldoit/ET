@@ -60,7 +60,6 @@ namespace ET
         /// </summary>
         public int HeroColor;
 
-
         /// 所属队伍引用
         /// </summary>
         public EntityRef<EntityGroup> GroupRef;

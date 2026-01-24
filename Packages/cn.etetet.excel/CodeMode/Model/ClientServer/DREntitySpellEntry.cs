@@ -63,6 +63,8 @@ namespace ET
 		public int Id { get; set; }
 		/// <summary>名字</summary>
 		public string Name { get; set; }
+		/// <summary>技能类型</summary>
+		public int SpellType { get; set; }
 		/// <summary>技能消耗类型</summary>
 		public int CostType { get; set; }
 		/// <summary>消耗值</summary>

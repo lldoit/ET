@@ -48,8 +48,8 @@ namespace ET
             {
                 redGroup.SetOtherGroup(blueGroup);
                 blueGroup.SetOtherGroup(redGroup);
-                redGroup.Camp = ECamp.Red;
-                blueGroup.Camp = ECamp.Blue;
+                redGroup.Init(ECamp.Red, self);
+                blueGroup.Init(ECamp.Blue, self);
             }
 
             // TODO: 根据关卡配置初始化英雄和敌人
@@ -96,7 +96,7 @@ namespace ET
         /// <param name="heroId">英雄配置Id</param>
         /// <param name="heroColor">英雄对应颜色</param>
         /// <param name="maxEnergy">满能量值</param>
-        public static EntityHero AddPlayerHero(this BattleSceneComponent self, int heroId, int heroColor, int maxEnergy = 100)
+        public static EntityHero AddPlayerHero(this BattleSceneComponent self, int heroId, int heroColor, int maxEnergy = 5)
         {
             EntityGroup playerGroup = self.RedGroup;
             if (playerGroup == null)
@@ -161,10 +161,10 @@ namespace ET
             // TODO: 根据关卡配置表获取英雄配置
             // 目前使用默认配置进行测试
             // 后续需要从配置表读取英雄ID、颜色、能量等信息
+            self.AddPlayerHero(1, 0);
             self.AddPlayerHero(1, 1);
             self.AddPlayerHero(1, 2);
             self.AddPlayerHero(1, 3);
-            self.AddPlayerHero(1, 4);
         }
 
         /// <summary>
@@ -177,6 +177,10 @@ namespace ET
             // TODO: 根据关卡配置表获取敌人配置
             // 目前使用默认配置进行测试
             // 后续需要从配置表读取敌人ID、攻击间隔、能量等信息
+            self.AddEnemyHero(1);
+            self.AddEnemyHero(1);
+            self.AddEnemyHero(1);
+            self.AddEnemyHero(1);
         }
     }
 }

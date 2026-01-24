@@ -24,7 +24,6 @@ namespace ET
                         var color = tile.GetColor();
                         if (color.HasValue)
                         {
-                            
                             // T型1: 水平3个向右，垂直上下各1个（中心在左边）
                             // X X X
                             //   X

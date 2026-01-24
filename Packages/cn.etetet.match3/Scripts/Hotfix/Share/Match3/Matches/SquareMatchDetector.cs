@@ -28,7 +28,6 @@ namespace ET
                         var color = tile.GetColor();
                         if (color.HasValue)
                         {
-                            
                             // 检查2x2方块的四个位置是否都是相同颜色的糖果
                             var tileRight = board.GetTile(i + 1, j);
                             var tileBottom = board.GetTile(i, j + 1);

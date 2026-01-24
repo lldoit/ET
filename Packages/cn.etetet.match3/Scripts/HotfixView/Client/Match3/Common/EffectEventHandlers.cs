@@ -8,25 +8,25 @@ namespace ET.Client
     [Event(SceneType.All)]
     public class PlayTileExplosionEventHandler : AEvent<Scene, PlayTileExplosionEvent>
     {
-        protected override async ETTask Run(Scene scene, PlayTileExplosionEvent args)
+        protected override ETTask Run(Scene scene, PlayTileExplosionEvent args)
         {
             var match3Board = scene.GetComponent<Match3BoardComponent>();
             if (match3Board == null)
             {
-                return;
+                return ETTask.CompletedTask;
             }
 
             // 获取瓦片（通过ID查找）
             var tile = match3Board.GetChild<Tile>(args.TileId);
             if (tile == null)
             {
-                return;
+                return ETTask.CompletedTask;
             }
 
             // UI渲染模式
             match3Board.PlayUITileExplosionEffectAt(tile, args.X, args.Y);
 
-            await ETTask.CompletedTask;
+            return ETTask.CompletedTask;
         }
     }
 
@@ -36,12 +36,12 @@ namespace ET.Client
     [Event(SceneType.All)]
     public class PlaySpawnEffectEventHandler : AEvent<Scene, PlaySpawnEffectEvent>
     {
-        protected override async ETTask Run(Scene scene, PlaySpawnEffectEvent args)
+        protected override ETTask Run(Scene scene, PlaySpawnEffectEvent args)
         {
             var match3Board = scene.GetComponent<Match3BoardComponent>();
             if (match3Board == null)
             {
-                return;
+                return ETTask.CompletedTask;
             }
 
             // 确保创建瓦片视图（修复生成特殊糖果时的空白问题）
@@ -52,7 +52,7 @@ namespace ET.Client
                 match3Board.CreateTileView(tile, uiPosition);
             }
 
-            await ETTask.CompletedTask;
+            return ETTask.CompletedTask;
         }
     }
 
@@ -64,18 +64,18 @@ namespace ET.Client
     public class PlaySkillCandyEffectEventHandler : AEvent<Scene, PlaySkillCandyEffectEvent>
 
     {
-        protected override async ETTask Run(Scene scene, PlaySkillCandyEffectEvent args)
+        protected override ETTask Run(Scene scene, PlaySkillCandyEffectEvent args)
         {
             var match3Board = scene.GetComponent<Match3BoardComponent>();
             if (match3Board == null)
             {
-                return;
+                return ETTask.CompletedTask;
             }
 
             var uiFxPool = match3Board.GetComponent<FxPoolComponent>();
             if (uiFxPool == null)
             {
-                return;
+                return ETTask.CompletedTask;
             }
 
             // 获取瓦片的世界位置
@@ -95,7 +95,7 @@ namespace ET.Client
                 uiFxPool.PlaySkillCandyExplosion(worldPos);
             }
 
-            await ETTask.CompletedTask;
+            return ETTask.CompletedTask;
         }
     }
 }

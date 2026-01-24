@@ -14,20 +14,30 @@ namespace ET.Client
         /// 角色GameObject引用
         /// </summary>
         public GameObject CharacterGO;
-        
+
         /// <summary>
         /// Animancer组件引用
         /// </summary>
         public BattleCharacterAnimancer Animancer;
-        
+
         /// <summary>
         /// 当前动画状态
         /// </summary>
         public EBattleAnimState CurrentAnimState;
-        
+
+        /// <summary>
+        /// 当前正在播放的动画任务
+        /// </summary>
+        public ETTask CurrentAnimTask;
+
         /// <summary>
         /// 是否面向左侧
         /// </summary>
         public bool FacingLeft;
+
+        /// <summary>
+        /// 原始位置（用于近战攻击后返回）
+        /// </summary>
+        public Vector3 OriginalPosition;
     }
 }

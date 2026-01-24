@@ -34,9 +34,12 @@ namespace ET
         /// </summary>
         private static async ETTask ExecuteTwoColorBombComboAsync(this Match3BoardComponent self, Combo combo)
         {
-            var tilesToExplode = new List<Tile>();
+            var tilesToExplode = new List<(Tile tile, int x, int y)>();
             int width = self.GetWidth();
             int height = self.GetHeight();
+
+            // 增加连续消除计数，确保后续触发EliminationEndedEvent
+            self.ConsecutiveCascades++;
 
             // 先消除两个ColorBomb
             if (combo.TileA != null && !combo.TileA.IsDisposed)
@@ -55,24 +58,24 @@ namespace ET
                 {
                     var tile = self.GetTile(x, y);
                     if (tile == null || !tile.Destructable) continue;
-                    
+
                     var candy = tile.GetComponent<CandyComponent>();
                     var skill = tile.GetComponent<SkillCandyComponent>();
-                    
+
                     if (candy != null || skill != null)
                     {
-                        tilesToExplode.Add(tile);
+                        tilesToExplode.Add((tile, x, y));
                     }
                 }
             }
 
-            // 消除所有收集的瓦片
-            foreach (var tile in tilesToExplode)
+            // 触发战斗相关事件
+            self.PublishBattleTriggers(tilesToExplode);
+
+            // 同时消除所有收集的瓦片
+            if (tilesToExplode.Count > 0)
             {
-                if (!tile.IsDisposed)
-                {
-                    await self.ExplodeTileAsync(tile, tile.X, tile.Y);
-                }
+                await self.ExplodeTilesSimultaneouslyAsync(tilesToExplode);
             }
 
             // 播放音效事件
@@ -87,8 +90,11 @@ namespace ET
             // 确定哪个是ColorBomb，哪个是Candy
             Tile colorBombTile = combo.TileA.GetComponent<ColorBombComponent>() != null ? combo.TileA : combo.TileB;
             Tile candyTile = combo.TileA.GetComponent<ColorBombComponent>() == null ? combo.TileA : combo.TileB;
-            
+
             var targetColor = candyTile.GetColor();
+
+            // 增加连续消除计数
+            self.ConsecutiveCascades++;
 
             // 先消除ColorBomb
             if (!colorBombTile.IsDisposed)
@@ -97,7 +103,7 @@ namespace ET
             }
 
             // 收集所有同色糖果（包括被交换的糖果）
-            var tilesToExplode = new List<Tile>();
+            var tilesToExplode = new List<(Tile tile, int x, int y)>();
             int width = self.GetWidth();
             int height = self.GetHeight();
 
@@ -112,7 +118,7 @@ namespace ET
                     var tileCandy = tile.GetComponent<CandyComponent>();
                     if (tileCandy != null && tileCandy.GetColor() == targetColor)
                     {
-                        tilesToExplode.Add(tile);
+                        tilesToExplode.Add((tile, x, y));
                         continue;
                     }
 
@@ -120,19 +126,19 @@ namespace ET
                     var striped = tile.GetComponent<SkillCandyComponent>();
                     if (striped != null && striped.GetColor() == targetColor)
                     {
-                        tilesToExplode.Add(tile);
+                        tilesToExplode.Add((tile, x, y));
                         continue;
                     }
                 }
             }
 
+            // 触发战斗相关事件
+            self.PublishBattleTriggers(tilesToExplode);
+
             // 消除所有同色糖果
-            foreach (var tile in tilesToExplode)
+            if (tilesToExplode.Count > 0)
             {
-                if (!tile.IsDisposed)
-                {
-                    await self.ExplodeTileAsync(tile, tile.X, tile.Y);
-                }
+                await self.ExplodeTilesSimultaneouslyAsync(tilesToExplode);
             }
 
             // 播放音效

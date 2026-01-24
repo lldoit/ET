@@ -186,12 +186,11 @@ namespace ET
         /// <summary>
         /// 将本次待爆炸的糖果分类型推送给战斗系统
         /// </summary>
-        private static void PublishBattleTriggers(this Match3BoardComponent self, List<(Tile tile, int x, int y)> tilesToExplode)
+        public static void PublishBattleTriggers(this Match3BoardComponent self, List<(Tile tile, int x, int y)> tilesToExplode)
         {
-            List<Match3TilePosition> normalPositions = null;
-            List<Match3TilePosition> skillPositions = null;
-            CandyColor? normalColor = null;
-            CandyColor? skillColor = null;
+            // 使用字典按颜色分组
+            var normalGroups = new Dictionary<int, List<Match3TilePosition>>();
+            var skillGroups = new Dictionary<int, List<Match3TilePosition>>();
 
             foreach (var (tile, x, y) in tilesToExplode)
             {
@@ -200,49 +199,55 @@ namespace ET
                     continue;
                 }
 
+                // 检查技能糖果
                 var skillCandy = tile.GetComponent<SkillCandyComponent>();
                 if (skillCandy != null)
                 {
-                    skillColor ??= skillCandy.GetColor();
-                    (skillPositions ??= new List<Match3TilePosition>()).Add(new Match3TilePosition
+                    int color = (int)skillCandy.GetColor();
+                    if (!skillGroups.TryGetValue(color, out var list))
                     {
-                        X = x,
-                        Y = y
-                    });
+                        list = new List<Match3TilePosition>();
+                        skillGroups[color] = list;
+                    }
+                    list.Add(new Match3TilePosition { X = x, Y = y });
                     continue;
                 }
 
+                // 检查普通糖果
                 var candy = tile.GetComponent<CandyComponent>();
                 if (candy != null)
                 {
-                    normalColor ??= candy.GetColor();
-                    (normalPositions ??= new List<Match3TilePosition>()).Add(new Match3TilePosition
+                    int color = (int)candy.GetColor();
+                    if (!normalGroups.TryGetValue(color, out var list))
                     {
-                        X = x,
-                        Y = y
-                    });
+                        list = new List<Match3TilePosition>();
+                        normalGroups[color] = list;
+                    }
+                    list.Add(new Match3TilePosition { X = x, Y = y });
                 }
             }
 
-            if (normalPositions != null && normalPositions.Count > 0 && normalColor.HasValue)
+            // 发送普通糖果事件
+            foreach (var kvp in normalGroups)
             {
                 EventSystem.Instance.Publish(self.Scene(), new Match3BattleTriggerEvent
                 {
-                    Color = (int)normalColor.Value,
-                    MatchCount = normalPositions.Count,
+                    Color = kvp.Key,
+                    MatchCount = kvp.Value.Count,
                     IsSkillCandy = false,
-                    TilePositions = normalPositions
+                    TilePositions = kvp.Value
                 });
             }
 
-            if (skillPositions != null && skillPositions.Count > 0 && skillColor.HasValue)
+            // 发送技能糖果事件
+            foreach (var kvp in skillGroups)
             {
                 EventSystem.Instance.Publish(self.Scene(), new Match3BattleTriggerEvent
                 {
-                    Color = (int)skillColor.Value,
-                    MatchCount = skillPositions.Count,
+                    Color = kvp.Key,
+                    MatchCount = kvp.Value.Count,
                     IsSkillCandy = true,
-                    TilePositions = skillPositions
+                    TilePositions = kvp.Value
                 });
             }
         }

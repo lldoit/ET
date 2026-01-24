@@ -131,6 +131,27 @@ namespace ET
                 }
             }
 
+            // 检查田字格（2x2）
+            var leftTile = self.GetTile(x - 1, y);
+            var topTile = self.GetTile(x, y - 1);
+            var topLeftTile = self.GetTile(x - 1, y - 1);
+
+            if (leftTile != null && topTile != null && topLeftTile != null)
+            {
+                var leftCandy = leftTile.GetComponent<CandyComponent>();
+                var topCandy = topTile.GetComponent<CandyComponent>();
+                var topLeftCandy = topLeftTile.GetComponent<CandyComponent>();
+
+                if (leftCandy != null && topCandy != null && topLeftCandy != null)
+                {
+                    if (leftCandy.GetColor() == topCandy.GetColor() &&
+                        leftCandy.GetColor() == topLeftCandy.GetColor())
+                    {
+                        eligibleColors.Remove(leftCandy.GetColor());
+                    }
+                }
+            }
+
             // 确保至少有一种颜色可选
             if (eligibleColors.Count == 0)
             {

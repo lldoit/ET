@@ -17,7 +17,7 @@ namespace ET
             // 清除匹配提示并停止计时器
             self.ClearSuggestedMatch();
             self.LastMoveTime = TimeInfo.Instance.ClientNow();
-            
+
             // 检查输入是否锁定
             if (self.InputLocked || self.CurrentlySwapping || self.CurrentlyAwarding)
             {
@@ -39,7 +39,7 @@ namespace ET
             }
 
             // 检查是否可以移动（不是特殊方块）
-            if (tile1.GetComponent<SpecialBlockComponent>() != null || 
+            if (tile1.GetComponent<SpecialBlockComponent>() != null ||
                 tile2.GetComponent<SpecialBlockComponent>() != null)
             {
                 return false;
@@ -55,57 +55,58 @@ namespace ET
             {
                 // 执行Combo
                 self.CurrentlySwapping = true;
+
+                // 重置连续消除计数
+                self.ConsecutiveCascades = 0;
+
                 await self.SwapTilesWithAnimationAsync(x1, y1, x2, y2);
                 await self.ProcessComboAsync(combo);
                 self.CurrentlySwapping = false;
-                
+
                 // 消除限制
                 self.DecrementLimit();
-                
-                // 重置连续消除计数
-                self.ConsecutiveCascades = 0;
-                
+
                 // 应用填充
                 await self.ApplyFillStrategyAsync();
-                
+
                 return true;
             }
 
             // 不是Combo，检查交换后是否有匹配
             self.CurrentlySwapping = true;
-            
+
             // 先交换
             await self.SwapTilesWithAnimationAsync(x1, y1, x2, y2);
 
             // 检测匹配
             var matches = self.DetectAllMatches();
-            
+
             if (matches.Count > 0)
             {
                 // 有匹配，消除限制
                 self.DecrementLimit();
-                
+
                 // 重置连续消除计数
                 self.ConsecutiveCascades = 0;
-                
+
                 // 处理匹配
                 await self.ProcessMatchesAsync(matches);
-                
+
                 // 应用填充
                 await self.ApplyFillStrategyAsync();
-                
+
                 self.CurrentlySwapping = false;
-                
+
                 return true;
             }
             else
             {
                 EventSystem.Instance.Publish(self.Scene(), new PlaySoundEvent { SoundType = "TileSwapFailed" });
-                
+
                 // 没有匹配，交换回来
                 await self.SwapTilesWithAnimationAsync(x2, y2, x1, y1);
                 self.CurrentlySwapping = false;
-                
+
                 return false;
             }
         }
@@ -129,7 +130,7 @@ namespace ET
                 Tile2Ref = tile2,
                 Duration = 0.25f // 对应CandyMatch3Kit的0.25秒动画
             });
-            
+
             // 等待动画完成
             await self.Root().GetComponent<TimerComponent>().WaitAsync(250);
         }
@@ -161,7 +162,7 @@ namespace ET
             if (self.Level.LimitType == LimitType.Moves)
             {
                 self.CurrentLimit--;
-                
+
                 // 发送事件更新UI
                 Scene scene = self.Root() as Scene;
                 if (scene != null)

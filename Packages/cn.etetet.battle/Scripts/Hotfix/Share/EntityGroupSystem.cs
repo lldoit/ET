@@ -60,12 +60,13 @@ namespace ET
         /// <summary>
         /// 初始化队伍
         /// </summary>
-        public static void Init(this EntityGroup self, ECamp camp, BattleSceneComponent battleField, List<int> entityIds)
+        public static void Init(this EntityGroup self, ECamp camp, BattleSceneComponent battleField, List<int> entityIds = null)
         {
             self.Camp = camp;
             self.BattleFieldRef = battleField;
 
-            foreach (int entityId in entityIds)
+            if (entityIds == null) return;
+            foreach (var entityId in entityIds)
             {
                 self.Entitys.Add(self.AddChild<EntityHero, int>(entityId));
             }

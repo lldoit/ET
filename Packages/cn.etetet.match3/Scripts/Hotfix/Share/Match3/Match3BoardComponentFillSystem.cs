@@ -36,6 +36,12 @@ namespace ET
             }
             else
             {
+                // 只有在发生过消除的情况下才发送消除结束事件
+                if (self.ConsecutiveCascades > 0)
+                {
+                    EventSystem.Instance.Publish(self.Scene(), new Match3EliminationEndedEvent());
+                }
+
                 // 如果没有新匹配，检测可能的交换
                 self.PossibleSwaps = self.DetectPossibleSwaps();
 
@@ -201,6 +207,12 @@ namespace ET
             }
             else
             {
+                // 只有在发生过消除的情况下才发送消除结束事件
+                if (self.ConsecutiveCascades > 0)
+                {
+                    EventSystem.Instance.Publish(self.Scene(), new Match3EliminationEndedEvent());
+                }
+
                 // 没有新匹配，检测可能的交换
                 self.PossibleSwaps = self.DetectPossibleSwaps();
 

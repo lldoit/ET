@@ -92,9 +92,10 @@ namespace ET
         public static bool IsValid(this EntityHero self)
         {
             if (self.Delete) return false;
-            if (self.StateCom == null) return true;
-            return !self.StateCom.Entity.HasCombatState(EEntityState.Dead) &&
-                   !self.StateCom.Entity.HasCombatState(EEntityState.Escape);
+            StateComponent stateCom = self.StateCom;
+            if (stateCom == null) return true;
+            return !stateCom.HasCombatState(EEntityState.Dead) &&
+                   !stateCom.HasCombatState(EEntityState.Escape);
         }
 
         /// <summary>
@@ -102,7 +103,8 @@ namespace ET
         /// </summary>
         public static int GetAttValue(this EntityHero self, EAttType type)
         {
-            return self.AttCom.Entity?.GetAttValue(type) ?? 0;
+            AttComponent attCom = self.AttCom;
+            return attCom?.GetAttValue(type) ?? 0;
         }
 
         /// <summary>
@@ -110,7 +112,8 @@ namespace ET
         /// </summary>
         public static int GetAttValue(this EntityHero self, int type)
         {
-            return self.AttCom.Entity?.GetAttValue(type) ?? 0;
+            AttComponent attCom = self.AttCom;
+            return attCom?.GetAttValue(type) ?? 0;
         }
 
         /// <summary>
@@ -124,16 +127,18 @@ namespace ET
             if (self.Energy < 0)
                 self.Energy = 0;
         }
-        
+
         public static void OnDead(this EntityHero self, EntityHero caster)
         {
-            if (self.StateCom.Entity.HasCombatState(EEntityState.Dead))
+            StateComponent stateCom = self.StateCom;
+            if (stateCom != null && stateCom.HasCombatState(EEntityState.Dead))
                 return;
 
-            self.AttCom.Entity.SetCurHP(0);
-            
+            AttComponent attCom = self.AttCom;
+            attCom?.SetCurHP(0);
+
             //Group.OnEntityDead(this);
-           // CombatCom.OnDead();
+            // CombatCom.OnDead();
         }
 
         public static int CastActiveSpell(this EntityHero self, DREntitySpellEntry spellEntry, EntityHero target, int amount = 0)
@@ -141,11 +146,11 @@ namespace ET
             // ECombatErr dwErrCode = EntitySpell.CheckCasterLimit(Owner, spellEntry, eType);
             // if (ECombatErr.Success != dwErrCode)
             //     return dwErrCode;
-            
-            EntitySpell spell = new();
+
+            var spell = self.AddChild<EntitySpell>();
             spell.Init(self, target, spellEntry, amount);
             spell.Cast();
-            
+
             return 0;
         }
     }
