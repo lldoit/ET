@@ -87,6 +87,10 @@ namespace ET
 		public int ModelEntry { get; set; }
 		/// <summary>模型缩放</summary>
 		public float Scale { get; set; }
+		/// <summary>模型名称</summary>
+		public string ModelName { get; set; }
+		/// <summary>颜色</summary>
+		public int Color { get; set; }
 
 	}
 }

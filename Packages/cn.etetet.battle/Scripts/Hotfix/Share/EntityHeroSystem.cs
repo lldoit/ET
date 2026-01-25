@@ -8,14 +8,21 @@ namespace ET
     /// 遵循ET框架ECS规范
     /// </summary>
     [FriendOf(typeof(EntityHero))]
+    [FriendOf(typeof(BattleSceneComponent))]
     [EntitySystemOf(typeof(EntityHero))]
     public static partial class EntityHeroSystem
     {
         [EntitySystem]
-        private static void Awake(this EntityHero self, int id)
+        private static void Awake(this EntityHero self, int configId)
         {
-            self.HeroId = id;
-            self.Entry = DREntityBaseEntryCategory.Instance.Get(id);
+            self.EntryId = configId;
+            self.Entry = DREntityBaseEntryCategory.Instance.Get(configId);
+
+            // 生成唯一运行时ID (从BattleSceneComponent获取)
+            EntityGroup group = self.GetParent<EntityGroup>();
+            BattleSceneComponent battleScene = group.GetParent<BattleSceneComponent>();
+            self.HeroId = ++battleScene.NextHeroId;
+
             var attEntry = DREntityAttEntryCategory.Instance.Get(self.Entry.EntityAttEntry);
             self.AttCom = self.AddComponent<AttComponent, DREntityAttEntry>(attEntry);
             self.StateCom = self.AddComponent<StateComponent>();

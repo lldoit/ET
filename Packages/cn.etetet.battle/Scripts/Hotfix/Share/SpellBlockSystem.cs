@@ -3,11 +3,12 @@ using System.Collections.Generic;
 
 namespace ET
 {
+    /// <summary>
+    /// 技能效果块系统 - 技能效果处理
+    /// 静态逻辑类，用于处理技能效果
+    /// </summary>
     [FriendOfAttribute(typeof(ET.EntityHero))]
-    [FriendOfAttribute(typeof(ET.EntitySpell))]/// <summary>
-                                               /// 技能效果块系统 - 技能效果处理
-                                               /// 静态逻辑类，用于处理技能效果
-                                               /// </summary>
+    [FriendOfAttribute(typeof(ET.EntitySpell))]
     public static class SpellBlockSystem
     {
         /// <summary>

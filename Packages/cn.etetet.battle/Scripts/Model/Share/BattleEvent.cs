@@ -112,4 +112,25 @@ namespace ET
         /// </summary>
         public int BuffId;
     }
+
+    /// <summary>
+    /// 玩家回合开始事件(用于视觉表现)
+    /// </summary>
+    public struct PlayerTurnBeginEvent
+    {
+    }
+
+    /// <summary>
+    /// 敌方回合开始事件(用于视觉表现)
+    /// </summary>
+    public struct EnemyTurnBeginEvent
+    {
+    }
+
+    /// <summary>
+    /// 通知三消可以消除事件(视觉流程结束)
+    /// </summary>
+    public struct Match3CanEliminateEvent
+    {
+    }
 }

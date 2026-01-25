@@ -39,6 +39,9 @@ namespace ET.Client
             // 添加战斗组件
             BattleSceneComponent battle = battleScene.AddComponent<BattleSceneComponent>();
 
+            // 添加视觉队列组件
+            battle.AddComponent<BattleVisualQueueComponent>();
+
             StageConfig stageConfig = StageConfigCategory.Instance.Get(levelId);
 
             // 初始化三消棋盘

@@ -148,6 +148,8 @@ namespace ET.Client
                 tcs.SetResult();
             });
 
+
+
             await tcs;
 
             // await后重新获取Entity
@@ -198,6 +200,8 @@ namespace ET.Client
                 isCompleted = true;
                 tcs.SetResult();
             });
+
+
 
             await tcs;
 

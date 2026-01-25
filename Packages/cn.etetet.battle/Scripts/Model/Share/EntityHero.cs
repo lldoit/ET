@@ -11,9 +11,10 @@ namespace ET
     public class EntityHero : Entity, IAwake<int>, IDestroy
     {
         /// <summary>
-        /// 英雄Id
+        /// 英雄唯一运行时Id (全局自增)
         /// </summary>
         public int HeroId;
+
 
         /// <summary>
         /// 静态属性
@@ -58,7 +59,7 @@ namespace ET
         /// <summary>
         /// 英雄颜色（对应糖果颜色）
         /// </summary>
-        public int HeroColor;
+        public int HeroColor => Entry.Color;
 
         /// 所属队伍引用
         /// </summary>

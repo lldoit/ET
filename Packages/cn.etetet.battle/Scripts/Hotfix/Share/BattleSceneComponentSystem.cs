@@ -14,6 +14,7 @@ namespace ET
         private static void Awake(this BattleSceneComponent self)
         {
             self.CurrentTurn = 0;
+            self.NextHeroId = 0;
             self.BattleState = 0; // 准备中
             self.RedGroup = self.AddChild<EntityGroup>();
             self.BlueGroup = self.AddChild<EntityGroup>();
@@ -93,17 +94,15 @@ namespace ET
         /// 添加玩家英雄
         /// </summary>
         /// <param name="self">战斗场景组件</param>
-        /// <param name="heroId">英雄配置Id</param>
-        /// <param name="heroColor">英雄对应颜色</param>
+        /// <param name="entryId">英雄配置Id</param>
         /// <param name="maxEnergy">满能量值</param>
-        public static EntityHero AddPlayerHero(this BattleSceneComponent self, int heroId, int heroColor, int maxEnergy = 5)
+        public static EntityHero AddPlayerHero(this BattleSceneComponent self, int entryId, int maxEnergy = 5)
         {
             EntityGroup playerGroup = self.RedGroup;
             if (playerGroup == null)
                 return null;
 
-            EntityHero hero = playerGroup.AddChild<EntityHero, int>(heroId);
-            hero.HeroColor = heroColor;
+            EntityHero hero = playerGroup.AddChild<EntityHero, int>(entryId);
             hero.MaxEnergy = maxEnergy;
             hero.Energy = 0;
             hero.GroupRef = playerGroup;
@@ -112,8 +111,8 @@ namespace ET
             // 添加Buff组件
             BuffComponent buffCom = hero.AddComponent<BuffComponent>();
             buffCom.SetOwner(hero);
-            
-            EventSystem.Instance.Publish(self.Scene(), new AfterEntityHeroCreate() {Hero = hero});
+
+            EventSystem.Instance.Publish(self.Scene(), new AfterEntityHeroCreate() { Hero = hero });
 
             return hero;
         }
@@ -122,17 +121,17 @@ namespace ET
         /// 添加敌方英雄
         /// </summary>
         /// <param name="self">战斗场景组件</param>
-        /// <param name="heroId">英雄配置Id</param>
+        /// <param name="entryId">英雄配置Id</param>
         /// <param name="attackInterval">攻击间隔</param>
         /// <param name="energyPerTurn">每回合能量增加</param>
         /// <param name="maxEnergy">满能量值</param>
-        public static EntityHero AddEnemyHero(this BattleSceneComponent self, int heroId, int attackInterval = 2, int energyPerTurn = 20, int maxEnergy = 100)
+        public static EntityHero AddEnemyHero(this BattleSceneComponent self, int entryId, int attackInterval = 2, int energyPerTurn = 20, int maxEnergy = 100)
         {
             EntityGroup enemyGroup = self.BlueGroup;
             if (enemyGroup == null)
                 return null;
 
-            EntityHero enemy = enemyGroup.AddChild<EntityHero, int>(heroId);
+            EntityHero enemy = enemyGroup.AddChild<EntityHero, int>(entryId);
             enemy.MaxEnergy = maxEnergy;
             enemy.Energy = 0;
             enemy.GroupRef = enemyGroup;
@@ -145,8 +144,8 @@ namespace ET
             // 添加Buff组件
             BuffComponent buffCom = enemy.AddComponent<BuffComponent>();
             buffCom.SetOwner(enemy);
-            
-            EventSystem.Instance.Publish(self.Scene(), new AfterEntityHeroCreate() {Hero = enemy});
+
+            EventSystem.Instance.Publish(self.Scene(), new AfterEntityHeroCreate() { Hero = enemy });
 
             return enemy;
         }
@@ -161,10 +160,10 @@ namespace ET
             // TODO: 根据关卡配置表获取英雄配置
             // 目前使用默认配置进行测试
             // 后续需要从配置表读取英雄ID、颜色、能量等信息
-            self.AddPlayerHero(1, 0);
-            self.AddPlayerHero(1, 1);
-            self.AddPlayerHero(1, 2);
-            self.AddPlayerHero(1, 3);
+            self.AddPlayerHero(1);
+            self.AddPlayerHero(2);
+            self.AddPlayerHero(3);
+            self.AddPlayerHero(4);
         }
 
         /// <summary>
@@ -177,10 +176,10 @@ namespace ET
             // TODO: 根据关卡配置表获取敌人配置
             // 目前使用默认配置进行测试
             // 后续需要从配置表读取敌人ID、攻击间隔、能量等信息
-            self.AddEnemyHero(1);
-            self.AddEnemyHero(1);
-            self.AddEnemyHero(1);
-            self.AddEnemyHero(1);
+            self.AddEnemyHero(4);
+            self.AddEnemyHero(4);
+            self.AddEnemyHero(4);
+            self.AddEnemyHero(4);
         }
     }
 }

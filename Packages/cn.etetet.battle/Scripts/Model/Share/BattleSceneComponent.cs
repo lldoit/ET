@@ -11,12 +11,17 @@ namespace ET
         /// 当前战斗关卡ID
         /// </summary>
         public int LevelId;
-        
+
+        /// <summary>
+        /// 下一个可用的HeroId (自增)
+        /// </summary>
+        public int NextHeroId;
+
         /// <summary>
         /// 当前回合数
         /// </summary>
         public int CurrentTurn;
-        
+
         /// <summary>
         /// 战斗状态：0-准备中，1-进行中，2-胜利，3-失败
         /// </summary>

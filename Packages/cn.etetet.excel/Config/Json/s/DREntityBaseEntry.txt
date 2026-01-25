@@ -1,3 +1,6 @@
 {"dict": [
-[1, {"_t":"DREntityBaseEntry","_id":1,"Name":"","EntityAttEntry":1,"Level":1,"Star":1,"Score":1,"ClassId":1,"InitAurasAndSpell":[0],"MeleeSpell":1,"SpellOrder":0,"NormalSpell":2,"SpecialSpell":3,"ModelEntry":1,"Scale":1}],
+[1, {"_t":"DREntityBaseEntry","_id":1,"Name":"","EntityAttEntry":1,"Level":1,"Star":1,"Score":1,"ClassId":1,"InitAurasAndSpell":[0],"MeleeSpell":1,"SpellOrder":0,"NormalSpell":2,"SpecialSpell":3,"ModelEntry":1,"Scale":1,"ModelName":"red","Color":2}],
+[2, {"_t":"DREntityBaseEntry","_id":2,"Name":"","EntityAttEntry":1,"Level":1,"Star":1,"Score":1,"ClassId":1,"InitAurasAndSpell":[0],"MeleeSpell":1,"SpellOrder":0,"NormalSpell":2,"SpecialSpell":3,"ModelEntry":1,"Scale":1,"ModelName":"blue","Color":0}],
+[3, {"_t":"DREntityBaseEntry","_id":3,"Name":"","EntityAttEntry":1,"Level":1,"Star":1,"Score":1,"ClassId":1,"InitAurasAndSpell":[0],"MeleeSpell":1,"SpellOrder":0,"NormalSpell":2,"SpecialSpell":3,"ModelEntry":1,"Scale":1,"ModelName":"yellow","Color":3}],
+[4, {"_t":"DREntityBaseEntry","_id":4,"Name":"","EntityAttEntry":1,"Level":1,"Star":1,"Score":1,"ClassId":1,"InitAurasAndSpell":[0],"MeleeSpell":1,"SpellOrder":0,"NormalSpell":2,"SpecialSpell":3,"ModelEntry":1,"Scale":1,"ModelName":"green","Color":1}],
 ]}

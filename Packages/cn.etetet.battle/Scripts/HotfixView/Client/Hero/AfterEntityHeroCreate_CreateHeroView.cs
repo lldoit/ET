@@ -13,8 +13,7 @@ namespace ET.Client
             EntityHero hero = args.Hero;
 
             // 加载角色预制体
-            string assetsName = "Hero_gong";
-            //hero.Entry.ModelEntry
+            string assetsName = $"Hero_{hero.Entry.ModelName}";
             GameObject prefab = await scene.Root().GetComponent<ResourcesLoaderComponent>().LoadAssetAsync<GameObject>(assetsName);
             GlobalComponent globalComponent = scene.Root().GetComponent<GlobalComponent>();
             GameObject go = UnityEngine.Object.Instantiate(prefab, globalComponent.Unit, false);

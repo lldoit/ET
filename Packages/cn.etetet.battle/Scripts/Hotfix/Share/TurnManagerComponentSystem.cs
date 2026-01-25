@@ -148,6 +148,9 @@ namespace ET
             self = selfRef;
             self.CurrentPhase = ETurnPhase.PlayerAction;
 
+            // 发布玩家回合开始事件
+            EventSystem.Instance.Publish(battleScene.IScene as Scene, new PlayerTurnBeginEvent());
+
             // 3. 执行普通糖果伤害 (合并后执行)
             foreach (var kvp in normalActions)
             {
@@ -203,6 +206,9 @@ namespace ET
             // 8. 回合结束，进入下一回合
             self = selfRef;
             self.NextTurn();
+
+            // 发布恢复三消事件
+            EventSystem.Instance.Publish(battleScene.IScene as Scene, new Match3CanEliminateEvent());
         }
 
         /// <summary>
@@ -313,6 +319,7 @@ namespace ET
             self = selfRef;
             attacker = attackerRef;
 
+            Log.Info($"[TurnManager] 释放糖果伤害 ～～");
             EventSystem.Instance.Publish(battleScene.Scene(), new EntityCastSpell
             {
                 CasterId = attacker?.HeroId ?? 0,
@@ -328,7 +335,7 @@ namespace ET
                 }
             });
 
-            await self.Root().GetComponent<TimerComponent>().WaitAsync(100);
+            // await self.Root().GetComponent<TimerComponent>().WaitAsync(100);
         }
 
         /// <summary>
@@ -412,7 +419,7 @@ namespace ET
                 }
             }
 
-            await self.Root().GetComponent<TimerComponent>().WaitAsync(200);
+            // await self.Root().GetComponent<TimerComponent>().WaitAsync(200);
         }
 
         /// <summary>
@@ -446,7 +453,13 @@ namespace ET
 
             self.CurrentPhase = ETurnPhase.EnemyAction;
 
+            // 发布敌方回合开始事件
             BattleSceneComponent battleScene = self.BattleSceneRef;
+            if (battleScene != null)
+            {
+                // 发布敌方回合开始事件
+                EventSystem.Instance.Publish(battleScene.IScene as Scene, new EnemyTurnBeginEvent());
+            }
             EntityGroup enemyGroup = battleScene?.BlueGroup;
             EntityGroup playerGroup = battleScene?.RedGroup;
 
@@ -492,6 +505,7 @@ namespace ET
                         var spellEntry = DREntitySpellEntryCategory.Instance.Get(enemy.Entry.MeleeSpell);
                         if (spellEntry != null)
                         {
+                            Log.Info($"[TurnManager] 敌人 {enemy.HeroId} 释放普通攻击 {spellEntry.Id}");
                             enemy.CastActiveSpell(spellEntry, target);
                         }
                     }
@@ -528,7 +542,7 @@ namespace ET
                 if (self.CheckBattleEnd())
                     return;
 
-                await self.Root().GetComponent<TimerComponent>().WaitAsync(100);
+                // await self.Root().GetComponent<TimerComponent>().WaitAsync(100);
             }
 
             self = selfRef;
