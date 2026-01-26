@@ -160,5 +160,27 @@ namespace ET
 
             return 0;
         }
+
+        /// <summary>
+        /// 施放主动技能（静默模式，不发布事件，返回事件数据）
+        /// 用于批量收集多个技能后统一发布
+        /// </summary>
+        /// <returns>元组：(错误码, 技能事件数据)</returns>
+        public static (ECombatErr, EntityCastSpell?) CastActiveSpellSilent(this EntityHero self, DREntitySpellEntry spellEntry, EntityHero target, int amount = 0)
+        {
+            /*ECombatErr err = EntitySpellSystem.CheckCasterLimit(self, spellEntry, EEntitySpellType.Normal);
+            if (err != ECombatErr.Success)
+                return (err, null);
+
+            err = EntitySpellSystem.CheckTargetSelect(self, target, spellEntry);
+            if (err != ECombatErr.Success)
+                return (err, null);*/
+
+            var spell = self.AddChild<EntitySpell>();
+            spell.Init(self, target, spellEntry, amount);
+
+            var result = spell.CastSilent();
+            return result;
+        }
     }
 }

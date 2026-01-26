@@ -35,6 +35,15 @@ namespace ET
     }
 
     /// <summary>
+    /// 批量技能释放事件 - 多个技能作为一个批次同时释放
+    /// 批次内不同角色的技能并行播放，同一角色的技能串行播放
+    /// </summary>
+    public struct EntityCastSpellBatch
+    {
+        public List<EntityCastSpell> Spells;
+    }
+
+    /// <summary>
     /// 回合变化事件
     /// </summary>
     public struct TurnChangedEvent

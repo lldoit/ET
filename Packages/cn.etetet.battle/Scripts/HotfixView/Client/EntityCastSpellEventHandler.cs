@@ -16,16 +16,16 @@ namespace ET.Client
             BattleSceneComponent battleScene = scene.GetComponent<BattleSceneComponent>();
             if (battleScene == null) return;
 
-            BattleVisualQueueComponent queue = battleScene.GetComponent<BattleVisualQueueComponent>();
-            if (queue == null)
+            BattleSequencerComponent sequencer = battleScene.GetComponent<BattleSequencerComponent>();
+            if (sequencer == null)
             {
-                // 如果没有队列组件，直接播放（兼容旧逻辑或异常情况）
+                // 如果没有序列器组件，直接播放（兼容旧逻辑或异常情况）
                 await SpellEffectHelper.PlaySpellEffect(scene, args);
                 return;
             }
 
-            // 加入队列
-            BattleVisualQueueComponentSystem.Enqueue(queue, new SpellAction { Data = args });
+            // 加入队列（单个动作作为单批次）
+            sequencer.Enqueue(new SpellSequenceAction { Data = args });
 
             await ETTask.CompletedTask;
         }

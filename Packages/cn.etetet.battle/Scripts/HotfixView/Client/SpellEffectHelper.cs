@@ -199,6 +199,7 @@ namespace ET.Client
             }
 
             // 2. 处理施法者动作
+            Log.Info($"[SpellEffectHelper] PlaySpellEffect step2: CasterId={args.CasterId}, isMelee={isMelee}, hasTarget={firstTarget != null}");
             if (isMelee && firstTarget != null && firstTargetView != null)
             {
                 // 近战攻击：移动到目标 → 攻击动画 → 返回
@@ -209,11 +210,12 @@ namespace ET.Client
                 // 远程攻击/技能：播放动画
                 await ProcessRangedAttack(casterView, firstTargetView, isNormalAttack);
             }
+            Log.Info($"[SpellEffectHelper] PlaySpellEffect step2 done: CasterId={args.CasterId}");
 
             // 3. 短暂延迟后处理目标受击效果
             //await scene.Root().GetComponent<TimerComponent>().WaitAsync(100);
 
-            // 4. 处理所有目标的受击效果
+            // 4. 处理所有目标的受击效果（不等待，fire-and-forget）
             if (args.DamageInfos != null)
             {
                 foreach (var damageInfo in args.DamageInfos)
@@ -221,10 +223,11 @@ namespace ET.Client
                     EntityHero target = FindHeroByHeroId(scene, damageInfo.TargetId);
                     if (target != null)
                     {
-                        await ProcessTargetHit(target, damageInfo);
+                        ProcessTargetHit(target, damageInfo);
                     }
                 }
             }
+            Log.Info($"[SpellEffectHelper] PlaySpellEffect complete: CasterId={args.CasterId}");
         }
 
         private static async ETTask ProcessMeleeAttack(BattleCharacterViewComponent casterView, BattleCharacterViewComponent targetView, bool isNormalAttack)
@@ -284,36 +287,27 @@ namespace ET.Client
             casterView.PlayIdle();
         }
 
-        private static async ETTask ProcessTargetHit(EntityHero target, DamageInfo damageInfo)
+        private static void ProcessTargetHit(EntityHero target, DamageInfo damageInfo)
         {
             BattleCharacterViewComponent targetView = GetViewComponent(target);
             if (targetView == null)
                 return;
-
-            EntityRef<BattleCharacterViewComponent> targetRef = targetView;
 
             // 检查是否造成伤害
             bool isDamage = (damageInfo.SpellResult & (int)SpellResult.Damage) != 0;
 
             if (isDamage)
             {
-                // 播放受击动画
-                await targetView.PlayHit();
-
-                targetView = targetRef;
-                if (targetView == null || targetView.IsDisposed)
-                    return;
-
                 // 检查是否死亡
                 if (IsDead(target))
                 {
-                    // 播放死亡动画
-                    await targetView.PlayDie();
+                    // 播放死亡动画（不等待）
+                    targetView.PlayDie().NoContext();
                 }
                 else
                 {
-                    // 返回待机
-                    targetView.PlayIdle();
+                    // 播放受击动画（不等待）
+                    targetView.PlayHit().NoContext();
                 }
             }
         }

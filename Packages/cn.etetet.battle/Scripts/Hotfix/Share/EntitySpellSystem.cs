@@ -110,6 +110,29 @@ namespace ET
         }
 
         /// <summary>
+        /// 施放技能（静默模式，不发布事件，返回事件数据）
+        /// 用于批量收集多个技能后统一发布
+        /// </summary>
+        /// <returns>元组：(错误码, 技能事件数据)</returns>
+        public static (ECombatErr, EntityCastSpell?) CastSilent(this EntitySpell self)
+        {
+            self.CastStart();
+            self.FindTargets();
+
+            if (self.Targets.Count == 0)
+                return (ECombatErr.NoTarget, null);
+
+            if (self.TriggerBeforCast())
+            {
+                self.CalEffect();
+                self.CastSubSpell();
+            }
+
+            // 不调用 CastEnd，而是返回事件数据
+            return (ECombatErr.Success, self.BuildCastSpellEvent());
+        }
+
+        /// <summary>
         /// 触发施放
         /// </summary>
         public static ECombatErr TriggerCast(this EntitySpell self)
@@ -351,6 +374,22 @@ namespace ET
                 SpellId = self.Entry.Id,
                 DamageInfos = self.TargetDmgInfos
             });
+        }
+
+        /// <summary>
+        /// 构建技能事件数据（不发布，用于批量发布）
+        /// </summary>
+        private static EntityCastSpell? BuildCastSpellEvent(this EntitySpell self)
+        {
+            EntityHero caster = self.CasterRef;
+            if (caster == null) return null;
+
+            return new EntityCastSpell
+            {
+                CasterId = caster.HeroId,
+                SpellId = self.Entry?.Id ?? 0,
+                DamageInfos = new List<DamageInfo>(self.TargetDmgInfos ?? new List<DamageInfo>())
+            };
         }
 
         /// <summary>

@@ -151,7 +151,8 @@ namespace ET
             // 发布玩家回合开始事件
             EventSystem.Instance.Publish(battleScene.IScene as Scene, new PlayerTurnBeginEvent());
 
-            // 3. 执行普通糖果伤害 (合并后执行)
+            // 3. 收集普通糖果伤害（批量发布，多角色并行）
+            var normalSpellBatch = new List<EntityCastSpell>();
             foreach (var kvp in normalActions)
             {
                 int color = kvp.Key;
@@ -160,24 +161,34 @@ namespace ET
                 EntityHero hero = self.FindHeroByColor(playerGroup, color);
                 if (hero != null)
                 {
-                    await self.ApplyNormalCandyDamage(hero, count, positions);
+                    var spellEvent = self.CalculateNormalCandyDamage(hero, count, positions);
+                    if (spellEvent.HasValue)
+                    {
+                        normalSpellBatch.Add(spellEvent.Value);
+                    }
                 }
-                self = selfRef;
             }
 
-            // 4. 执行技能糖果释放 (顺序执行)
+            // 批量发布普通糖果伤害
+            if (normalSpellBatch.Count > 0)
+            {
+                EventSystem.Instance.Publish(battleScene.Scene(), new EntityCastSpellBatch
+                {
+                    Spells = normalSpellBatch
+                });
+            }
+
+            // 4. 执行技能糖果释放 (技能系统内部会发布事件)
             foreach (var (color, count) in skillActions)
             {
                 EntityHero hero = self.FindHeroByColor(playerGroup, color);
                 if (hero != null)
                 {
-                    await self.ExecuteNormalSpell(hero, count);
+                    self.ExecuteNormalSpellBatch(hero, count);
                 }
-                self = selfRef;
             }
 
-            // 5. 检查满能量释放大技能(SpecialSpell)
-            // 遍历所有英雄检查能量
+            // 5. 执行满能量大技能释放
             if (playerGroup.Entitys != null)
             {
                 foreach (var heroRef in playerGroup.Entitys)
@@ -185,14 +196,13 @@ namespace ET
                     EntityHero hero = heroRef;
                     if (hero != null && hero.Energy >= hero.MaxEnergy)
                     {
-                        await self.ExecuteSpecialSpell(hero);
-                        hero = heroRef; // Refresh ref just in case
+                        self.ExecuteSpecialSpellBatch(hero);
+                        hero = heroRef;
                         if (hero != null)
                         {
                             hero.Energy = 0;
                         }
                     }
-                    self = selfRef;
                 }
             }
 
@@ -280,33 +290,31 @@ namespace ET
             }
         }
 
+
         /// <summary>
-        /// 普通糖果直接对目标造成伤害（不走普通攻击技能）
+        /// 计算普通糖果伤害并返回事件（用于批量发布）
         /// </summary>
-        public static async ETTask ApplyNormalCandyDamage(this TurnManagerComponent self, EntityHero attacker, int matchCount, List<Match3TilePosition> tilePositions)
+        public static EntityCastSpell? CalculateNormalCandyDamage(this TurnManagerComponent self, EntityHero attacker, int matchCount, List<Match3TilePosition> tilePositions)
         {
             if (attacker == null || matchCount <= 0)
-                return;
-
-            EntityRef<TurnManagerComponent> selfRef = self;
-            EntityRef<EntityHero> attackerRef = attacker;
+                return null;
 
             BattleSceneComponent battleScene = self.BattleSceneRef;
             if (battleScene == null)
-                return;
+                return null;
 
             EntityGroup enemyGroup = battleScene.BlueGroup;
             if (enemyGroup == null)
-                return;
+                return null;
 
             EntityHero target = self.FindValidTarget(enemyGroup);
             if (target == null)
-                return;
+                return null;
 
             AttComponent attackerAtt = attacker.AttCom;
             AttComponent targetAtt = target.AttCom;
             if (attackerAtt == null || targetAtt == null)
-                return;
+                return null;
 
             int effectiveCount = tilePositions?.Count ?? matchCount;
             int attack = Math.Max(1, attackerAtt.GetAttValue(EAttType.AttackMelee));
@@ -314,15 +322,14 @@ namespace ET
             int baseDamage = (int)(attack / (1.0 * defence + attack) * attack);
             int totalDamage = Math.Max(1, baseDamage) * Math.Max(1, effectiveCount);
 
+            // 应用伤害
             targetAtt.ModAttValue(EAttType.CurHP, -totalDamage);
 
-            self = selfRef;
-            attacker = attackerRef;
+            Log.Info($"[TurnManager] 计算糖果伤害 HeroId={attacker.HeroId} -> TargetId={target.HeroId} Damage={totalDamage}");
 
-            Log.Info($"[TurnManager] 释放糖果伤害 ～～");
-            EventSystem.Instance.Publish(battleScene.Scene(), new EntityCastSpell
+            return new EntityCastSpell
             {
-                CasterId = attacker?.HeroId ?? 0,
+                CasterId = attacker.HeroId,
                 SpellId = 0,
                 DamageInfos = new List<DamageInfo>
                 {
@@ -333,24 +340,16 @@ namespace ET
                         SpellResult = (int)SpellResult.Damage
                     }
                 }
-            });
-
-            // await self.Root().GetComponent<TimerComponent>().WaitAsync(100);
+            };
         }
 
         /// <summary>
-        /// 执行小技能（技能糖果触发）
+        /// 执行小技能（同步版本，技能系统内部会发布事件）
         /// </summary>
-        /// <param name="self">回合管理器</param>
-        /// <param name="hero">英雄</param>
-        /// <param name="count">释放次数</param>
-        public static async ETTask ExecuteNormalSpell(this TurnManagerComponent self, EntityHero hero, int count)
+        public static void ExecuteNormalSpellBatch(this TurnManagerComponent self, EntityHero hero, int count)
         {
-            if (hero == null)
+            if (hero == null || count <= 0)
                 return;
-
-            EntityRef<TurnManagerComponent> selfRef = self;
-            EntityRef<EntityHero> heroRef = hero;
 
             BattleSceneComponent battleScene = self.BattleSceneRef;
             EntityGroup enemyGroup = battleScene?.BlueGroup;
@@ -359,18 +358,13 @@ namespace ET
 
             for (int i = 0; i < count; i++)
             {
-                self = selfRef;
-                hero = heroRef;
-
-                if (hero == null || self.CheckBattleEnd())
+                if (self.CheckBattleEnd())
                     break;
 
-                // 找到一个有效敌人
                 EntityHero target = self.FindValidTarget(enemyGroup);
                 if (target == null)
                     break;
 
-                // 执行小技能（NormalSpell）
                 if (hero.Entry?.NormalSpell > 0)
                 {
                     var spellEntry = DREntitySpellEntryCategory.Instance.Get(hero.Entry.NormalSpell);
@@ -380,35 +374,26 @@ namespace ET
                         hero.CastActiveSpell(spellEntry, target);
                     }
                 }
-
-                // 等待一小段时间（用于动画）
-                await self.Root().GetComponent<TimerComponent>().WaitAsync(100);
             }
         }
 
         /// <summary>
-        /// 执行大技能（满能量触发）
+        /// 执行大技能（同步版本，技能系统内部会发布事件）
         /// </summary>
-        public static async ETTask ExecuteSpecialSpell(this TurnManagerComponent self, EntityHero hero)
+        public static void ExecuteSpecialSpellBatch(this TurnManagerComponent self, EntityHero hero)
         {
             if (hero == null)
                 return;
-
-            EntityRef<TurnManagerComponent> selfRef = self;
-            EntityRef<EntityHero> heroRef = hero;
 
             BattleSceneComponent battleScene = self.BattleSceneRef;
             EntityGroup enemyGroup = battleScene?.BlueGroup;
             if (enemyGroup == null)
                 return;
 
-            // 找到一个有效敌人
             EntityHero target = self.FindValidTarget(enemyGroup);
             if (target == null)
                 return;
 
-            // 执行大技能（SpecialSpell）
-            hero = heroRef;
             if (hero.Entry?.SpecialSpell > 0)
             {
                 var spellEntry = DREntitySpellEntryCategory.Instance.Get(hero.Entry.SpecialSpell);
@@ -418,8 +403,6 @@ namespace ET
                     hero.CastActiveSpell(spellEntry, target);
                 }
             }
-
-            // await self.Root().GetComponent<TimerComponent>().WaitAsync(200);
         }
 
         /// <summary>
@@ -445,7 +428,7 @@ namespace ET
         #region 敌方回合
 
         /// <summary>
-        /// 处理敌方回合
+        /// 处理敌方回合（多敌人并行释放技能）
         /// </summary>
         public static async ETTask ProcessEnemyTurn(this TurnManagerComponent self)
         {
@@ -457,7 +440,7 @@ namespace ET
             BattleSceneComponent battleScene = self.BattleSceneRef;
             if (battleScene != null)
             {
-                // 发布敌方回合开始事件
+                Log.Info($"[TurnManager] 发布 EnemyTurnBeginEvent, Scene={battleScene.IScene}");
                 EventSystem.Instance.Publish(battleScene.IScene as Scene, new EnemyTurnBeginEvent());
             }
             EntityGroup enemyGroup = battleScene?.BlueGroup;
@@ -466,11 +449,12 @@ namespace ET
             if (enemyGroup?.Entitys == null || playerGroup == null)
                 return;
 
+            // 1. 预处理阶段：增加能量，记录需要攻击的敌人
+            var enemiesNeedAttack = new List<EntityRef<EntityHero>>();
+
             foreach (var enemyRef in enemyGroup.Entitys)
             {
-                self = selfRef;
                 EntityHero enemy = enemyRef;
-
                 if (enemy == null || !enemy.IsValid())
                     continue;
 
@@ -478,9 +462,7 @@ namespace ET
                 if (ai == null)
                     continue;
 
-                EntityRef<EntityHero> enemyHeroRef = enemy;
-
-                // 1. 增加能量
+                // 增加能量
                 int oldEnergy = enemy.Energy;
                 enemy.ModEnergy(ai.EnergyPerTurn);
 
@@ -494,31 +476,51 @@ namespace ET
                     MaxEnergy = enemy.MaxEnergy
                 });
 
-                // 2. 检查普攻冷却
+                // 检查普攻冷却
                 if (ai.AttackCooldown <= 0)
                 {
-                    // 执行普通攻击
-                    enemy = enemyHeroRef;
-                    EntityHero target = self.FindValidTarget(playerGroup);
-                    if (target != null && enemy.Entry?.MeleeSpell > 0)
-                    {
-                        var spellEntry = DREntitySpellEntryCategory.Instance.Get(enemy.Entry.MeleeSpell);
-                        if (spellEntry != null)
-                        {
-                            Log.Info($"[TurnManager] 敌人 {enemy.HeroId} 释放普通攻击 {spellEntry.Id}");
-                            enemy.CastActiveSpell(spellEntry, target);
-                        }
-                    }
+                    enemiesNeedAttack.Add(enemyRef);
                     ai.AttackCooldown = ai.AttackInterval; // 重置冷却
                 }
                 else
                 {
                     ai.AttackCooldown--; // 冷却减少
                 }
+            }
 
-                // 3. 检查满能量释放技能
-                enemy = enemyHeroRef;
-                if (enemy != null && enemy.Energy >= enemy.MaxEnergy)
+            // 2. 收集所有敌人的普通攻击事件（静默模式）
+            var allSpellEvents = new List<EntityCastSpell>();
+
+            foreach (var enemyRef in enemiesNeedAttack)
+            {
+                EntityHero enemy = enemyRef;
+                if (enemy == null || !enemy.IsValid())
+                    continue;
+
+                EntityHero target = self.FindValidTarget(playerGroup);
+                if (target != null && enemy.Entry?.MeleeSpell > 0)
+                {
+                    var spellEntry = DREntitySpellEntryCategory.Instance.Get(enemy.Entry.MeleeSpell);
+                    if (spellEntry != null)
+                    {
+                        Log.Info($"[TurnManager] 敌人 {enemy.HeroId} 释放普通攻击 {spellEntry.Id}");
+                        var (err, spellEvent) = enemy.CastActiveSpellSilent(spellEntry, target);
+                        if (spellEvent.HasValue)
+                        {
+                            allSpellEvents.Add(spellEvent.Value);
+                        }
+                    }
+                }
+            }
+
+            // 3. 收集所有敌人的大技能释放（静默模式）
+            foreach (var enemyRef in enemyGroup.Entitys)
+            {
+                EntityHero enemy = enemyRef;
+                if (enemy == null || !enemy.IsValid())
+                    continue;
+
+                if (enemy.Energy >= enemy.MaxEnergy)
                 {
                     EntityHero skillTarget = self.FindValidTarget(playerGroup);
                     if (skillTarget != null && enemy.Entry?.SpecialSpell > 0)
@@ -527,24 +529,33 @@ namespace ET
                         if (spellEntry != null)
                         {
                             Log.Info($"[TurnManager] 敌人 {enemy.HeroId} 释放技能 {spellEntry.Id}");
-                            enemy.CastActiveSpell(spellEntry, skillTarget);
+                            var (err, spellEvent) = enemy.CastActiveSpellSilent(spellEntry, skillTarget);
+                            if (spellEvent.HasValue)
+                            {
+                                allSpellEvents.Add(spellEvent.Value);
+                            }
                         }
                     }
-                    enemy = enemyHeroRef;
-                    if (enemy != null)
-                    {
-                        enemy.Energy = 0; // 重置能量
-                    }
+                    enemy.Energy = 0; // 重置能量
                 }
-
-                // 检查战斗结束
-                self = selfRef;
-                if (self.CheckBattleEnd())
-                    return;
-
-                // await self.Root().GetComponent<TimerComponent>().WaitAsync(100);
             }
 
+            // 4. 批量发布所有敌人技能事件
+            if (allSpellEvents.Count > 0)
+            {
+                Log.Info($"[TurnManager] 批量发布 {allSpellEvents.Count} 个敌人技能事件");
+                EventSystem.Instance.Publish(battleScene.Scene(), new EntityCastSpellBatch
+                {
+                    Spells = allSpellEvents
+                });
+            }
+
+            // 5. 检查战斗结束
+            self = selfRef;
+            if (self.CheckBattleEnd())
+                return;
+
+            await ETTask.CompletedTask;
             self = selfRef;
             self.CurrentPhase = ETurnPhase.TurnEnd;
         }

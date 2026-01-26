@@ -39,8 +39,8 @@ namespace ET.Client
             // 添加战斗组件
             BattleSceneComponent battle = battleScene.AddComponent<BattleSceneComponent>();
 
-            // 添加视觉队列组件
-            battle.AddComponent<BattleVisualQueueComponent>();
+            // 添加战斗序列器组件（管理动作的序列化播放）
+            battle.AddComponent<BattleSequencerComponent>();
 
             StageConfig stageConfig = StageConfigCategory.Instance.Get(levelId);
 
