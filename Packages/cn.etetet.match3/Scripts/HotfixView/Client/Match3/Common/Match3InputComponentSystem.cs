@@ -390,14 +390,20 @@ namespace ET.Client
         private static async ETTask TrySwapTilesAsync(this Match3InputComponent self, Match3BoardComponent board, int x1, int y1, int x2, int y2)
         {
             self.InputEnabled = false;
+            bool success = false;
 
             try
             {
-                await board.TrySwapTilesAsync(x1, y1, x2, y2);
+                success = await board.TrySwapTilesAsync(x1, y1, x2, y2);
             }
             finally
             {
-                self.InputEnabled = true;
+                // 只有失败时才恢复输入
+                // 成功时保持锁定，直到 TurnManager 处理完回合后发布 Match3CanEliminateEvent
+                if (!success)
+                {
+                    self.InputEnabled = true;
+                }
             }
         }
 
