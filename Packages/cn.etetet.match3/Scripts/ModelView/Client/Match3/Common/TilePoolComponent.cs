@@ -35,6 +35,11 @@ namespace ET.Client
         public RectTransform TileContainer;
 
         /// <summary>
+        /// 瓦片遮罩容器（用于裁剪超出棋盘区域的瓦片）
+        /// </summary>
+        public RectTransform TileMaskContainer;
+
+        /// <summary>
         /// UI对象池根节点（隐藏）
         /// </summary>
         public RectTransform UIPoolRoot;

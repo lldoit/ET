@@ -37,6 +37,9 @@ namespace ET.Client
             // 初始化UI容器
             tilePool.InitializeUIContainers();
 
+            // 配置瓦片遮罩尺寸（根据棋盘宽高设置Mask容器的尺寸）
+            tilePool.ConfigureTileMaskSize(level.Width, level.Height);
+
             // 获取或添加FxPoolComponent（用于加载特效预制体）
             var fxPool = board.GetComponent<FxPoolComponent>();
             if (fxPool == null)

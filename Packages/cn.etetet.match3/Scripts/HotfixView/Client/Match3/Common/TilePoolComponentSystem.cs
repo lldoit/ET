@@ -25,8 +25,6 @@ namespace ET.Client
             self.PoolRoot = poolRootObj.transform;
         }
 
-
-
         [EntitySystem]
         private static void Destroy(this TilePoolComponent self)
         {
@@ -76,6 +74,12 @@ namespace ET.Client
             {
                 UnityEngine.Object.Destroy(self.TileContainer.gameObject);
                 self.TileContainer = null;
+            }
+
+            if (self.TileMaskContainer != null)
+            {
+                UnityEngine.Object.Destroy(self.TileMaskContainer.gameObject);
+                self.TileMaskContainer = null;
             }
 
             if (self.CellContainer != null)
@@ -192,12 +196,37 @@ namespace ET.Client
                 self.CellContainer.sizeDelta = Vector2.zero;
             }
 
-            // 创建瓦片容器
+            // 创建瓦片遮罩容器（用于裁剪超出棋盘区域的瓦片）
+            if (self.TileMaskContainer == null)
+            {
+                var maskContainerGo = new GameObject("TileMaskContainer");
+                self.TileMaskContainer = maskContainerGo.AddComponent<RectTransform>();
+                self.TileMaskContainer.SetParent(self.BoardRoot, false);
+                self.TileMaskContainer.anchorMin = new Vector2(0.5f, 0.5f);
+                self.TileMaskContainer.anchorMax = new Vector2(0.5f, 0.5f);
+                self.TileMaskContainer.pivot = new Vector2(0.5f, 0.5f);
+                self.TileMaskContainer.anchoredPosition = Vector2.zero;
+                // sizeDelta将在ConfigureTileMaskSize中设置
+                self.TileMaskContainer.sizeDelta = Vector2.zero;
+
+                // 添加Image组件（Mask组件需要Image来定义遮罩形状）
+                // 注意：Mask使用Image的alpha值决定遮罩区域，alpha=0的区域会裁剪子物体
+                // 所以需要设置alpha=1，然后通过showMaskGraphic=false来隐藏遮罩图形
+                var maskImage = maskContainerGo.AddComponent<UnityEngine.UI.Image>();
+                maskImage.color = new Color(1, 1, 1, 1); // 不透明，让Mask正常工作
+
+                // 添加Mask组件
+                var mask = maskContainerGo.AddComponent<UnityEngine.UI.Mask>();
+                mask.showMaskGraphic = false; // 不显示遮罩图形，但遮罩功能仍然有效
+            }
+
+            // 创建瓦片容器（作为遮罩容器的子对象）
             if (self.TileContainer == null)
             {
                 var tileContainerGo = new GameObject("TileContainer");
                 self.TileContainer = tileContainerGo.AddComponent<RectTransform>();
-                self.TileContainer.SetParent(self.BoardRoot, false);
+                // 将TileContainer放在TileMaskContainer下，以便被裁剪
+                self.TileContainer.SetParent(self.TileMaskContainer, false);
                 self.TileContainer.anchorMin = new Vector2(0.5f, 0.5f);
                 self.TileContainer.anchorMax = new Vector2(0.5f, 0.5f);
                 self.TileContainer.pivot = new Vector2(0.5f, 0.5f);
@@ -213,6 +242,24 @@ namespace ET.Client
                 self.UIPoolRoot.SetParent(self.BoardRoot.root, false);
                 poolRootGo.SetActive(false);
             }
+        }
+
+        /// <summary>
+        /// 配置瓦片遮罩容器的尺寸
+        /// 应在棋盘关卡加载后调用，根据棋盘宽高设置Mask容器的精确尺寸
+        /// </summary>
+        public static void ConfigureTileMaskSize(this TilePoolComponent self, int boardWidth, int boardHeight)
+        {
+            if (self.TileMaskContainer == null) return;
+
+            // 计算棋盘的总尺寸
+            float totalWidth = boardWidth * self.TileSize.x + (boardWidth - 1) * self.TileSpacing.x;
+            float totalHeight = boardHeight * self.TileSize.y + (boardHeight - 1) * self.TileSpacing.y;
+
+            // 设置Mask容器的尺寸
+            self.TileMaskContainer.sizeDelta = new Vector2(totalWidth, totalHeight);
+
+            Log.Info($"[TilePool] 配置瓦片遮罩尺寸: {totalWidth} x {totalHeight}");
         }
 
         /// <summary>
@@ -460,8 +507,7 @@ namespace ET.Client
         }
 
         #endregion
-
-
+        
         /// <summary>
         /// 获取普通糖果 Prefab
         /// </summary>
@@ -504,7 +550,6 @@ namespace ET.Client
 
             return tileObj;
         }
-
 
         /// <summary>
         /// 回收瓦片到对象池
