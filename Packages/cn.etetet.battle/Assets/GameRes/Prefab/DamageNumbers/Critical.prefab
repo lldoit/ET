@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 9143704957161033428}
   - component: {fileID: 1103661933560139011}
   - component: {fileID: 359475216163048424}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: TMPA
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -149,8 +149,9 @@ GameObject:
   m_Component:
   - component: {fileID: 8008569030419513485}
   - component: {fileID: 168748794687358533}
-  - component: {fileID: 3841397701531386135}
-  m_Layer: 0
+  - component: {fileID: -9071806391873231227}
+  - component: {fileID: 5091922345743344299}
+  m_Layer: 5
   m_Name: Critical
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -619,7 +620,7 @@ MonoBehaviour:
   disableOnSceneLoad: 1
   editorLastFont: Basic-Glow
   position: {x: 0, y: 0, z: 0}
---- !u!210 &3841397701531386135
+--- !u!210 &-9071806391873231227
 SortingGroup:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -627,10 +628,33 @@ SortingGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1585727311141884316}
   m_Enabled: 1
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 446880723
+  m_SortingLayer: 3
   m_SortingOrder: 1000
   m_SortAtRoot: 0
+--- !u!223 &5091922345743344299
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1585727311141884316}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 0
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 446880723
+  m_SortingOrder: 1000
+  m_TargetDisplay: 0
 --- !u!1 &8996431011149329883
 GameObject:
   m_ObjectHideFlags: 0
@@ -642,7 +666,7 @@ GameObject:
   - component: {fileID: 372188368228919263}
   - component: {fileID: 7226879088961030786}
   - component: {fileID: 3710695421686591420}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: TMPB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
