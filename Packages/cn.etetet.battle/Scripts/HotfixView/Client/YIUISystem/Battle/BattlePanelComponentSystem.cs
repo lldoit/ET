@@ -116,6 +116,9 @@ namespace ET.Client
             // 初始化滚动背景组件
             await self.InitializeScrollingBackground(battleScene);
 
+            // 初始化飘字组件
+            await self.InitializeDamageNumber(battleScene);
+
             Log.Info("[BattlePanel] UI渲染模式初始化完成");
         }
 
@@ -173,6 +176,30 @@ namespace ET.Client
             Log.Info("[BattlePanel] 站位组件BattleRoot设置完成");
 
             await ETTask.CompletedTask;
+        }
+
+        /// <summary>
+        /// 初始化飘字组件
+        /// </summary>
+        private static async ETTask InitializeDamageNumber(this BattlePanelComponent self, Scene battleScene)
+        {
+            // 添加飘字组件
+            var dnComponent = battleScene.GetComponent<DamageNumberComponent>();
+            if (dnComponent == null)
+            {
+                dnComponent = battleScene.AddComponent<DamageNumberComponent>();
+            }
+
+            // 获取容器（使用BattlePanel的RectTransform）
+            RectTransform container = self.UIBase.OwnerRectTransform;
+
+            // 获取UI相机
+            Camera uiCamera = self.YIUIMgr().UICamera;
+
+            // 初始化飘字组件
+            await dnComponent.InitializeAsync(container, uiCamera);
+
+            Log.Info("[BattlePanel] 飘字组件初始化完成");
         }
 
         #region YIUIEvent开始

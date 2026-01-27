@@ -12,7 +12,8 @@
         "ET.YIUIFramework",
         "ET.YooAssets",
         "Unity.Mathematics",
-        "Unity.TextMeshPro"
+        "Unity.TextMeshPro",
+        "DamageNumbersPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -11,6 +11,7 @@ namespace ET.Client
     [FriendOf(typeof(EntityGroup))]
     [FriendOf(typeof(BattleSceneComponent))]
     [FriendOf(typeof(BattleCharacterViewComponent))]
+    [FriendOf(typeof(DamageNumberComponent))]
     public static class SpellEffectHelper
     {
         /// <summary>
@@ -198,39 +199,20 @@ namespace ET.Client
                 }
             }
 
-            // 2. 处理施法者动作
-            Log.Info($"[SpellEffectHelper] PlaySpellEffect step2: CasterId={args.CasterId}, isMelee={isMelee}, hasTarget={firstTarget != null}");
+            // 2. 处理施法者动作（攻击动画与受击动画同时播放）
             if (isMelee && firstTarget != null && firstTargetView != null)
             {
-                // 近战攻击：移动到目标 → 攻击动画 → 返回
-                await ProcessMeleeAttack(casterView, firstTargetView, isNormalAttack);
+                // 近战攻击：移动到目标 → 攻击动画+受击动画 → 返回
+                await ProcessMeleeAttack(scene, casterView, firstTargetView, isNormalAttack, args.DamageInfos);
             }
             else
             {
-                // 远程攻击/技能：播放动画
-                await ProcessRangedAttack(casterView, firstTargetView, isNormalAttack);
+                // 远程攻击/技能：攻击动画+受击动画
+                await ProcessRangedAttack(scene, casterView, firstTargetView, isNormalAttack, args.DamageInfos);
             }
-            Log.Info($"[SpellEffectHelper] PlaySpellEffect step2 done: CasterId={args.CasterId}");
-
-            // 3. 短暂延迟后处理目标受击效果
-            //await scene.Root().GetComponent<TimerComponent>().WaitAsync(100);
-
-            // 4. 处理所有目标的受击效果（不等待，fire-and-forget）
-            if (args.DamageInfos != null)
-            {
-                foreach (var damageInfo in args.DamageInfos)
-                {
-                    EntityHero target = FindHeroByHeroId(scene, damageInfo.TargetId);
-                    if (target != null)
-                    {
-                        ProcessTargetHit(target, damageInfo);
-                    }
-                }
-            }
-            Log.Info($"[SpellEffectHelper] PlaySpellEffect complete: CasterId={args.CasterId}");
         }
 
-        private static async ETTask ProcessMeleeAttack(BattleCharacterViewComponent casterView, BattleCharacterViewComponent targetView, bool isNormalAttack)
+        private static async ETTask ProcessMeleeAttack(Scene scene, BattleCharacterViewComponent casterView, BattleCharacterViewComponent targetView, bool isNormalAttack, List<DamageInfo> damageInfos)
         {
             EntityRef<BattleCharacterViewComponent> casterRef = casterView;
 
@@ -245,7 +227,9 @@ namespace ET.Client
             if (casterView == null || casterView.IsDisposed)
                 return;
 
-            // 2. 播放攻击动画
+            // 2. 播放攻击动画的同时触发受击动画（fire-and-forget）
+            TriggerTargetHitEffects(scene, damageInfos);
+
             if (isNormalAttack)
             {
                 await casterView.PlayAttack();
@@ -263,11 +247,13 @@ namespace ET.Client
             await casterView.MoveBack(8f);
         }
 
-        private static async ETTask ProcessRangedAttack(BattleCharacterViewComponent casterView, BattleCharacterViewComponent targetView, bool isNormalAttack)
+        private static async ETTask ProcessRangedAttack(Scene scene, BattleCharacterViewComponent casterView, BattleCharacterViewComponent targetView, bool isNormalAttack, List<DamageInfo> damageInfos)
         {
             EntityRef<BattleCharacterViewComponent> casterRef = casterView;
 
-            // 播放攻击/技能动画
+            // 播放攻击动画的同时触发受击动画（fire-and-forget）
+            TriggerTargetHitEffects(scene, damageInfos);
+
             if (isNormalAttack)
             {
                 await casterView.PlayAttack();
@@ -287,14 +273,64 @@ namespace ET.Client
             casterView.PlayIdle();
         }
 
+        /// <summary>
+        /// 触发所有目标的受击效果（fire-and-forget）
+        /// </summary>
+        private static void TriggerTargetHitEffects(Scene scene, List<DamageInfo> damageInfos)
+        {
+            if (damageInfos == null) return;
+
+            foreach (var damageInfo in damageInfos)
+            {
+                EntityHero target = FindHeroByHeroId(scene, damageInfo.TargetId);
+                if (target != null)
+                {
+                    ProcessTargetHit(target, damageInfo);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 处理目标受击效果（飘字、动画）
+        /// </summary>
+        /// <param name="target">目标英雄</param>
+        /// <param name="damageInfo">伤害信息</param>
         private static void ProcessTargetHit(EntityHero target, DamageInfo damageInfo)
         {
             BattleCharacterViewComponent targetView = GetViewComponent(target);
             if (targetView == null)
                 return;
 
+            // 获取飘字组件
+            Scene scene = target.Scene();
+            DamageNumberComponent dnComponent = scene?.GetComponent<DamageNumberComponent>();
+
+            // 获取目标世界坐标（身体中间）
+            Vector3 worldPos = targetView.CharacterGO != null
+                ? targetView.CharacterGO.transform.position
+                : Vector3.zero;
+
             // 检查是否造成伤害
             bool isDamage = (damageInfo.SpellResult & (int)SpellResult.Damage) != 0;
+            bool isCrit = (damageInfo.SpellResult & (int)SpellResult.Crit) != 0;
+            bool isHeal = (damageInfo.SpellResult & (int)SpellResult.Heal) != 0;
+
+            // 显示飘字（使用队列方法，自动处理延迟）
+            if (dnComponent != null && dnComponent.IsInitialized)
+            {
+                if (isHeal)
+                {
+                    dnComponent.QueueHeal(worldPos, damageInfo.Damage);
+                }
+                else if (isCrit)
+                {
+                    dnComponent.QueueCriticalDamage(worldPos, damageInfo.Damage);
+                }
+                else if (isDamage)
+                {
+                    dnComponent.QueueNormalDamage(worldPos, damageInfo.Damage);
+                }
+            }
 
             if (isDamage)
             {

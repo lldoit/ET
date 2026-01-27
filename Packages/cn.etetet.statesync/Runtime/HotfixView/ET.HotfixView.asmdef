@@ -16,7 +16,8 @@
         "ET.YooAssets",
         "Unity.Mathematics",
         "Unity.TextMeshPro",
-        "PrimeTween.Runtime"
+        "PrimeTween.Runtime",
+        "DamageNumbersPro"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

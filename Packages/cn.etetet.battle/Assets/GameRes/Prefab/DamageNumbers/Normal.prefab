@@ -10,8 +10,9 @@ GameObject:
   m_Component:
   - component: {fileID: 3695295234517469365}
   - component: {fileID: 3268995537082146558}
-  - component: {fileID: 8159579942092228107}
-  m_Layer: 0
+  - component: {fileID: 9191865115232078275}
+  - component: {fileID: -8617818528649147759}
+  m_Layer: 5
   m_Name: Normal
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -52,7 +53,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   permanent: 0
-  lifetime: 1
+  lifetime: 0.6
   unscaledTime: 0
   enable3DGame: 0
   faceCameraView: 1
@@ -84,7 +85,7 @@ MonoBehaviour:
     horizontal: 0
     vertical: 0
     characterSpacing: 0
-    size: 0
+    size: 20
   digitSettings:
     decimals: 0
     decimalChar: .
@@ -115,10 +116,10 @@ MonoBehaviour:
     color: {r: 1, g: 1, b: 0, a: 1}
     mark: 0
     markColor: {r: 0, g: 0, b: 0, a: 0.5}
-    horizontal: 0.1
-    vertical: -0.05
+    horizontal: 0
+    vertical: 0
     characterSpacing: 0
-    size: 0
+    size: 20
   enableRightText: 0
   rightText: ' XP'
   rightTextSettings:
@@ -208,41 +209,41 @@ MonoBehaviour:
   scaleFadeIn: {x: 2, y: 2}
   enableCrossScaleFadeIn: 0
   crossScaleFadeIn: {x: 2, y: 2}
-  enableShakeFadeIn: 0
+  enableShakeFadeIn: 1
   shakeOffsetFadeIn: {x: 0, y: 1.5}
   shakeFrequencyFadeIn: 4
   durationFadeOut: 0.2
-  enableOffsetFadeOut: 1
+  enableOffsetFadeOut: 0
   offsetFadeOut: {x: 0.2, y: 0}
-  enableScaleFadeOut: 1
-  scaleFadeOut: {x: 1.2, y: -0.2}
+  enableScaleFadeOut: 0
+  scaleFadeOut: {x: 0.4, y: 0.4}
   enableCrossScaleFadeOut: 0
   crossScaleFadeOut: {x: 1, y: 1.5}
   enableShakeFadeOut: 0
   shakeOffsetFadeOut: {x: 0, y: 1.5}
   shakeFrequencyFadeOut: 4
-  enableLerp: 0
+  enableLerp: 1
   lerpSettings:
-    speed: 5
+    speed: 10
     minX: -0.4
-    maxX: 0.4
+    maxX: -0.3
     minY: 0.4
-    maxY: 0.7
+    maxY: 0.6
     randomFlip: 0
   enableVelocity: 1
   velocitySettings:
-    minX: -1
-    maxX: -1
-    minY: 2
-    maxY: 2
+    minX: -0.5
+    maxX: -0.3
+    minY: 0
+    maxY: 0.5
     randomFlip: 0
-    dragX: 0
-    dragY: 0
-    gravity: 8
+    dragX: 2
+    dragY: 2
+    gravity: 2
   enableShaking: 0
   shakeSettings:
     offset: {x: 0.005, y: 0.005}
-    frequency: 50
+    frequency: 30
   enableFollowing: 0
   followedTarget: {fileID: 0}
   followSettings:
@@ -304,7 +305,7 @@ MonoBehaviour:
     toNumber: 1000
     fromScale: 1
     toScale: 2
-  enableScaleOverTime: 0
+  enableScaleOverTime: 1
   scaleOverTime:
     serializedVersion: 2
     m_Curve:
@@ -317,6 +318,24 @@ MonoBehaviour:
       weightedMode: 0
       inWeight: 0
       outWeight: 0
+    - serializedVersion: 3
+      time: 0.1
+      value: 1.5
+      inSlope: -0.23096746
+      outSlope: -0.23096746
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.2
+      value: 1
+      inSlope: -0.9590758
+      outSlope: -0.9590758
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
     - serializedVersion: 3
       time: 1
       value: 0.7
@@ -333,7 +352,7 @@ MonoBehaviour:
   defaultOrthographicSize: 5
   maxOrthographicSize: 1.5
   orthographicCamera: {fileID: 0}
-  spamGroup: Destruction
+  spamGroup: 
   enableCombination: 0
   combinationSettings:
     method: 0
@@ -467,9 +486,9 @@ MonoBehaviour:
       m_RotationOrder: 4
   enableCollision: 0
   collisionSettings:
-    radius: 2
+    radius: 0.8
     pushFactor: 0.5
-    desiredDirection: {x: 0, y: 2, z: 0}
+    desiredDirection: {x: -1, y: 0, z: 0}
   enablePush: 0
   pushSettings:
     radius: 3
@@ -480,7 +499,7 @@ MonoBehaviour:
   disableOnSceneLoad: 1
   editorLastFont: 
   position: {x: 0, y: 0, z: 0}
---- !u!210 &8159579942092228107
+--- !u!210 &9191865115232078275
 SortingGroup:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -488,10 +507,33 @@ SortingGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4092816429830861745}
   m_Enabled: 1
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
+  m_SortingLayerID: 446880723
+  m_SortingLayer: 3
   m_SortingOrder: 1000
   m_SortAtRoot: 0
+--- !u!223 &-8617818528649147759
+Canvas:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4092816429830861745}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_RenderMode: 2
+  m_Camera: {fileID: 0}
+  m_PlaneDistance: 100
+  m_PixelPerfect: 0
+  m_ReceivesEvents: 1
+  m_OverrideSorting: 0
+  m_OverridePixelPerfect: 0
+  m_SortingBucketNormalizedSize: 0
+  m_VertexColorAlwaysGammaSpace: 0
+  m_AdditionalShaderChannelsFlag: 25
+  m_UpdateRectTransformForStandalone: 0
+  m_SortingLayerID: 446880723
+  m_SortingOrder: 1000
+  m_TargetDisplay: 0
 --- !u!1 &6764254452705747680
 GameObject:
   m_ObjectHideFlags: 0
@@ -503,7 +545,7 @@ GameObject:
   - component: {fileID: 7218252538008112636}
   - component: {fileID: 6763479540903590903}
   - component: {fileID: 6779884744353213843}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: TMPB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -557,7 +599,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: <voffset=-0.05em><space=0.1em>-<space=0.1em></voffset>123
+  m_text: <size=+10>-</size><size=+10>123</size>
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 69e0ec4d526c5cf4e9fa2c42eed49173, type: 2}
   m_sharedMaterial: {fileID: -112508593885672785, guid: 69e0ec4d526c5cf4e9fa2c42eed49173,
@@ -567,8 +609,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4282137855
-  m_fontColor: {r: 1, g: 0.23529412, b: 0.23529412, a: 1}
+    rgba: 4282164479
+  m_fontColor: {r: 1, g: 0.64134866, b: 0.2352941, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -585,8 +627,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30
-  m_fontSizeBase: 30
+  m_fontSize: 50
+  m_fontSizeBase: 50
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
@@ -641,7 +683,7 @@ GameObject:
   - component: {fileID: 5368017546369326782}
   - component: {fileID: 3841065446047062205}
   - component: {fileID: 3195585185545509200}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: TMPA
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -695,7 +737,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: <voffset=-0.05em><space=0.1em>-<space=0.1em></voffset>123
+  m_text: <size=+10>-</size><size=+10>123</size>
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 69e0ec4d526c5cf4e9fa2c42eed49173, type: 2}
   m_sharedMaterial: {fileID: -112508593885672785, guid: 69e0ec4d526c5cf4e9fa2c42eed49173,
@@ -705,8 +747,8 @@ MonoBehaviour:
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4282137855
-  m_fontColor: {r: 1, g: 0.23529412, b: 0.23529412, a: 1}
+    rgba: 4282164479
+  m_fontColor: {r: 1, g: 0.64134866, b: 0.2352941, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -723,8 +765,8 @@ MonoBehaviour:
   m_faceColor:
     serializedVersion: 2
     rgba: 4294967295
-  m_fontSize: 30
-  m_fontSizeBase: 30
+  m_fontSize: 50
+  m_fontSizeBase: 50
   m_fontWeight: 400
   m_enableAutoSizing: 0
   m_fontSizeMin: 18
