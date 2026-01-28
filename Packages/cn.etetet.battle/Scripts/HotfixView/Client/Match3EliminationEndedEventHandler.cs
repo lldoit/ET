@@ -4,11 +4,19 @@ namespace ET.Client
     /// 处理消除结束事件，执行缓冲的技能释放
     /// </summary>
     [Event(SceneType.Battle)]
+    [FriendOf(typeof(DamageNumberComponent))]
     public class Match3EliminationEndedEventHandler : AEvent<Scene, Match3EliminationEndedEvent>
     {
         protected override async ETTask Run(Scene scene, Match3EliminationEndedEvent args)
         {
-            BattleSceneComponent battleScene = scene.GetComponent<BattleSceneComponent>();
+            // 清除出手次数飘字（消除流程结束）
+            var dnComponent = scene.GetComponent<DamageNumberComponent>();
+            if (dnComponent != null && dnComponent.IsInitialized)
+            {
+                dnComponent.ClearAllActionCounts();
+            }
+
+            var battleScene = scene.GetComponent<BattleSceneComponent>();
             if (battleScene == null)
             {
                 await ETTask.CompletedTask;

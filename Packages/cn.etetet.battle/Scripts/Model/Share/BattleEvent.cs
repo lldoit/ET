@@ -142,4 +142,38 @@ namespace ET
     public struct Match3CanEliminateEvent
     {
     }
+
+    /// <summary>
+    /// 英雄出手次数信息
+    /// </summary>
+    public struct HeroActionInfo
+    {
+        /// <summary>
+        /// 英雄运行时Id
+        /// </summary>
+        public int HeroId;
+
+        /// <summary>
+        /// 出手次数
+        /// </summary>
+        public int ActionCount;
+    }
+
+    /// <summary>
+    /// 英雄出手次数事件 - 用于在角色身上显示出手次数飘字
+    /// </summary>
+    public struct HeroActionCountEvent
+    {
+        /// <summary>
+        /// 英雄出手次数列表
+        /// </summary>
+        public List<HeroActionInfo> ActionInfos;
+    }
+
+    /// <summary>
+    /// 清除出手次数飘字事件 - 消除完成时清除所有飘字
+    /// </summary>
+    public struct HeroActionCountClearEvent
+    {
+    }
 }

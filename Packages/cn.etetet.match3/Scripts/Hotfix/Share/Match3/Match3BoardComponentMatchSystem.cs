@@ -291,6 +291,18 @@ namespace ET
                     EventSystem.Instance.Publish(self.Scene(), new PlaySoundEvent { SoundType = "MarshmallowBreak" });
                 }
 
+                // 技能糖果：发布特效事件
+                var skillCandy = tile.GetComponent<SkillCandyComponent>();
+                if (skillCandy != null)
+                {
+                    EventSystem.Instance.Publish(self.Scene(), new PlaySkillCandyEffectEvent
+                    {
+                        X = x,
+                        Y = y,
+                        Color = skillCandy.GetColor()
+                    });
+                }
+
                 // 处理元素消除（冰/蜂蜜/糖浆）
                 self.DestroyElements(x, y);
 

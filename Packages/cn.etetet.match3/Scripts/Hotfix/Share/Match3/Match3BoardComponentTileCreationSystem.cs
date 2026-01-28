@@ -7,6 +7,7 @@ namespace ET
     /// </summary>
     [FriendOf(typeof(Match3BoardComponent))]
     [FriendOf(typeof(Tile))]
+    [FriendOf(typeof(SkillCandyComponent))]
     public static partial class Match3BoardComponentTileCreationSystem
     {
         /// <summary>
@@ -101,61 +102,51 @@ namespace ET
                 return null;
             }
 
-            // 创建符合条件的颜色列表（避免初始就有3连）
+            // 创建符合条件的颜色列表
             var eligibleColors = new List<CandyColor>();
             eligibleColors.AddRange(self.Level.AvailableColors);
 
-            // 检查左边两个瓦片
-            var leftTile1 = self.GetTile(x - 1, y);
-            var leftTile2 = self.GetTile(x - 2, y);
-            if (leftTile1 != null && leftTile2 != null)
+            // 只在关卡创建时检查3连匹配，运行时掉落的糖果不检查
+            if (!runtime)
             {
-                var candy1 = leftTile1.GetComponent<CandyComponent>();
-                var candy2 = leftTile2.GetComponent<CandyComponent>();
-                if (candy1 != null && candy2 != null && candy1.GetColor() == candy2.GetColor())
+                // ========== 水平方向检查 ==========
+                // 检查左边两个瓦片（普通糖果和技能糖果都参与匹配）
+                CheckAndRemoveColor(self, eligibleColors, x - 1, y, x - 2, y);
+
+                // 检查右边两个瓦片
+                CheckAndRemoveColor(self, eligibleColors, x + 1, y, x + 2, y);
+
+                // 检查左右各一个瓦片
+                CheckAndRemoveColor(self, eligibleColors, x - 1, y, x + 1, y);
+
+                // ========== 垂直方向检查 ==========
+                // 检查上边两个瓦片
+                CheckAndRemoveColor(self, eligibleColors, x, y - 1, x, y - 2);
+
+                // 检查下边两个瓦片
+                CheckAndRemoveColor(self, eligibleColors, x, y + 1, x, y + 2);
+
+                // 检查上下各一个瓦片
+                CheckAndRemoveColor(self, eligibleColors, x, y - 1, x, y + 1);
+
+                // ========== 田字格（2x2）检查 ==========
+                // 左上角田字格
+                CheckSquareAndRemoveColor(self, eligibleColors, x - 1, y, x, y - 1, x - 1, y - 1);
+
+                // 右上角田字格
+                CheckSquareAndRemoveColor(self, eligibleColors, x + 1, y, x, y - 1, x + 1, y - 1);
+
+                // 左下角田字格
+                CheckSquareAndRemoveColor(self, eligibleColors, x - 1, y, x, y + 1, x - 1, y + 1);
+
+                // 右下角田字格
+                CheckSquareAndRemoveColor(self, eligibleColors, x + 1, y, x, y + 1, x + 1, y + 1);
+
+                // 确保至少有一种颜色可选
+                if (eligibleColors.Count == 0)
                 {
-                    eligibleColors.Remove(candy1.GetColor());
+                    eligibleColors.AddRange(self.Level.AvailableColors);
                 }
-            }
-
-            // 检查上边两个瓦片
-            var topTile1 = self.GetTile(x, y - 1);
-            var topTile2 = self.GetTile(x, y - 2);
-            if (topTile1 != null && topTile2 != null)
-            {
-                var candy1 = topTile1.GetComponent<CandyComponent>();
-                var candy2 = topTile2.GetComponent<CandyComponent>();
-                if (candy1 != null && candy2 != null && candy1.GetColor() == candy2.GetColor())
-                {
-                    eligibleColors.Remove(candy1.GetColor());
-                }
-            }
-
-            // 检查田字格（2x2）
-            var leftTile = self.GetTile(x - 1, y);
-            var topTile = self.GetTile(x, y - 1);
-            var topLeftTile = self.GetTile(x - 1, y - 1);
-
-            if (leftTile != null && topTile != null && topLeftTile != null)
-            {
-                var leftCandy = leftTile.GetComponent<CandyComponent>();
-                var topCandy = topTile.GetComponent<CandyComponent>();
-                var topLeftCandy = topLeftTile.GetComponent<CandyComponent>();
-
-                if (leftCandy != null && topCandy != null && topLeftCandy != null)
-                {
-                    if (leftCandy.GetColor() == topCandy.GetColor() &&
-                        leftCandy.GetColor() == topLeftCandy.GetColor())
-                    {
-                        eligibleColors.Remove(leftCandy.GetColor());
-                    }
-                }
-            }
-
-            // 确保至少有一种颜色可选
-            if (eligibleColors.Count == 0)
-            {
-                eligibleColors.AddRange(self.Level.AvailableColors);
             }
 
             // 在运行时可能创建收集物
@@ -179,6 +170,50 @@ namespace ET
             var candyTile = self.AddChild<Tile, int, int>(x, y);
             candyTile.AddComponent<CandyComponent, CandyColor>(color);
             return candyTile;
+        }
+
+        /// <summary>
+        /// 检查两个位置的瓦片颜色，如果相同则从可选颜色中移除
+        /// </summary>
+        private static void CheckAndRemoveColor(Match3BoardComponent self, List<CandyColor> eligibleColors, int x1, int y1, int x2, int y2)
+        {
+            var tile1 = self.GetTile(x1, y1);
+            var tile2 = self.GetTile(x2, y2);
+            if (tile1 != null && tile2 != null)
+            {
+                var color1 = tile1.GetColor();
+                var color2 = tile2.GetColor();
+                if (color1.HasValue && color2.HasValue && color1.Value == color2.Value)
+                {
+                    eligibleColors.Remove(color1.Value);
+                }
+            }
+        }
+
+        /// <summary>
+        /// 检查田字格三个位置的瓦片颜色，如果相同则从可选颜色中移除
+        /// </summary>
+        private static void CheckSquareAndRemoveColor(Match3BoardComponent self, List<CandyColor> eligibleColors, 
+            int x1, int y1, int x2, int y2, int x3, int y3)
+        {
+            var tile1 = self.GetTile(x1, y1);
+            var tile2 = self.GetTile(x2, y2);
+            var tile3 = self.GetTile(x3, y3);
+
+            if (tile1 != null && tile2 != null && tile3 != null)
+            {
+                var color1 = tile1.GetColor();
+                var color2 = tile2.GetColor();
+                var color3 = tile3.GetColor();
+
+                if (color1.HasValue && color2.HasValue && color3.HasValue)
+                {
+                    if (color1.Value == color2.Value && color1.Value == color3.Value)
+                    {
+                        eligibleColors.Remove(color1.Value);
+                    }
+                }
+            }
         }
 
         /// <summary>

@@ -26,6 +26,11 @@ namespace ET.Client
         private const string HEAL_PREFAB = "DamageNumbers_Heal";
 
         /// <summary>
+        /// 出手次数飘字资源名
+        /// </summary>
+        private const string ACTION_COUNT_PREFAB = "DamageNumbers_ActionCount";
+
+        /// <summary>
         /// 飘字显示间隔（毫秒）
         /// </summary>
         private const int DAMAGE_NUMBER_INTERVAL_MS = 200;
@@ -34,17 +39,23 @@ namespace ET.Client
         private static void Awake(this DamageNumberComponent self)
         {
             self.IsInitialized = false;
+            self.HeroActionCountInfos = new System.Collections.Generic.Dictionary<int, ActionCountInfo>();
         }
 
         [EntitySystem]
         private static void Destroy(this DamageNumberComponent self)
         {
+            // 清除所有出手次数飘字
+            self.ClearAllActionCounts();
+            
             self.Container = null;
             self.UICamera = null;
             self.NormalDamagePrefab = null;
             self.CriticalDamagePrefab = null;
             self.HealPrefab = null;
+            self.ActionCountPrefab = null;
             self.IsInitialized = false;
+            self.HeroActionCountInfos = null;
         }
 
         /// <summary>
@@ -80,6 +91,13 @@ namespace ET.Client
             if (healPrefab != null)
             {
                 self.HealPrefab = healPrefab.GetComponent<DamageNumberGUI>();
+            }
+
+            // 加载出手次数预制体
+            var actionCountPrefab = await loader.LoadAssetAsync<GameObject>(ACTION_COUNT_PREFAB);
+            if (actionCountPrefab != null)
+            {
+                self.ActionCountPrefab = actionCountPrefab.GetComponent<DamageNumberGUI>();
             }
 
             self.IsInitialized = true;
@@ -237,6 +255,138 @@ namespace ET.Client
                 return;
             }
             self.ShowHeal(worldPos, healAmount);
+        }
+
+        /// <summary>
+        /// 累加出手次数飘字
+        /// 如果英雄已有飘字则更新数字，否则创建新飘字
+        /// </summary>
+        /// <param name="self">飘字组件</param>
+        /// <param name="heroId">英雄ID</param>
+        /// <param name="worldPos">世界坐标</param>
+        /// <param name="incrementCount">本次增加的次数</param>
+        public static void AddActionCount(this DamageNumberComponent self, int heroId, Vector3 worldPos, int incrementCount = 1)
+        {
+            if (!self.IsInitialized)
+            {
+                Log.Warning("[DamageNumber] 飘字组件未初始化");
+                return;
+            }
+
+            DamageNumberGUI prefab = self.ActionCountPrefab ?? self.NormalDamagePrefab;
+            if (prefab == null)
+            {
+                Log.Warning("[DamageNumber] 出手次数预制体未加载");
+                return;
+            }
+
+            // 检查是否已有该英雄的飘字
+            if (self.HeroActionCountInfos.TryGetValue(heroId, out ActionCountInfo info))
+            {
+                // 累加次数
+                info.Count += incrementCount;
+                info.WorldPos = worldPos;
+                
+                // 更新飘字数字
+                if (info.DamageNumber != null && info.DamageNumber.gameObject != null)
+                {
+                    info.DamageNumber.number = info.Count;
+                }
+                
+                self.HeroActionCountInfos[heroId] = info;
+            }
+            else
+            {
+                // 创建新飘字
+                DamageNumber dn = self.SpawnActionCountNumber(prefab, worldPos, incrementCount);
+                
+                info = new ActionCountInfo
+                {
+                    DamageNumber = dn,
+                    Count = incrementCount,
+                    WorldPos = worldPos
+                };
+                
+                self.HeroActionCountInfos[heroId] = info;
+            }
+        }
+
+        /// <summary>
+        /// 清除指定英雄的出手次数飘字
+        /// </summary>
+        /// <param name="self">飘字组件</param>
+        /// <param name="heroId">英雄ID</param>
+        public static void ClearActionCount(this DamageNumberComponent self, int heroId)
+        {
+            if (self.HeroActionCountInfos == null)
+                return;
+
+            if (self.HeroActionCountInfos.TryGetValue(heroId, out ActionCountInfo info))
+            {
+                // 销毁飘字
+                if (info.DamageNumber != null && info.DamageNumber.gameObject != null)
+                {
+                    UnityEngine.Object.Destroy(info.DamageNumber.gameObject);
+                }
+                
+                self.HeroActionCountInfos.Remove(heroId);
+            }
+        }
+
+        /// <summary>
+        /// 清除所有英雄的出手次数飘字
+        /// </summary>
+        /// <param name="self">飘字组件</param>
+        public static void ClearAllActionCounts(this DamageNumberComponent self)
+        {
+            if (self.HeroActionCountInfos == null)
+                return;
+
+            foreach (var kvp in self.HeroActionCountInfos)
+            {
+                ActionCountInfo info = kvp.Value;
+                if (info.DamageNumber != null && info.DamageNumber.gameObject != null)
+                {
+                    UnityEngine.Object.Destroy(info.DamageNumber.gameObject);
+                }
+            }
+            
+            self.HeroActionCountInfos.Clear();
+        }
+
+        /// <summary>
+        /// 生成出手次数飘字（不自动销毁）
+        /// </summary>
+        private static DamageNumber SpawnActionCountNumber(this DamageNumberComponent self, DamageNumberGUI prefab, Vector3 worldPos, int value)
+        {
+            if (self.Container == null || self.UICamera == null)
+            {
+                Log.Warning("[DamageNumber] 容器或相机未设置");
+                return null;
+            }
+
+            // 转换坐标
+            Vector3 localPos = self.Container.InverseTransformPoint(worldPos);
+            Vector2 anchoredPos = new Vector2(localPos.x, localPos.y);
+
+            // 生成飘字
+            DamageNumber dn = prefab.Spawn(anchoredPos, value);
+
+            // 设置父级
+            dn.SetAnchoredPosition(self.Container, anchoredPos);
+
+            // 设置Canvas排序顺序
+            Canvas canvas = dn.GetComponent<Canvas>();
+            if (canvas == null)
+            {
+                canvas = dn.gameObject.AddComponent<Canvas>();
+            }
+            canvas.overrideSorting = true;
+
+            // 禁用自动销毁（设置为永久）
+            dn.permanent = true;
+
+            return dn;
         }
 
         /// <summary>

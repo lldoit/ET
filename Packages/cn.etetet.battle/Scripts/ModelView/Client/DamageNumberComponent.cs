@@ -1,8 +1,30 @@
+using System.Collections.Generic;
 using DamageNumbersPro;
 using UnityEngine;
 
 namespace ET.Client
 {
+    /// <summary>
+    /// 出手次数飘字信息
+    /// </summary>
+    public struct ActionCountInfo
+    {
+        /// <summary>
+        /// 飘字实例
+        /// </summary>
+        public DamageNumber DamageNumber;
+
+        /// <summary>
+        /// 当前累计次数
+        /// </summary>
+        public int Count;
+
+        /// <summary>
+        /// 角色世界坐标
+        /// </summary>
+        public Vector3 WorldPos;
+    }
+
     /// <summary>
     /// 飘字管理组件 - 管理战斗中的伤害/治疗飘字
     /// 只包含数据，不包含方法
@@ -37,6 +59,11 @@ namespace ET.Client
         public DamageNumberGUI HealPrefab;
 
         /// <summary>
+        /// 出手次数飘字预制体
+        /// </summary>
+        public DamageNumberGUI ActionCountPrefab;
+
+        /// <summary>
         /// 是否已初始化
         /// </summary>
         public bool IsInitialized;
@@ -46,5 +73,11 @@ namespace ET.Client
         /// 用于跨多个攻击统一管理飘字显示间隔
         /// </summary>
         public long NextShowTimeMs;
+
+        /// <summary>
+        /// 每个英雄的出手次数飘字信息
+        /// Key: HeroId, Value: ActionCountInfo
+        /// </summary>
+        public Dictionary<int, ActionCountInfo> HeroActionCountInfos;
     }
 }
