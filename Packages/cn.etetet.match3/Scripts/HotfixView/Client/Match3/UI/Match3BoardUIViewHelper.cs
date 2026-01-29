@@ -47,7 +47,6 @@ namespace ET.Client
             var skillCandy = tile.GetComponent<SkillCandyComponent>();
             if (skillCandy != null)
             {
-                Log.Info($"[TileView] 创建技能糖果视图 color={skillCandy.Color}");
                 (tileObj, prefab) = tilePool.CreateUISkillCandyView(skillCandy.Color, position);
                 if (tileObj != null)
                 {

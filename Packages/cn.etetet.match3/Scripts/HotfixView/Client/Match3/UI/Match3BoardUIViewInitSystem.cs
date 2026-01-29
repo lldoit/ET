@@ -56,8 +56,6 @@ namespace ET.Client
                 await uiFxPool.InitializeAsync();
             }
 
-
-
             // 清除现有瓦片
             board.Clear();
 
@@ -84,37 +82,26 @@ namespace ET.Client
                 {
                     var levelTile = level.GetTile(x, y);
 
-                    // 跳过空洞
-                    if (levelTile.TileType == LevelTileType.Hole)
+                    // 跳过空洞和随机
+                    if (levelTile.TileType == LevelTileType.Hole || levelTile.CandyType == CandyType.RandomCandy)
                     {
                         continue;
                     }
 
-                    // 计算UI位置
-                    Vector2 uiPosition = tilePool.GetUITilePosition(x, y, level.Width, level.Height);
+                    board.CreateTile(tilePool, level, x, y);
+                }
+            }
+            
+            for (int y = 0; y < level.Height; y++)
+            {
+                for (int x = 0; x < level.Width; x++)
+                {
+                    var levelTile = level.GetTile(x, y);
 
-                    // 创建背景格子
-                    tilePool.CreateUIBgCell(x, y, uiPosition);
-
-                    // 创建瓦片数据
-                    var tile = board.CreateTileFromLevel(levelTile, x, y);
-                    if (tile != null)
+                    // 只生成随机
+                    if (levelTile.CandyType == CandyType.RandomCandy)
                     {
-                        board.SetTile(x, y, tile);
-
-                        // 创建UI瓦片视图
-                        board.CreateTileView(tile, uiPosition);
-
-                        // 处理收集物
-                        var collectable = tile.GetComponent<CollectableComponent>();
-                        if (collectable != null)
-                        {
-                            int cidx = board.EligibleCollectables.FindIndex(c => c == collectable.Type);
-                            if (cidx != -1)
-                            {
-                                board.EligibleCollectables.RemoveAt(cidx);
-                            }
-                        }
+                        board.CreateTile(tilePool, level, x, y);
                     }
                 }
             }
@@ -123,6 +110,38 @@ namespace ET.Client
             board.PossibleSwaps = board.DetectPossibleSwaps();
 
             Log.Info($"[Match3BoardUIView] UI棋盘视图初始化完成 - 可能交换数:{board.PossibleSwaps.Count}");
+        }
+
+        private static void CreateTile(this Match3BoardComponent board, TilePoolComponent tilePool, Level level, int x, int y)
+        {
+            var levelTile = level.GetTile(x, y);
+            
+            // 计算UI位置
+            Vector2 uiPosition = tilePool.GetUITilePosition(x, y, level.Width, level.Height);
+
+            // 创建背景格子
+            tilePool.CreateUIBgCell(x, y, uiPosition);
+
+            // 创建瓦片数据
+            var tile = board.CreateTileFromLevel(levelTile, x, y);
+            if (tile != null)
+            {
+                board.SetTile(x, y, tile);
+
+                // 创建UI瓦片视图
+                board.CreateTileView(tile, uiPosition);
+
+                // 处理收集物
+                var collectable = tile.GetComponent<CollectableComponent>();
+                if (collectable != null)
+                {
+                    int cidx = board.EligibleCollectables.FindIndex(c => c == collectable.Type);
+                    if (cidx != -1)
+                    {
+                        board.EligibleCollectables.RemoveAt(cidx);
+                    }
+                }
+            }
         }
     }
 }

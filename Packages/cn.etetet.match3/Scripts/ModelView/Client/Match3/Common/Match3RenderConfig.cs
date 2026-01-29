@@ -8,7 +8,7 @@ namespace ET.Client
         /// <summary>
         /// 瓦片默认尺寸（像素，用于UI模式）
         /// </summary>
-        public const float UITileSize = 142f;
+        public const float UITileSize = 130f;
 
         /// <summary>
         /// 瓦片间距（像素，用于UI模式）

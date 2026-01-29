@@ -24,7 +24,7 @@ namespace ET.Editor
 
         // 资源路径
         private const string BATTLE_PANEL_PATH = "Packages/cn.etetet.battle/Assets/GameRes/YIUI/Battle/Prefabs/BattlePanel.prefab";
-        private const string HERO_PREFAB_PATH = "Packages/cn.etetet.battle/Assets/GameRes/Prefab/Hero/gong.prefab";
+        private const string HERO_PREFAB_PATH = "Packages/cn.etetet.battle/Assets/GameRes/Prefab/Hero/Bard.prefab";
         private const string PREVIEW_SCENE_PATH = "Packages/cn.etetet.battle/Editor/Scenes/FormationPreviewScene.unity";
 
         // 之前的场景

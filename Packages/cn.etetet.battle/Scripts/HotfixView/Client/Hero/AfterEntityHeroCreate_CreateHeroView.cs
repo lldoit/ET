@@ -57,8 +57,6 @@ namespace ET.Client
                 var viewCom = hero.AddComponent<BattleCharacterViewComponent>();
                 viewCom.Initialize(go, slotIndex);
                 viewCom.SetFacing(facingLeft);
-
-                Log.Info($"[Formation] 角色 {hero.HeroId} 放置到站位 {slotIndex}/{totalCount}, 世界坐标: {worldPosition}, 面向左: {facingLeft}");
             }
             else
             {
