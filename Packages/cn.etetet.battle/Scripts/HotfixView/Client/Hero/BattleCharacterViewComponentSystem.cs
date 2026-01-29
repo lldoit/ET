@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using Spine;
 using UnityEngine;
 
 namespace ET.Client
@@ -7,6 +9,10 @@ namespace ET.Client
     /// 处理角色视图的所有逻辑，包括动画播放、面向控制等
     /// </summary>
     [FriendOf(typeof(BattleCharacterViewComponent))]
+    [FriendOf(typeof(EntityHero))]
+    [FriendOf(typeof(EntityGroup))]
+    [FriendOf(typeof(BattleSceneComponent))]
+    [FriendOf(typeof(DamageNumberComponent))]
     [EntitySystemOf(typeof(BattleCharacterViewComponent))]
     public static partial class BattleCharacterViewComponentSystem
     {
@@ -56,11 +62,168 @@ namespace ET.Client
 
                 // 保存原始位置
                 self.OriginalPosition = characterGO.transform.position;
+                
+                // Event
+                self.Animancer.Animancer.AnimationState.Event -= self.HandleSpineEvent;
+                self.Animancer.Animancer.AnimationState.Event += self.HandleSpineEvent;
             }
 
             // 默认播放待机动画
             self.PlayIdle();
         }
+        
+        /// <summary>
+        /// 处理Spine动画事件
+        /// </summary>
+        /// <param name="self">视图组件</param>
+        /// <param name="entry">动画轨道</param>
+        /// <param name="e">Spine事件</param>
+        private static void HandleSpineEvent(this BattleCharacterViewComponent self, TrackEntry entry, Spine.Event e)
+        {
+            if (e.Data.Name == "Attack")
+            {
+                // Attack事件触发时，处理缓存的伤害信息
+                self.TriggerPendingDamage();
+            }
+        }
+
+        /// <summary>
+        /// 触发缓存的伤害效果
+        /// </summary>
+        /// <param name="self">视图组件</param>
+        public static void TriggerPendingDamage(this BattleCharacterViewComponent self)
+        {
+            if (self.PendingDamageInfos == null || self.PendingDamageInfos.Count == 0)
+                return;
+
+            Scene scene = self.Scene();
+            if (scene == null)
+                return;
+
+            // 触发所有缓存的伤害效果
+            foreach (var damageInfo in self.PendingDamageInfos)
+            {
+                EntityHero target = FindHeroByHeroId(scene, damageInfo.TargetId);
+                if (target != null)
+                {
+                    ProcessTargetHit(target, damageInfo);
+                }
+            }
+
+            // 清空缓存
+            self.PendingDamageInfos.Clear();
+        }
+
+        #region 伤害处理相关
+
+        /// <summary>
+        /// 根据HeroId查找EntityHero
+        /// </summary>
+        private static EntityHero FindHeroByHeroId(Scene scene, int heroId)
+        {
+            BattleSceneComponent battleScene = scene.GetComponent<BattleSceneComponent>();
+            if (battleScene == null)
+                return null;
+
+            // 在红方队伍中查找
+            EntityGroup redGroup = battleScene.RedGroup;
+            if (redGroup?.Entitys != null)
+            {
+                foreach (var heroRef in redGroup.Entitys)
+                {
+                    EntityHero hero = heroRef;
+                    if (hero != null && hero.HeroId == heroId)
+                        return hero;
+                }
+            }
+
+            // 在蓝方队伍中查找
+            EntityGroup blueGroup = battleScene.BlueGroup;
+            if (blueGroup?.Entitys != null)
+            {
+                foreach (var heroRef in blueGroup.Entitys)
+                {
+                    EntityHero hero = heroRef;
+                    if (hero != null && hero.HeroId == heroId)
+                        return hero;
+                }
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// 检查目标是否死亡
+        /// </summary>
+        private static bool IsDead(EntityHero hero)
+        {
+            if (hero == null)
+                return true;
+
+            AttComponent attCom = hero.AttCom;
+            if (attCom == null)
+                return false;
+
+            int currentHp = attCom.GetAttValue(EAttType.CurHP);
+            return currentHp <= 0;
+        }
+
+        /// <summary>
+        /// 处理目标受击效果（飘字、动画）
+        /// </summary>
+        private static void ProcessTargetHit(EntityHero target, DamageInfo damageInfo)
+        {
+            BattleCharacterViewComponent targetView = target?.GetComponent<BattleCharacterViewComponent>();
+            if (targetView == null)
+                return;
+
+            // 获取飘字组件
+            Scene scene = target.Scene();
+            DamageNumberComponent dnComponent = scene?.GetComponent<DamageNumberComponent>();
+
+            // 获取目标世界坐标（身体中间）
+            Vector3 worldPos = targetView.CharacterGO.transform.position;
+            worldPos.y += targetView.Animancer.Renderer.bounds.size.y * 0.5f;
+
+            // 检查是否造成伤害
+            bool isDamage = (damageInfo.SpellResult & (int)SpellResult.Damage) != 0;
+            bool isCrit = (damageInfo.SpellResult & (int)SpellResult.Crit) != 0;
+            bool isHeal = (damageInfo.SpellResult & (int)SpellResult.Heal) != 0;
+
+            // 显示飘字（使用队列方法，自动处理延迟）
+            if (dnComponent != null && dnComponent.IsInitialized)
+            {
+                if (isHeal)
+                {
+                    dnComponent.QueueHeal(worldPos, damageInfo.Damage);
+                }
+                else if (isCrit)
+                {
+                    dnComponent.QueueCriticalDamage(worldPos, damageInfo.Damage);
+                }
+                else if (isDamage)
+                {
+                    dnComponent.QueueNormalDamage(worldPos, damageInfo.Damage);
+                }
+            }
+
+            if (isDamage)
+            {
+                // 检查是否死亡
+                if (IsDead(target))
+                {
+                    // 播放死亡动画（不等待）
+                    targetView.PlayDie().NoContext();
+                }
+                else
+                {
+                    // 播放受击动画（不等待）
+                    targetView.PlayHit().NoContext();
+                }
+            }
+        }
+
+        #endregion
 
         /// <summary>
         /// 停止当前正在播放的动画任务

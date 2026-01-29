@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace ET.Client
@@ -39,5 +40,10 @@ namespace ET.Client
         /// 原始位置（用于近战攻击后返回）
         /// </summary>
         public Vector3 OriginalPosition;
+
+        /// <summary>
+        /// 缓存的伤害信息列表（在Spine Attack事件时触发）
+        /// </summary>
+        public List<DamageInfo> PendingDamageInfos;
     }
 }

@@ -54,45 +54,6 @@ namespace ET.Client
         }
 
         /// <summary>
-        /// 根据EntityId查找EntityHero
-        /// </summary>
-        /// <param name="scene">战斗场景</param>
-        /// <param name="entityId">实体Id</param>
-        /// <returns>找到的英雄实体，未找到返回null</returns>
-        public static EntityHero FindHeroByEntityId(Scene scene, long entityId)
-        {
-            BattleSceneComponent battleScene = scene.GetComponent<BattleSceneComponent>();
-            if (battleScene == null)
-                return null;
-
-            // 在红方队伍中查找
-            EntityGroup redGroup = battleScene.RedGroup;
-            if (redGroup?.Entitys != null)
-            {
-                foreach (var heroRef in redGroup.Entitys)
-                {
-                    EntityHero hero = heroRef;
-                    if (hero != null && hero.Id == entityId)
-                        return hero;
-                }
-            }
-
-            // 在蓝方队伍中查找
-            EntityGroup blueGroup = battleScene.BlueGroup;
-            if (blueGroup?.Entitys != null)
-            {
-                foreach (var heroRef in blueGroup.Entitys)
-                {
-                    EntityHero hero = heroRef;
-                    if (hero != null && hero.Id == entityId)
-                        return hero;
-                }
-            }
-
-            return null;
-        }
-
-        /// <summary>
         /// 获取攻击类型（近战/远程）
         /// </summary>
         /// <param name="spellId">技能配置Id</param>
@@ -237,8 +198,8 @@ namespace ET.Client
             if (casterView == null || casterView.IsDisposed)
                 return;
 
-            // 2. 播放攻击动画的同时触发受击动画（fire-and-forget）
-            TriggerTargetHitEffects(scene, damageInfos);
+            // 2. 缓存伤害信息，在Spine Attack事件时触发受击效果
+            CacheDamageInfos(casterView, damageInfos);
 
             await casterView.PlayAttack();
 
@@ -257,8 +218,8 @@ namespace ET.Client
         {
             EntityRef<BattleCharacterViewComponent> casterRef = casterView;
 
-            // 播放攻击动画的同时触发受击动画（fire-and-forget）
-            TriggerTargetHitEffects(scene, damageInfos);
+            // 缓存伤害信息，在Spine Attack事件时触发受击效果
+            CacheDamageInfos(casterView, damageInfos);
 
             await casterView.PlaySpell();
 
@@ -273,77 +234,27 @@ namespace ET.Client
         }
 
         /// <summary>
-        /// 触发所有目标的受击效果（fire-and-forget）
+        /// 缓存伤害信息到施法者视图组件（等待Spine Attack事件时触发）
         /// </summary>
-        private static void TriggerTargetHitEffects(Scene scene, List<DamageInfo> damageInfos)
+        /// <param name="casterView">施法者视图组件</param>
+        /// <param name="damageInfos">伤害信息列表</param>
+        private static void CacheDamageInfos(BattleCharacterViewComponent casterView, List<DamageInfo> damageInfos)
         {
-            if (damageInfos == null) return;
-
-            foreach (var damageInfo in damageInfos)
-            {
-                EntityHero target = FindHeroByHeroId(scene, damageInfo.TargetId);
-                if (target != null)
-                {
-                    ProcessTargetHit(target, damageInfo);
-                }
-            }
-        }
-
-        /// <summary>
-        /// 处理目标受击效果（飘字、动画）
-        /// </summary>
-        /// <param name="target">目标英雄</param>
-        /// <param name="damageInfo">伤害信息</param>
-        private static void ProcessTargetHit(EntityHero target, DamageInfo damageInfo)
-        {
-            BattleCharacterViewComponent targetView = GetViewComponent(target);
-            if (targetView == null)
+            if (casterView == null || damageInfos == null)
                 return;
 
-            // 获取飘字组件
-            Scene scene = target.Scene();
-            DamageNumberComponent dnComponent = scene?.GetComponent<DamageNumberComponent>();
-
-            // 获取目标世界坐标（身体中间）
-            Vector3 worldPos = targetView.CharacterGO.transform.position;
-            worldPos.y += targetView.Animancer.Renderer.bounds.size.y * 0.5f;
-
-            // 检查是否造成伤害
-            bool isDamage = (damageInfo.SpellResult & (int)SpellResult.Damage) != 0;
-            bool isCrit = (damageInfo.SpellResult & (int)SpellResult.Crit) != 0;
-            bool isHeal = (damageInfo.SpellResult & (int)SpellResult.Heal) != 0;
-
-            // 显示飘字（使用队列方法，自动处理延迟）
-            if (dnComponent != null && dnComponent.IsInitialized)
+            // 初始化或清空缓存列表
+            if (casterView.PendingDamageInfos == null)
             {
-                if (isHeal)
-                {
-                    dnComponent.QueueHeal(worldPos, damageInfo.Damage);
-                }
-                else if (isCrit)
-                {
-                    dnComponent.QueueCriticalDamage(worldPos, damageInfo.Damage);
-                }
-                else if (isDamage)
-                {
-                    dnComponent.QueueNormalDamage(worldPos, damageInfo.Damage);
-                }
+                casterView.PendingDamageInfos = new List<DamageInfo>();
+            }
+            else
+            {
+                casterView.PendingDamageInfos.Clear();
             }
 
-            if (isDamage)
-            {
-                // 检查是否死亡
-                if (IsDead(target))
-                {
-                    // 播放死亡动画（不等待）
-                    targetView.PlayDie().NoContext();
-                }
-                else
-                {
-                    // 播放受击动画（不等待）
-                    targetView.PlayHit().NoContext();
-                }
-            }
+            // 缓存伤害信息
+            casterView.PendingDamageInfos.AddRange(damageInfos);
         }
     }
 }
