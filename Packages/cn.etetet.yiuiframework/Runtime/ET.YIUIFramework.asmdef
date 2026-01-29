@@ -5,7 +5,6 @@
         "ET.Core",
         "Unity.TextMeshPro",
         "ET.SourceGeneratorAttribute",
-        "Kybernetik.Animancer",
         "spine-unity"
     ],
     "includePlatforms": [],

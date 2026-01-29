@@ -1,4 +1,3 @@
-using Animancer;
 using Spine.Unity;
 using UnityEngine;
 

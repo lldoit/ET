@@ -1,5 +1,4 @@
 using System;
-using Animancer;
 using Spine.Unity;
 using UnityEngine;
 using AnimationState = Spine.AnimationState;
