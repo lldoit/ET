@@ -232,6 +232,10 @@ namespace ET.Client
 
             Log.Info($"[BattleSequencer] ExecuteCasterActions: CasterId={casterId}, 动作数={actions.Count}");
 
+            // 预处理：标记连续普攻的ShouldMoveBack
+            // 只有最后一个普攻需要返回原位
+            PreprocessNormalAttackMoveBack(actions);
+
             foreach (var action in actions)
             {
                 self = selfRef;
@@ -241,6 +245,67 @@ namespace ET.Client
                 Log.Info($"[BattleSequencer] 执行动作: {action.GetType().Name} CasterId={action.CasterId}");
                 await self.ExecuteAction(action);
             }
+        }
+
+        /// <summary>
+        /// 预处理连续普攻的ShouldMoveBack标记
+        /// 连续的普攻只有最后一个需要返回原位
+        /// </summary>
+        private static void PreprocessNormalAttackMoveBack(List<ISequenceAction> actions)
+        {
+            // 从后往前遍历，找到连续普攻序列的最后一个
+            for (int i = actions.Count - 1; i >= 0; i--)
+            {
+                if (actions[i] is SpellSequenceAction spellAction)
+                {
+                    bool isNormalAttack = IsNormalAttackSpell(spellAction.Data.SpellId);
+                    
+                    if (isNormalAttack)
+                    {
+                        // 检查后面是否还有普攻
+                        bool hasFollowingNormalAttack = false;
+                        for (int j = i + 1; j < actions.Count; j++)
+                        {
+                            if (actions[j] is SpellSequenceAction nextSpell && IsNormalAttackSpell(nextSpell.Data.SpellId))
+                            {
+                                hasFollowingNormalAttack = true;
+                                break;
+                            }
+                        }
+                        
+                        // 更新ShouldMoveBack标记：只有后面没有普攻时才返回原位
+                        var updatedAction = spellAction;
+                        updatedAction.ShouldMoveBack = !hasFollowingNormalAttack;
+                        actions[i] = updatedAction;
+                        
+                        Log.Info($"[BattleSequencer] 普攻预处理: SpellId={spellAction.Data.SpellId}, ShouldMoveBack={updatedAction.ShouldMoveBack}");
+                    }
+                    else
+                    {
+                        // 非普攻技能默认返回原位
+                        var updatedAction = spellAction;
+                        updatedAction.ShouldMoveBack = true;
+                        actions[i] = updatedAction;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// 判断是否是近战普攻类型的技能
+        /// </summary>
+        private static bool IsNormalAttackSpell(int spellId)
+        {
+            if (spellId <= 0)
+                return false;
+
+            DREntitySpellEntry spellEntry = DREntitySpellEntryCategory.Instance.Get(spellId);
+            if (spellEntry == null)
+                return true; // 默认为近战
+
+            // Melee或Normal类型都视为普攻
+            return spellEntry.SpellType == (int)EEntitySpellType.Melee || 
+                   spellEntry.SpellType == (int)EEntitySpellType.Normal;
         }
 
         /// <summary>
@@ -272,7 +337,7 @@ namespace ET.Client
             switch (action)
             {
                 case SpellSequenceAction spellAction:
-                    await self.ExecuteSpell(spellAction.Data);
+                    await self.ExecuteSpell(spellAction.Data, spellAction.ShouldMoveBack);
                     break;
                 case TurnSequenceAction turnAction:
                     await self.ExecuteTurn(turnAction.IsPlayerTurn);
@@ -287,14 +352,17 @@ namespace ET.Client
         /// <summary>
         /// 执行技能效果
         /// </summary>
-        private static async ETTask ExecuteSpell(this BattleSequencerComponent self, EntityCastSpell args)
+        /// <param name="self">序列器组件</param>
+        /// <param name="args">技能施放参数</param>
+        /// <param name="shouldMoveBack">近战攻击后是否返回原位</param>
+        private static async ETTask ExecuteSpell(this BattleSequencerComponent self, EntityCastSpell args, bool shouldMoveBack)
         {
-            Log.Info($"[BattleSequencer] ExecuteSpell 开始: CasterId={args.CasterId}, SpellId={args.SpellId}");
+            Log.Info($"[BattleSequencer] ExecuteSpell 开始: CasterId={args.CasterId}, SpellId={args.SpellId}, ShouldMoveBack={shouldMoveBack}");
 
             BattleSceneComponent battleScene = self.GetParent<BattleSceneComponent>();
             Scene scene = battleScene.IScene as Scene;
 
-            await SpellEffectHelper.PlaySpellEffect(scene, args);
+            await SpellEffectHelper.PlaySpellEffect(scene, args, shouldMoveBack);
 
             Log.Info($"[BattleSequencer] ExecuteSpell 结束: CasterId={args.CasterId}, SpellId={args.SpellId}");
         }

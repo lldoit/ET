@@ -160,7 +160,10 @@ namespace ET.Client
         /// <summary>
         /// 播放技能视图效果
         /// </summary>
-        public static async ETTask PlaySpellEffect(Scene scene, EntityCastSpell args)
+        /// <param name="scene">战斗场景</param>
+        /// <param name="args">技能施放参数</param>
+        /// <param name="shouldMoveBack">近战攻击后是否返回原位（用于连续普攻时，只在最后一次攻击后返回原位）</param>
+        public static async ETTask PlaySpellEffect(Scene scene, EntityCastSpell args, bool shouldMoveBack = true)
         {
             // 1. 找到施法者英雄
             EntityHero caster = FindHeroByHeroId(scene, args.CasterId);
@@ -185,7 +188,6 @@ namespace ET.Client
             }
 
             // 判断攻击类型
-            //bool isMelee = IsMeleeAttack(args.SpellId);
             bool isNormalAttack = IsMeleeAttack(args.SpellId) || IsNormalAttack(args.SpellId);
 
             // 如果有目标，获取第一个目标用于移动/朝向
@@ -202,8 +204,8 @@ namespace ET.Client
             // 2. 处理施法者动作（攻击动画与受击动画同时播放）
             if (isNormalAttack && firstTargetView != null)
             {
-                // 近战攻击：移动到目标 → 攻击动画+受击动画 → 返回
-                await ProcessNormalAttack(scene, casterView, firstTargetView, args.DamageInfos);
+                // 近战攻击：移动到目标 → 攻击动画+受击动画 → 返回（如果需要）
+                await ProcessNormalAttack(scene, casterView, firstTargetView, args.DamageInfos, shouldMoveBack);
             }
             else
             {
@@ -212,7 +214,15 @@ namespace ET.Client
             }
         }
 
-        private static async ETTask ProcessNormalAttack(Scene scene, BattleCharacterViewComponent casterView, BattleCharacterViewComponent targetView, List<DamageInfo> damageInfos)
+        /// <summary>
+        /// 处理近战普通攻击
+        /// </summary>
+        /// <param name="scene">战斗场景</param>
+        /// <param name="casterView">施法者视图组件</param>
+        /// <param name="targetView">目标视图组件</param>
+        /// <param name="damageInfos">伤害信息列表</param>
+        /// <param name="shouldMoveBack">攻击后是否返回原位（连续普攻时只在最后一次返回）</param>
+        private static async ETTask ProcessNormalAttack(Scene scene, BattleCharacterViewComponent casterView, BattleCharacterViewComponent targetView, List<DamageInfo> damageInfos, bool shouldMoveBack = true)
         {
             EntityRef<BattleCharacterViewComponent> casterRef = casterView;
 
@@ -236,8 +246,11 @@ namespace ET.Client
             if (casterView == null || casterView.IsDisposed)
                 return;
 
-            // 3. 返回原位
-            await casterView.MoveBack(8f);
+            // 3. 只有在需要返回时才返回原位（连续普攻时只在最后一次返回）
+            if (shouldMoveBack)
+            {
+                await casterView.MoveBack(8f);
+            }
         }
 
         private static async ETTask ProcessSpellAttack(Scene scene, BattleCharacterViewComponent casterView, BattleCharacterViewComponent targetView, List<DamageInfo> damageInfos)

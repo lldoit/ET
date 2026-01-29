@@ -22,6 +22,12 @@ namespace ET.Client
     {
         public EntityCastSpell Data;
         public int CasterId => Data.CasterId;
+        
+        /// <summary>
+        /// 近战攻击后是否返回原位
+        /// 用于连续普攻时，只在最后一次攻击后返回原位
+        /// </summary>
+        public bool ShouldMoveBack;
     }
 
     /// <summary>
