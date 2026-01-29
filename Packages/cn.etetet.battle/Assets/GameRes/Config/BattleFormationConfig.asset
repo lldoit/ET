@@ -16,16 +16,16 @@ MonoBehaviour:
     Name: "\u73A9\u5BB6\u65B9"
     Slots:
     - Index: 0
-      Position: {x: -156.86275, y: 488.5621}
+      Position: {x: -198.33333, y: 444.99997}
       FacingLeft: 0
     - Index: 1
-      Position: {x: -356.20917, y: 488.5621}
+      Position: {x: -351.66666, y: 341.66666}
       FacingLeft: 0
     - Index: 2
-      Position: {x: -153.59477, y: 305.55557}
+      Position: {x: -191.66666, y: 254.99998}
       FacingLeft: 0
     - Index: 3
-      Position: {x: -349.67322, y: 305.55557}
+      Position: {x: -351.66666, y: 175}
       FacingLeft: 0
   EnemyFormation1:
     Name: "\u654C\u65B91\u4EBA"
@@ -58,14 +58,14 @@ MonoBehaviour:
     Name: "\u654C\u65B94\u4EBA"
     Slots:
     - Index: 0
-      Position: {x: 179.73857, y: 485.29413}
+      Position: {x: 178.33333, y: 438.3333}
       FacingLeft: 1
     - Index: 1
-      Position: {x: 362.74512, y: 498.36603}
+      Position: {x: 355, y: 365}
       FacingLeft: 1
     - Index: 2
-      Position: {x: 186.27452, y: 295.75165}
+      Position: {x: 178.33333, y: 265}
       FacingLeft: 1
     - Index: 3
-      Position: {x: 369.28107, y: 302.2876}
+      Position: {x: 355, y: 185}
       FacingLeft: 1

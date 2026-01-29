@@ -49,6 +49,7 @@ namespace ET.Client
 
                 // 获取角色世界坐标（身体中间）
                 Vector3 worldPos = viewComponent.CharacterGO.transform.position;
+                worldPos.y += viewComponent.Animancer.Renderer.bounds.size.y * 0.5f;
 
                 // 使用累加模式显示出手次数飘字
                 dnComponent.AddActionCount(actionInfo.HeroId, worldPos, actionInfo.ActionCount);

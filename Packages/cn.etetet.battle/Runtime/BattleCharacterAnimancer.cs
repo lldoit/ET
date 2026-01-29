@@ -1,6 +1,8 @@
 using System;
 using Animancer;
+using Spine.Unity;
 using UnityEngine;
+using AnimationState = Spine.AnimationState;
 
 namespace ET.Client
 {
@@ -12,11 +14,11 @@ namespace ET.Client
     {
         [SerializeField]
         [Tooltip("Animancer组件引用")]
-        private AnimancerComponent _animancer;
+        private SkeletonAnimation _animancer;
 
         [SerializeField]
-        [Tooltip("精灵渲染器")]
-        private SpriteRenderer _renderer;
+        [Tooltip("渲染器")]
+        private MeshRenderer _renderer;
 
         [SerializeField]
         [Tooltip("角色动画配置")]
@@ -25,12 +27,12 @@ namespace ET.Client
         /// <summary>
         /// Animancer组件
         /// </summary>
-        public AnimancerComponent Animancer => _animancer;
+        public SkeletonAnimation Animancer => _animancer;
 
         /// <summary>
-        /// 精灵渲染器
+        /// 渲染器
         /// </summary>
-        public SpriteRenderer Renderer => _renderer;
+        public MeshRenderer Renderer => _renderer;
 
         /// <summary>
         /// 动画配置
@@ -46,27 +48,12 @@ namespace ET.Client
         /// </summary>
         public bool FacingLeft
         {
-            get => _renderer != null && _renderer.flipX;
+            get => _animancer != null && _animancer.skeleton.ScaleX < 0f;
             set
             {
-                if (_renderer != null)
+                if (_animancer != null)
                 {
-                    _renderer.flipX = value;
-                }
-            }
-        }
-
-        /// <summary>
-        /// 面向方向 (1=右, -1=左)
-        /// </summary>
-        public float FacingX
-        {
-            get => FacingLeft ? -1f : 1f;
-            set
-            {
-                if (value != 0)
-                {
-                    FacingLeft = value < 0;
+                    _animancer.skeleton.ScaleX = value ? -1f : 1f;
                 }
             }
         }
@@ -76,11 +63,11 @@ namespace ET.Client
         {
             if (_animancer == null)
             {
-                _animancer = GetComponent<AnimancerComponent>();
+                _animancer = GetComponent<SkeletonAnimation>();
             }
             if (_renderer == null)
             {
-                _renderer = GetComponentInChildren<SpriteRenderer>();
+                _renderer = GetComponentInChildren<MeshRenderer>();
             }
         }
 #endif
@@ -89,11 +76,11 @@ namespace ET.Client
         {
             if (_animancer == null)
             {
-                _animancer = GetComponent<AnimancerComponent>();
+                _animancer = GetComponent<SkeletonAnimation>();
             }
             if (_renderer == null)
             {
-                _renderer = GetComponentInChildren<SpriteRenderer>();
+                _renderer = GetComponentInChildren<MeshRenderer>();
             }
         }
 
@@ -104,7 +91,7 @@ namespace ET.Client
         {
             if (_animations?.Idle != null)
             {
-                _animancer.Play(_animations.Idle);
+                _animancer.AnimationState.SetAnimation(0, _animations.Idle, true);
             }
         }
 
@@ -115,7 +102,7 @@ namespace ET.Client
         {
             if (_animations?.Run != null)
             {
-                _animancer.Play(_animations.Run);
+                _animancer.AnimationState.SetAnimation(0, _animations.Run, true);
             }
         }
 
@@ -127,11 +114,16 @@ namespace ET.Client
         {
             if (_animations?.Attack != null)
             {
-                var state = _animancer.Play(_animations.Attack);
+                var state = _animancer.AnimationState.SetAnimation(0, _animations.Attack, false);
                 if (onComplete != null)
                 {
-                    state.Events(this).OnEnd ??= () => { };
-                    state.Events(this).OnEnd += onComplete;
+                    state.Complete += (trackEntry) => 
+                    {
+                        // trackEntry 就是当前的播放句柄
+                        Log.Debug($"动画 {trackEntry.Animation.Name} 播放完了！");
+    
+                        onComplete();
+                    };
                 }
             }
             else
@@ -148,11 +140,16 @@ namespace ET.Client
         {
             if (_animations?.Spell != null)
             {
-                var state = _animancer.Play(_animations.Spell);
+                var state = _animancer.AnimationState.SetAnimation(0, _animations.Spell, false);
                 if (onComplete != null)
                 {
-                    state.Events(this).OnEnd ??= () => { };
-                    state.Events(this).OnEnd += onComplete;
+                    state.Complete += (trackEntry) => 
+                    {
+                        // trackEntry 就是当前的播放句柄
+                        Log.Debug($"动画 {trackEntry.Animation.Name} 播放完了！");
+    
+                        onComplete();
+                    };
                 }
             }
             else
@@ -169,11 +166,16 @@ namespace ET.Client
         {
             if (_animations?.Hit != null)
             {
-                var state = _animancer.Play(_animations.Hit);
+                var state = _animancer.AnimationState.SetAnimation(0, _animations.Hit, false);
                 if (onComplete != null)
                 {
-                    state.Events(this).OnEnd ??= () => { };
-                    state.Events(this).OnEnd += onComplete;
+                    state.Complete += (trackEntry) =>
+                    {
+                        // trackEntry 就是当前的播放句柄
+                        Log.Debug($"动画 {trackEntry.Animation.Name} 播放完了！");
+
+                        onComplete();
+                    };
                 }
             }
             else
@@ -190,47 +192,22 @@ namespace ET.Client
         {
             if (_animations?.Die != null)
             {
-                var state = _animancer.Play(_animations.Die);
+                var state = _animancer.AnimationState.SetAnimation(0, _animations.Die, false);
                 if (onComplete != null)
                 {
-                    state.Events(this).OnEnd ??= () => { };
-                    state.Events(this).OnEnd += onComplete;
+                    state.Complete += (trackEntry) =>
+                    {
+                        // trackEntry 就是当前的播放句柄
+                        Log.Debug($"动画 {trackEntry.Animation.Name} 播放完了！");
+
+                        onComplete();
+                    };
                 }
             }
             else
             {
                 onComplete?.Invoke();
             }
-        }
-
-        /// <summary>
-        /// 播放指定的动画过渡
-        /// </summary>
-        /// <param name="transition">动画过渡</param>
-        /// <param name="onComplete">动画完成回调</param>
-        public void PlayTransition(ClipTransition transition, Action onComplete = null)
-        {
-            if (transition != null)
-            {
-                var state = _animancer.Play(transition);
-                if (onComplete != null)
-                {
-                    state.Events(this).OnEnd ??= () => { };
-                    state.Events(this).OnEnd += onComplete;
-                }
-            }
-            else
-            {
-                onComplete?.Invoke();
-            }
-        }
-
-        /// <summary>
-        /// 停止所有动画
-        /// </summary>
-        public void StopAll()
-        {
-            _animancer.Stop();
         }
     }
 }

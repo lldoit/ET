@@ -97,7 +97,7 @@ namespace ET.Client
         /// </summary>
         /// <param name="spellId">技能配置Id</param>
         /// <returns>true=近战, false=远程</returns>
-        public static bool IsMeleeAttack(int spellId)
+        private static bool IsMeleeAttack(int spellId)
         {
             if (spellId <= 0)
                 return true; // 默认近战
@@ -112,11 +112,11 @@ namespace ET.Client
         }
 
         /// <summary>
-        /// 判断是否为普通攻击技能（决定使用Attack还是Spell动画）
+        /// 判断是否为小技能
         /// </summary>
         /// <param name="spellId">技能配置Id</param>
         /// <returns>true=普攻用Attack动画, false=技能用Spell动画</returns>
-        public static bool IsNormalAttack(int spellId)
+        private static bool IsNormalAttack(int spellId)
         {
             if (spellId <= 0)
                 return false; // SpellId为0表示普通糖果伤害，用Attack动画
@@ -126,7 +126,7 @@ namespace ET.Client
                 return true;
 
             // Melee类型使用Attack动画，其他使用Spell动画
-            return spellEntry.SpellType == (int)EEntitySpellType.Melee;
+            return spellEntry.SpellType == (int)EEntitySpellType.Normal;
         }
 
         /// <summary>
@@ -181,18 +181,18 @@ namespace ET.Client
             {
                 // 这是棋子对目标的直接伤害，播放棋子伤害动画
                 // 目前逻辑兼容这种case，往下走默认为近战攻击
+                return;
             }
 
-            // 判断是否为近战攻击
-            bool isMelee = IsMeleeAttack(args.SpellId);
-            bool isNormalAttack = IsNormalAttack(args.SpellId);
+            // 判断攻击类型
+            //bool isMelee = IsMeleeAttack(args.SpellId);
+            bool isNormalAttack = IsMeleeAttack(args.SpellId) || IsNormalAttack(args.SpellId);
 
             // 如果有目标，获取第一个目标用于移动/朝向
-            EntityHero firstTarget = null;
             BattleCharacterViewComponent firstTargetView = null;
             if (args.DamageInfos != null && args.DamageInfos.Count > 0)
             {
-                firstTarget = FindHeroByHeroId(scene, args.DamageInfos[0].TargetId);
+                var firstTarget = FindHeroByHeroId(scene, args.DamageInfos[0].TargetId);
                 if (firstTarget != null)
                 {
                     firstTargetView = GetViewComponent(firstTarget);
@@ -200,25 +200,25 @@ namespace ET.Client
             }
 
             // 2. 处理施法者动作（攻击动画与受击动画同时播放）
-            if (isMelee && firstTarget != null && firstTargetView != null)
+            if (isNormalAttack && firstTargetView != null)
             {
                 // 近战攻击：移动到目标 → 攻击动画+受击动画 → 返回
-                await ProcessMeleeAttack(scene, casterView, firstTargetView, isNormalAttack, args.DamageInfos);
+                await ProcessNormalAttack(scene, casterView, firstTargetView, args.DamageInfos);
             }
             else
             {
                 // 远程攻击/技能：攻击动画+受击动画
-                await ProcessRangedAttack(scene, casterView, firstTargetView, isNormalAttack, args.DamageInfos);
+                await ProcessSpellAttack(scene, casterView, firstTargetView, args.DamageInfos);
             }
         }
 
-        private static async ETTask ProcessMeleeAttack(Scene scene, BattleCharacterViewComponent casterView, BattleCharacterViewComponent targetView, bool isNormalAttack, List<DamageInfo> damageInfos)
+        private static async ETTask ProcessNormalAttack(Scene scene, BattleCharacterViewComponent casterView, BattleCharacterViewComponent targetView, List<DamageInfo> damageInfos)
         {
             EntityRef<BattleCharacterViewComponent> casterRef = casterView;
 
             // 计算冲向目标的位置（在目标前方一小段距离）
             Vector3 targetPos = targetView.CharacterGO.transform.position;
-            Vector3 moveToPos = targetPos + (casterView.CharacterGO.transform.position - targetPos).normalized * 0.5f;
+            Vector3 moveToPos = targetPos + (casterView.CharacterGO.transform.position - targetPos).normalized * 1f;
 
             // 1. 移动到目标
             await casterView.MoveToPosition(moveToPos, 8f);
@@ -230,14 +230,7 @@ namespace ET.Client
             // 2. 播放攻击动画的同时触发受击动画（fire-and-forget）
             TriggerTargetHitEffects(scene, damageInfos);
 
-            if (isNormalAttack)
-            {
-                await casterView.PlayAttack();
-            }
-            else
-            {
-                await casterView.PlaySpell();
-            }
+            await casterView.PlayAttack();
 
             casterView = casterRef;
             if (casterView == null || casterView.IsDisposed)
@@ -247,21 +240,14 @@ namespace ET.Client
             await casterView.MoveBack(8f);
         }
 
-        private static async ETTask ProcessRangedAttack(Scene scene, BattleCharacterViewComponent casterView, BattleCharacterViewComponent targetView, bool isNormalAttack, List<DamageInfo> damageInfos)
+        private static async ETTask ProcessSpellAttack(Scene scene, BattleCharacterViewComponent casterView, BattleCharacterViewComponent targetView, List<DamageInfo> damageInfos)
         {
             EntityRef<BattleCharacterViewComponent> casterRef = casterView;
 
             // 播放攻击动画的同时触发受击动画（fire-and-forget）
             TriggerTargetHitEffects(scene, damageInfos);
 
-            if (isNormalAttack)
-            {
-                await casterView.PlayAttack();
-            }
-            else
-            {
-                await casterView.PlaySpell();
-            }
+            await casterView.PlaySpell();
 
             // TODO: 这里可以添加弹道特效逻辑
 
@@ -306,9 +292,8 @@ namespace ET.Client
             DamageNumberComponent dnComponent = scene?.GetComponent<DamageNumberComponent>();
 
             // 获取目标世界坐标（身体中间）
-            Vector3 worldPos = targetView.CharacterGO != null
-                ? targetView.CharacterGO.transform.position
-                : Vector3.zero;
+            Vector3 worldPos = targetView.CharacterGO.transform.position;
+            worldPos.y += targetView.Animancer.Renderer.bounds.size.y * 0.5f;
 
             // 检查是否造成伤害
             bool isDamage = (damageInfo.SpellResult & (int)SpellResult.Damage) != 0;

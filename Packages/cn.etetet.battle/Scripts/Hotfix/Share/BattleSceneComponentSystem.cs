@@ -96,7 +96,7 @@ namespace ET
         /// <param name="self">战斗场景组件</param>
         /// <param name="entryId">英雄配置Id</param>
         /// <param name="maxEnergy">满能量值</param>
-        public static EntityHero AddPlayerHero(this BattleSceneComponent self, int entryId, int maxEnergy = 5)
+        private static EntityHero AddPlayerHero(this BattleSceneComponent self, int entryId, int maxEnergy = 5)
         {
             EntityGroup playerGroup = self.RedGroup;
             if (playerGroup == null)
@@ -125,7 +125,7 @@ namespace ET
         /// <param name="attackInterval">攻击间隔</param>
         /// <param name="energyPerTurn">每回合能量增加</param>
         /// <param name="maxEnergy">满能量值</param>
-        public static EntityHero AddEnemyHero(this BattleSceneComponent self, int entryId, int attackInterval = 2, int energyPerTurn = 20, int maxEnergy = 100)
+        private static EntityHero AddEnemyHero(this BattleSceneComponent self, int entryId, int attackInterval = 2, int energyPerTurn = 20, int maxEnergy = 100)
         {
             EntityGroup enemyGroup = self.BlueGroup;
             if (enemyGroup == null)

@@ -65,7 +65,7 @@ namespace ET.Client
         /// <summary>
         /// 停止当前正在播放的动画任务
         /// </summary>
-        public static void StopCurrentAnimTask(this BattleCharacterViewComponent self)
+        private static void StopCurrentAnimTask(this BattleCharacterViewComponent self)
         {
             if (self.CurrentAnimTask != null && !self.CurrentAnimTask.IsCompleted)
             {
@@ -123,13 +123,13 @@ namespace ET.Client
             }
 
             // 防重入：如果当前已经在播放攻击动画，直接返回
-            if (self.CurrentAnimTask != null && !self.CurrentAnimTask.IsCompleted && self.CurrentAnimState == EBattleAnimState.Attack)
-            {
-                return;
-            }
+            // if (self.CurrentAnimTask != null && !self.CurrentAnimTask.IsCompleted && self.CurrentAnimState == EBattleAnimState.Attack)
+            // {
+            //     return;
+            // }
 
             // 打断上一个动画
-            self.StopCurrentAnimTask();
+            //self.StopCurrentAnimTask();
 
             self.CurrentAnimState = EBattleAnimState.Attack;
 
@@ -139,16 +139,14 @@ namespace ET.Client
             var tcs = ETTask.Create(true);
             self.CurrentAnimTask = tcs;
 
-            bool isCompleted = false;
+            //bool isCompleted = false;
             self.Animancer.PlayAttack(() =>
             {
-                if (self.IsDisposed || self.CurrentAnimTask != tcs) return;
-                if (isCompleted) return;
-                isCompleted = true;
+                // if (self.IsDisposed || self.CurrentAnimTask != tcs) return;
+                // if (isCompleted) return;
+                // isCompleted = true;
                 tcs.SetResult();
             });
-
-
 
             await tcs;
 
@@ -176,13 +174,13 @@ namespace ET.Client
             }
 
             // 防重入
-            if (self.CurrentAnimTask != null && !self.CurrentAnimTask.IsCompleted && self.CurrentAnimState == EBattleAnimState.Spell)
-            {
-                return;
-            }
+            // if (self.CurrentAnimTask != null && !self.CurrentAnimTask.IsCompleted && self.CurrentAnimState == EBattleAnimState.Spell)
+            // {
+            //     return;
+            // }
 
             // 打断上一个动画
-            self.StopCurrentAnimTask();
+            //self.StopCurrentAnimTask();
 
             self.CurrentAnimState = EBattleAnimState.Spell;
 
@@ -192,16 +190,14 @@ namespace ET.Client
             var tcs = ETTask.Create(true);
             self.CurrentAnimTask = tcs;
 
-            bool isCompleted = false;
+            //bool isCompleted = false;
             self.Animancer.PlaySpell(() =>
             {
-                if (self.IsDisposed || self.CurrentAnimTask != tcs) return;
-                if (isCompleted) return;
-                isCompleted = true;
+            //     if (self.IsDisposed || self.CurrentAnimTask != tcs) return;
+            //     if (isCompleted) return;
+            //     isCompleted = true;
                 tcs.SetResult();
             });
-
-
 
             await tcs;
 
@@ -228,10 +224,10 @@ namespace ET.Client
             }
 
             // 防重入
-            if (self.CurrentAnimTask != null && !self.CurrentAnimTask.IsCompleted && self.CurrentAnimState == EBattleAnimState.Hit)
-            {
-                return;
-            }
+            // if (self.CurrentAnimTask != null && !self.CurrentAnimTask.IsCompleted && self.CurrentAnimState == EBattleAnimState.Hit)
+            // {
+            //     return;
+            // }
 
             // 打断上一个动画
             self.StopCurrentAnimTask();
@@ -244,12 +240,12 @@ namespace ET.Client
             var tcs = ETTask.Create(true);
             self.CurrentAnimTask = tcs;
 
-            bool isCompleted = false;
+            //bool isCompleted = false;
             self.Animancer.PlayHit(() =>
             {
-                if (self.IsDisposed || self.CurrentAnimTask != tcs) return;
-                if (isCompleted) return;
-                isCompleted = true;
+                // if (self.IsDisposed || self.CurrentAnimTask != tcs) return;
+                // if (isCompleted) return;
+                // isCompleted = true;
                 tcs.SetResult();
             });
 
@@ -276,9 +272,15 @@ namespace ET.Client
             {
                 return;
             }
+            
+            // 防重入
+            if (self.CurrentAnimState == EBattleAnimState.Hit)
+            {
+                return;
+            }
 
             // 死亡动画不防重入（确保能死透），但要打断之前的
-            self.StopCurrentAnimTask();
+            //self.StopCurrentAnimTask();
 
             self.CurrentAnimState = EBattleAnimState.Die;
 
@@ -288,12 +290,12 @@ namespace ET.Client
             var tcs = ETTask.Create(true);
             self.CurrentAnimTask = tcs;
 
-            bool isCompleted = false;
+            //bool isCompleted = false;
             self.Animancer.PlayDie(() =>
             {
-                if (self.IsDisposed || self.CurrentAnimTask != tcs) return;
-                if (isCompleted) return;
-                isCompleted = true;
+                // if (self.IsDisposed || self.CurrentAnimTask != tcs) return;
+                // if (isCompleted) return;
+                // isCompleted = true;
                 tcs.SetResult();
             });
 
@@ -309,18 +311,6 @@ namespace ET.Client
                     self.CurrentAnimTask = null;
                     self.CurrentAnimState = EBattleAnimState.Die;
                 }
-            }
-        }
-
-        /// <summary>
-        /// 停止所有动画
-        /// </summary>
-        public static void StopAll(this BattleCharacterViewComponent self)
-        {
-            if (self.Animancer != null)
-            {
-                self.Animancer.StopAll();
-                self.CurrentAnimState = EBattleAnimState.None;
             }
         }
 
