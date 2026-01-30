@@ -17,7 +17,8 @@
         "Unity.Mathematics",
         "Unity.TextMeshPro",
         "PrimeTween.Runtime",
-        "DamageNumbersPro"
+        "DamageNumbersPro",
+        "spine-unity"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -30,8 +31,5 @@
         "IS_COMPILING || UNITY_EDITOR"
     ],
     "versionDefines": [],
-    "noEngineReferences": false,
-    "optionalUnityReferences": [],
-    "additionalReferences": [],
-    "compilerOptions": ""
+    "noEngineReferences": false
 }
