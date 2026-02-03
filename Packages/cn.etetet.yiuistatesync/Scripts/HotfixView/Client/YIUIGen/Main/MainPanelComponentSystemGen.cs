@@ -33,7 +33,7 @@ namespace ET.Client
             self.UIWindow.WindowOption = EWindowOption.BanOpenTween|EWindowOption.BanCloseTween;
             self.UIPanel.Layer = EPanelLayer.Panel;
             self.UIPanel.PanelOption = EPanelOption.ForeverCache;
-            self.UIPanel.StackOption = EPanelStackOption.Visible;
+            self.UIPanel.StackOption = EPanelStackOption.None;
             self.UIPanel.Priority = 0;
 
             self.u_ComTabMenuRectTransform = self.UIBase.ComponentTable.FindComponent<UnityEngine.RectTransform>("u_ComTabMenuRectTransform");

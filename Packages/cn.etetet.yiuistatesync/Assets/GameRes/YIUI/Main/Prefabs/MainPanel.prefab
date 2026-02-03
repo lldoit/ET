@@ -3317,7 +3317,7 @@ MonoBehaviour:
   WindowOption: 1536
   PanelLayer: 3
   PanelOption: 2
-  PanelStackOption: 1
+  PanelStackOption: 0
   ViewWindowType: 0
   ViewStackOption: 2
   CachePanelTime: 10

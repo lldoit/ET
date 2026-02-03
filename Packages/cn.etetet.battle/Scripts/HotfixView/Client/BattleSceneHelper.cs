@@ -25,7 +25,7 @@ namespace ET.Client
             int previousSceneType = previousScene?.SceneType ?? 0;
 
             // 发布战斗场景开始事件（可显示 Loading）
-            EventSystem.Instance.Publish(root, new BattleSceneChangeStart());
+            await EventSystem.Instance.PublishAsync(root, new BattleSceneChangeStart());
 
             // 创建战斗场景
             Scene battleScene = BattleSceneFactory.Create(

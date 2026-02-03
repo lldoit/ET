@@ -241,7 +241,6 @@ namespace ET.Client
         private static void OnEventBackInvoke(this BattlePanelComponent self)
         {
             BattleSceneHelper.ExitBattleAsync(self.Root()).NoContext();
-            self.YIUIMgr().ClosePanel<BattlePanelComponent>(); ;
         }
         #endregion YIUIEvent结束
     }

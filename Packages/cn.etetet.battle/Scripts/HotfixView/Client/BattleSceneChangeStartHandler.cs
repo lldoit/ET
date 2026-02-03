@@ -1,3 +1,5 @@
+using YIUIFramework;
+
 namespace ET.Client
 {
     /// <summary>
@@ -13,6 +15,9 @@ namespace ET.Client
             
             // 通过字符串名称打开Loading面板
             await scene.YIUIRoot().OpenPanelAsync("LoadingPanelComponent");
+
+            // 关闭所有普通面板
+            await scene.YIUIMgr().CloseAll(EPanelLayer.Panel);
         }
     }
 }

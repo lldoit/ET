@@ -12,8 +12,9 @@ namespace ET.Client
         protected override async ETTask Run(Scene scene, BattleSceneExitStart args)
         {
             Log.Info("战斗场景退出开始，清理角色视图并关闭战斗面板");
+            
+            await scene.YIUIMgr().Root.OpenPanelAsync<StagePanelComponent>();
 
-            // 先清理所有角色的视图组件（在UI关闭前同步清理，避免视觉残留）
             CleanupHeroViews(scene);
 
             // 关闭战斗面板

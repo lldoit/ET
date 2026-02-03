@@ -1,0 +1,29 @@
+{
+    "Id": 5002,
+    "Name": "TPS",
+    "ScriptsReferences": {
+        "Model": [
+            "ET.Unit",
+            "ET.StateSync"
+        ],
+        "ModelView": [
+            "ET.Unit",
+            "ET.StateSync",
+            "ET.StateSync.ModelView"
+        ],
+        "Hotfix": [
+            "ET.Unit",
+            "ET.Unit.Hotfix",
+            "ET.StateSync",
+            "ET.StateSync.Hotfix"
+        ],
+        "HotfixView": [
+            "ET.Unit",
+            "ET.Unit.Hotfix",
+            "ET.StateSync",
+            "ET.StateSync.ModelView",
+            "ET.StateSync.Hotfix",
+            "ET.StateSync.HotfixView"
+        ]
+    }
+}

@@ -1,0 +1,24 @@
+{
+  "name": "cn.etetet.tps",
+  "displayName": "ET.TPS",
+  "version": "1.0.0",
+  "unity": "2022.3",
+  "description": "ET框架的TPS射击战斗系统模块，实现Nikke风格的掩体射击玩法",
+  "author": {
+    "name": "ET Framework",
+    "url": "https://github.com/egametang/ET"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/egametang/ET"
+  },
+  "dependencies": {
+    "cn.etetet.core": "3.0.3",
+    "cn.etetet.unit": "1.0.0",
+    "cn.etetet.statesync": "3.0.12"
+  },
+  "relatedPackages": {},
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/@ET-Packages"
+  }
+}

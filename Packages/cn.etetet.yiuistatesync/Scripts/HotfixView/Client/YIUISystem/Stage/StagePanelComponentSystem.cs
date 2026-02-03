@@ -35,7 +35,7 @@ namespace ET.Client
         [YIUIInvoke(StagePanelComponent.OnEventBackInvoke)]
         private static void OnEventBackInvoke(this StagePanelComponent self)
         {
-            self.YIUIMgr().ClosePanel<StagePanelComponent>();;
+            self.YIUIMgr().HomePanel<MainPanelComponent>().NoContext();
         }
         
         [YIUIInvoke(StagePanelComponent.OnEventEnterMapInvoke)]
@@ -45,14 +45,16 @@ namespace ET.Client
             Scene root = self.Root();
             
             // 从关卡配置获取三消关卡ID
-            StageConfig stageConfig = StageConfigCategory.Instance.GetOne();
-            if (stageConfig == null)
-            {
-                Log.Error("关卡配置为空，无法进入战斗");
-                return;
-            }
-
-            await BattleSceneHelper.EnterBattleAsync(root, stageConfig.Id);
+            // StageConfig stageConfig = StageConfigCategory.Instance.GetOne();
+            // if (stageConfig == null)
+            // {
+            //     Log.Error("关卡配置为空，无法进入战斗");
+            //     return;
+            // }
+            //
+            // await BattleSceneHelper.EnterBattleAsync(root, stageConfig.Id);
+            
+            await TpsSceneHelper.EnterTpsAsync(root);
         }
         #endregion YIUIEvent结束
     }
