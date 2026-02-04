@@ -106,12 +106,7 @@ namespace ET.Client
             Log.Info("[TPS] OnPressDown 触发");
 
             // 通知状态组件切换到瞄准状态
-            Scene scene = self.Parent as Scene;
-            if (scene == null)
-            {
-                Log.Error($"[TPS] TpsInputComponent 的 Parent 不是 Scene!");
-                return;
-            }
+            Scene scene = self.Scene();
 
             TpsStateComponent stateComponent = scene.GetComponent<TpsStateComponent>();
             if (stateComponent == null)
@@ -130,10 +125,7 @@ namespace ET.Client
             Log.Info("[TPS] OnPressUp 触发");
 
             // 通知状态组件切换到掩体状态
-            Scene scene = self.Parent as Scene;
-            if (scene == null) return;
-
-            TpsStateComponent stateComponent = scene.GetComponent<TpsStateComponent>();
+            TpsStateComponent stateComponent = self.Scene().GetComponent<TpsStateComponent>();
             stateComponent?.SwitchToCover();
 
             // 重置瞄准方向

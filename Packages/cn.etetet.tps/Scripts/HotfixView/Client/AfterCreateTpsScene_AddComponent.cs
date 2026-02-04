@@ -9,15 +9,15 @@ namespace ET.Client
     {
         protected override async ETTask Run(Scene scene, AfterCreateTpsScene args)
         {
-            // 添加TPS核心组件
+            // 添加TPS核心组件（仅客户端View层组件）
             scene.AddComponent<TpsStateComponent>();
             scene.AddComponent<TpsInputComponent>();
             scene.AddComponent<TpsCameraComponent>();
             scene.AddComponent<TpsCrosshairComponent>();
-            scene.AddComponent<TpsWeaponComponent>();
-            
-            Log.Info("[TPS] TPS战斗组件初始化完成");
-            
+            scene.AddComponent<TpsShootingComponent>();
+
+            Log.Info("[TPS] TPS战斗View组件初始化完成");
+
             await ETTask.CompletedTask;
         }
     }

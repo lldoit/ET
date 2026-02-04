@@ -183,9 +183,6 @@ namespace ET.Client
                 previousSceneName);
             currentScenesComponent.Scene = previousScene;
 
-            // 发布场景切换完成事件
-            EventSystem.Instance.Publish(previousScene, new SceneChangeFinish());
-
             // 发布退出战斗场景开始事件（可关闭战斗界面）
             await EventSystem.Instance.PublishAsync(battleScene, new BattleSceneExitStart());
 

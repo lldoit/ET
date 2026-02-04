@@ -76,14 +76,6 @@ MonoBehaviour:
         FilterRuleName: CollectScene
         AssetTags: 
         UserData: 
-      - CollectPath: Packages/cn.etetet.tps/GameRes/Scenes
-        CollectorGUID: 62d48498db3644d799eafb006fef7d1b
-        CollectorType: 0
-        AddressRuleName: AddressByFileName
-        PackRuleName: PackDirectory
-        FilterRuleName: CollectAll
-        AssetTags: 
-        UserData: 
     - GroupName: UI
       GroupDesc: 
       AssetTags: 
@@ -273,6 +265,27 @@ MonoBehaviour:
         CollectorGUID: e423ebcb0efbc48fab99154428f5a29d
         CollectorType: 0
         AddressRuleName: AddressByFolderAndFileName
+        PackRuleName: PackDirectory
+        FilterRuleName: CollectAll
+        AssetTags: 
+        UserData: 
+    - GroupName: TPS
+      GroupDesc: 
+      AssetTags: 
+      ActiveRuleName: EnableGroup
+      Collectors:
+      - CollectPath: Packages/cn.etetet.tps/Assets/GameRes/YIUI
+        CollectorGUID: ce37f3279070349f0917754c3ed41fff
+        CollectorType: 0
+        AddressRuleName: AddressByFileName
+        PackRuleName: PackDirectory
+        FilterRuleName: CollectAll
+        AssetTags: 
+        UserData: 
+      - CollectPath: Packages/cn.etetet.tps/Assets/GameRes/Scenes
+        CollectorGUID: 62d48498db3644d799eafb006fef7d1b
+        CollectorType: 0
+        AddressRuleName: AddressByFileName
         PackRuleName: PackDirectory
         FilterRuleName: CollectAll
         AssetTags: 

@@ -84,9 +84,6 @@ namespace ET.Client
                 previousSceneName);
             currentScenesComponent.Scene = previousScene;
 
-            // 发布场景切换完成事件
-            EventSystem.Instance.Publish(previousScene, new SceneChangeFinish());
-
             // 发布退出TPS场景开始事件
             await EventSystem.Instance.PublishAsync(tpsScene, new TpsSceneExitStart());
 

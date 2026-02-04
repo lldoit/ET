@@ -11,6 +11,7 @@ namespace ET.Client
         {
             Log.Info("[TPS] 场景切换完成，隐藏Loading界面");
 
+            await scene.YIUIRoot().OpenPanelAsync<TpsBattlePanelComponent>();
             await scene.YIUIMgr().ClosePanelAsync("LoadingPanelComponent");
         }
     }

@@ -71,12 +71,8 @@ namespace ET.Client
             self.OnStateChanged(TpsCharacterState.Cover);
 
             // 自动换弹
-            Scene scene = self.Parent as Scene;
-            if (scene != null)
-            {
-                TpsWeaponComponent weapon = scene.GetComponent<TpsWeaponComponent>();
-                weapon?.StartReload();
-            }
+            TpsWeaponComponent weapon = self.Scene().GetComponent<TpsWeaponComponent>();
+            weapon?.StartReload();
         }
 
         /// <summary>

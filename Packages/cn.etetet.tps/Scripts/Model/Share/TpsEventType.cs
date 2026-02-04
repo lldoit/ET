@@ -30,4 +30,33 @@ namespace ET.Client
     public struct TpsSceneExitStart
     {
     }
+
+    /// <summary>
+    /// TPS射击事件
+    /// 用于通知Hotfix层处理命中检测
+    /// </summary>
+    public struct TpsFireEvent
+    {
+        /// <summary>
+        /// 瞄准位置X（0-1归一化）
+        /// </summary>
+        public float AimX;
+
+        /// <summary>
+        /// 瞄准位置Y（0-1归一化）
+        /// </summary>
+        public float AimY;
+    }
+
+    /// <summary>
+    /// TPS敌人创建事件
+    /// 用于通知HotfixView层创建敌人视图
+    /// </summary>
+    public struct TpsEnemyCreatedEvent
+    {
+        /// <summary>
+        /// 敌人实体ID
+        /// </summary>
+        public long EnemyId;
+    }
 }

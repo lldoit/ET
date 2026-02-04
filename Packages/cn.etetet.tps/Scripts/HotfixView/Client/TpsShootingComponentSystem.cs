@@ -5,6 +5,7 @@ namespace ET.Client
     /// 实现自动射击逻辑
     /// </summary>
     [FriendOf(typeof(TpsShootingComponent))]
+    [FriendOf(typeof(TpsInputComponent))]
     [EntitySystemOf(typeof(TpsShootingComponent))]
     public static partial class TpsShootingComponentSystem
     {
@@ -38,12 +39,7 @@ namespace ET.Client
         /// </summary>
         private static void ProcessAutoFire(this TpsShootingComponent self)
         {
-            Scene scene = self.Parent as Scene;
-            if (scene == null)
-            {
-                Log.Error("[TPS] ProcessAutoFire: Scene is null!");
-                return;
-            }
+            Scene scene = self.Scene();
 
             // 检查状态组件 - 只有瞄准状态才射击
             TpsStateComponent stateComponent = scene.GetComponent<TpsStateComponent>();
@@ -86,6 +82,17 @@ namespace ET.Client
 
             TpsCameraComponent camera = scene.GetComponent<TpsCameraComponent>();
             camera?.ShakeCamera(0.05f, 0.1f).NoContext();
+
+            // 发布射击事件，由Hotfix层处理命中检测
+            TpsInputComponent input = scene.GetComponent<TpsInputComponent>();
+            if (input != null)
+            {
+                // 将归一化瞄准方向转换为0-1屏幕坐标
+                float aimX = (input.NormalizedAimDirection.x + 1f) / 2f;
+                float aimY = (input.NormalizedAimDirection.y + 1f) / 2f;
+
+                EventSystem.Instance.Publish(scene, new TpsFireEvent { AimX = aimX, AimY = aimY });
+            }
         }
 
         /// <summary>
