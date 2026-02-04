@@ -1,7 +1,7 @@
 {
   "name": "cn.etetet.yiuiloopscrollrectasync",
   "displayName": "ET.YIUI.LoopScrollRectAsync",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "unity": "2022.3",
   "category": "UI/YIUI",
   "description": "YIUI 无限循环列表 (异步) >>> 文档: https://lib9kmxvq7k.feishu.cn/wiki/ES7Gwz4EAiVGKSkotY5cRbTznuh",
@@ -20,5 +20,5 @@
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/@ET-Packages"
   },
-  "_fingerprint": "0cf635fe6418e9a51522d08eb1b84322ea649895"
+  "_fingerprint": "72de457e4dfe20c7d782936ad63d6f34b93a1d88"
 }
