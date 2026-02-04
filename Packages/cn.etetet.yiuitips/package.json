@@ -1,7 +1,7 @@
 {
   "name": "cn.etetet.yiuitips",
   "displayName": "ET.YIUI.Tips",
-  "version": "3.0.2",
+  "version": "3.0.3",
   "unity": "2022.3",
   "category": "UI/YIUI",
   "description": "YIUI 提示弹窗 >>> 文档: https://lib9kmxvq7k.feishu.cn/wiki/ES7Gwz4EAiVGKSkotY5cRbTznuh",
@@ -20,5 +20,5 @@
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/@ET-Packages"
   },
-  "_fingerprint": "f2465ef92bae7994aa14ddd6ff653ced73987dd8"
+  "_fingerprint": "6803e93327252bf8ac7231a720064c6cf5fd013c"
 }
