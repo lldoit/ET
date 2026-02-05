@@ -15,7 +15,7 @@ namespace ET.Client
             
             await scene.YIUIMgr().Root.OpenPanelAsync<StagePanelComponent>();
 
-            CleanupHeroViews(scene);
+            //CleanupHeroViews(scene);
 
             // 关闭战斗面板
             await scene.YIUIMgr().ClosePanelAsync<BattlePanelComponent>();

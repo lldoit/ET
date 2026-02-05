@@ -25,13 +25,6 @@ namespace ET.Client
     }
 
     /// <summary>
-    /// 战斗场景创建完成后事件
-    /// </summary>
-    public struct AfterCreateBattleScene
-    {
-    }
-
-    /// <summary>
     /// 战斗结束事件
     /// </summary>
     public struct BattleEndEvent

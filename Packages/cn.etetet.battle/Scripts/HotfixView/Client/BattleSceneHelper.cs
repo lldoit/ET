@@ -4,7 +4,6 @@ namespace ET.Client
     /// 战斗场景切换助手
     /// 提供进入战斗和退出战斗的接口
     /// </summary>
-    [FriendOf(typeof(BattlePreviousSceneComponent))]
     [FriendOf(typeof(TilePoolComponent))]
     [FriendOf(typeof(Match3BoardComponent))]
     public static class BattleSceneHelper
@@ -18,26 +17,26 @@ namespace ET.Client
         {
             // 获取当前场景信息，用于战斗结束后返回
             CurrentScenesComponent currentScenesComponent = root.GetComponent<CurrentScenesComponent>();
-            Scene previousScene = currentScenesComponent.Scene;
-
-            long previousSceneId = previousScene?.Id ?? 0;
-            string previousSceneName = previousScene?.Name ?? "";
-            int previousSceneType = previousScene?.SceneType ?? 0;
+            
+            // 释放之前的场景
+            currentScenesComponent.Scene?.Dispose();
 
             // 发布战斗场景开始事件（可显示 Loading）
             await EventSystem.Instance.PublishAsync(root, new BattleSceneChangeStart());
-
+            
             // 创建战斗场景
-            Scene battleScene = BattleSceneFactory.Create(
-                IdGenerater.Instance.GenerateId(),
-                "Battle",
-                currentScenesComponent,
-                previousSceneId,
-                previousSceneName,
-                previousSceneType);
+            Scene battleScene = EntitySceneFactory.CreateScene(
+                root, 
+                IdGenerater.Instance.GenerateId(), 
+                IdGenerater.Instance.GenerateInstanceId(), 
+                SceneType.Battle, 
+                "Battle");
+            currentScenesComponent.Scene = battleScene;
+
+            battleScene.AddComponent<ResourcesLoaderComponent>();
 
             // 添加战斗组件
-            BattleSceneComponent battle = battleScene.AddComponent<BattleSceneComponent>();
+            var battle = battleScene.AddComponent<BattleSceneComponent>();
 
             // 添加战斗序列器组件（管理动作的序列化播放）
             battle.AddComponent<BattleSequencerComponent>();
@@ -150,38 +149,11 @@ namespace ET.Client
         {
             CurrentScenesComponent currentScenesComponent = root.GetComponent<CurrentScenesComponent>();
             Scene battleScene = currentScenesComponent.Scene;
-
             if (battleScene == null)
             {
                 Log.Error("当前没有战斗场景");
                 return;
             }
-
-            // 获取之前场景的信息
-            BattlePreviousSceneComponent previousSceneInfo = battleScene.GetComponent<BattlePreviousSceneComponent>();
-            if (previousSceneInfo == null)
-            {
-                Log.Error("找不到之前场景的信息，释放战斗场景");
-
-                // 发布退出战斗场景开始事件（可关闭战斗界面）
-                await EventSystem.Instance.PublishAsync(battleScene, new BattleSceneExitStart());
-
-                battleScene.Dispose();
-                return;
-            }
-
-            long previousSceneId = previousSceneInfo.PreviousSceneId;
-            string previousSceneName = previousSceneInfo.PreviousSceneName;
-            int previousSceneType = previousSceneInfo.PreviousSceneType;
-
-            // 重新创建之前的场景
-            Scene previousScene = EntitySceneFactory.CreateScene(
-                currentScenesComponent,
-                previousSceneId,
-                IdGenerater.Instance.GenerateInstanceId(),
-                previousSceneType,
-                previousSceneName);
-            currentScenesComponent.Scene = previousScene;
 
             // 发布退出战斗场景开始事件（可关闭战斗界面）
             await EventSystem.Instance.PublishAsync(battleScene, new BattleSceneExitStart());

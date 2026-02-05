@@ -70,7 +70,7 @@ namespace ET.Client
             self.UICamera = uiCamera;
 
             // 通过YooAsset加载预制体
-            var loader = self.Root().GetComponent<ResourcesLoaderComponent>();
+            var loader = self.Scene().GetComponent<ResourcesLoaderComponent>();
 
             // 加载正常伤害预制体
             var normalPrefab = await loader.LoadAssetAsync<GameObject>(NORMAL_DAMAGE_PREFAB);

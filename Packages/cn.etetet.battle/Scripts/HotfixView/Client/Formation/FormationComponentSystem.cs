@@ -44,7 +44,7 @@ namespace ET.Client
             }
 
             // 加载站位配置
-            var loader = self.Root().Scene().GetComponent<ResourcesLoaderComponent>();
+            var loader = self.Scene().GetComponent<ResourcesLoaderComponent>();
             if (loader != null)
             {
                 self.FormationConfig = await loader.LoadAssetAsync<BattleFormationConfig>(self.ConfigAssetPath);
