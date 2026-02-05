@@ -212,7 +212,7 @@ namespace ET.Client
         public static async ETTask ShowTileDestroyedByBoosterAsync(this BoosterViewComponent self, BoosterType boosterType, Tile tile, Vector3 worldPosition)
         {
             // 获取棋盘组件并播放瓦片对应的消除特效
-            var match3Board = self.Root().GetComponent<Match3BoardComponent>();
+            var match3Board = self.Scene().GetComponent<Match3BoardComponent>();
             if (match3Board != null && tile != null)
             {
                 // UI模式：使用瓦片坐标播放特效

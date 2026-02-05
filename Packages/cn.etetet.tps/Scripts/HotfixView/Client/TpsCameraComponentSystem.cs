@@ -59,8 +59,8 @@ namespace ET.Client
         /// </summary>
         private static void UpdateCameraPosition(this TpsCameraComponent self)
         {
-            TpsInputComponent inputComponent = self.Root().GetComponent<TpsInputComponent>();
-            TpsStateComponent stateComponent = self.Root().GetComponent<TpsStateComponent>();
+            TpsInputComponent inputComponent = self.Scene().GetComponent<TpsInputComponent>();
+            TpsStateComponent stateComponent = self.Scene().GetComponent<TpsStateComponent>();
 
             if (inputComponent == null || stateComponent == null)
             {
@@ -77,11 +77,11 @@ namespace ET.Client
                     self.MaxAimOffset.z
                 );
             }
-            else
-            {
-                // 掩体状态：相机回到原位
-                self.TargetOffset = Vector3.zero;
-            }
+            // else
+            // {
+            //     // 掩体状态：相机回到原位
+            //     self.TargetOffset = Vector3.zero;
+            // }
 
             // 平滑移动相机
             Vector3 targetPosition = self.OriginalPosition + self.TargetOffset;

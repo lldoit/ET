@@ -52,7 +52,7 @@ namespace ET.Client
         /// </summary>
         private static void UpdateCrosshairPosition(this TpsCrosshairComponent self)
         {
-            TpsInputComponent inputComponent = self.Root().GetComponent<TpsInputComponent>();
+            TpsInputComponent inputComponent = self.Scene().GetComponent<TpsInputComponent>();
             if (inputComponent == null || !inputComponent.IsPressing)
             {
                 return;
@@ -77,7 +77,7 @@ namespace ET.Client
         /// </summary>
         private static void UpdateCrosshairVisibility(this TpsCrosshairComponent self)
         {
-            TpsStateComponent stateComponent = self.Root().GetComponent<TpsStateComponent>();
+            TpsStateComponent stateComponent = self.Scene().GetComponent<TpsStateComponent>();
             if (stateComponent == null)
             {
                 return;

@@ -29,9 +29,9 @@ namespace ET.Client
                 IdGenerater.Instance.GenerateInstanceId(),
                 SceneType.TpsBattle,
                 "TpsBattle");
-            
+
             currentScenesComponent.Scene = tpsScene;
-            
+
             // 加载场景资源
             var resourcesLoaderComponent = tpsScene.AddComponent<ResourcesLoaderComponent>();
             await resourcesLoaderComponent.LoadSceneAsync("Packages/cn.etetet.tps/Assets/GameRes/Scenes/TpsDemo.unity", LoadSceneMode.Additive);
@@ -39,10 +39,10 @@ namespace ET.Client
             // 将 TPS 场景设为活动场景
             var unityScene = SceneManager.GetSceneAt(SceneManager.sceneCount - 1);
             SceneManager.SetActiveScene(unityScene);
-            
+
             // TODO: 根据levelId加载关卡配置
             // TODO: 初始化角色、武器、敌人等
-            
+
             // 添加其余组件
             tpsScene.AddComponent<TpsWeaponComponent>();
             tpsScene.AddComponent<TpsPlayerHpComponent>();
@@ -51,6 +51,18 @@ namespace ET.Client
             tpsScene.AddComponent<TpsCameraComponent>();
             tpsScene.AddComponent<TpsCrosshairComponent>();
             tpsScene.AddComponent<TpsShootingComponent>();
+
+            // 添加环境组件并初始化视差层
+            TpsEnvironmentComponent environmentComponent = tpsScene.AddComponent<TpsEnvironmentComponent>();
+            UnityEngine.GameObject environmentRoot = UnityEngine.GameObject.Find("EnvironmentRoot");
+            if (environmentRoot != null)
+            {
+                environmentComponent.SetEnvironmentRoot(environmentRoot.transform);
+            }
+            else
+            {
+                Log.Warning("[TPS] 未找到 EnvironmentRoot，视差效果将不可用");
+            }
 
             // 添加敌人管理器并创建测试敌人
             TpsEnemyManagerComponent enemyManager = tpsScene.AddComponent<TpsEnemyManagerComponent>();
