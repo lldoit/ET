@@ -18,10 +18,6 @@ namespace ET.Client
                 
             // 关闭所有普通面板
             await root.YIUIMgr().CloseAll(EPanelLayer.Panel);
-            
-            // 加载场景资源
-            ResourcesLoaderComponent resourcesLoaderComponent = root.GetComponent<ResourcesLoaderComponent>();
-            await resourcesLoaderComponent.LoadSceneAsync("Packages/cn.etetet.tps/GameRes/Scenes/TpsDemo.unity", LoadSceneMode.Single);
         }
     }
 }

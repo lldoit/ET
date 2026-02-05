@@ -1,13 +1,6 @@
 namespace ET.Client
 {
     /// <summary>
-    /// TPS场景创建后事件
-    /// </summary>
-    public struct AfterCreateTpsScene
-    {
-    }
-
-    /// <summary>
     /// TPS场景切换开始事件
     /// 可用于显示Loading界面
     /// </summary>

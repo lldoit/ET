@@ -23,14 +23,14 @@ namespace ET.Client
         [EntitySystem]
         private static async ETTask<bool> YIUIOpen(this MainPanelComponent self)
         {
-            await ETTask.CompletedTask;
+            await self.YIUIOpen(EMainPanelViewEnum.LobbyView);
             return true;
         }
 
         [EntitySystem]
         private static async ETTask<bool> YIUIOpen(this MainPanelComponent self, EMainPanelViewEnum param1)
         {
-            self.u_DataViewTable.SetValue((int)param1, true, false);
+            self.u_DataViewTable.SetValue((int)param1, true);
 
             await self.UIPanel.OpenViewAsync(param1.ToString());
 

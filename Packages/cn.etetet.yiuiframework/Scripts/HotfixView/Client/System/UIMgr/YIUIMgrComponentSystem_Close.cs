@@ -211,6 +211,20 @@ namespace ET.Client
             self.m_PanelCfgMap.TryGetValue(homeName, out var homeInfo);
             if (homeInfo?.UIBase != null)
             {
+                var layerList = self.GetLayerPanelInfoList(EPanelLayer.Panel);
+                if (!layerList.Contains(homeInfo))
+                {
+                    self.AddUI(homeInfo);
+                    try
+                    {
+                        await homeInfo.UIPanel.Open();
+                    }
+                    catch (System.Exception e)
+                    {
+                        Log.Error(e);
+                    }
+                }
+
                 return await self.RemoveUIToHome(homeInfo, tween);
             }
             else
