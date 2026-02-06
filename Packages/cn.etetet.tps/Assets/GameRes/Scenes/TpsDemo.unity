@@ -367,6 +367,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 869089142}
+  - component: {fileID: 869089143}
   m_Layer: 0
   m_Name: EnvironmentRoot
   m_TagString: Untagged
@@ -394,6 +395,23 @@ Transform:
   - {fileID: 1099324404}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &869089143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 869089141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c4f1eb52f17a9401387bc82d15021563, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MaxAimScreenOffset: {x: 500, y: 900}
+  PixelToWorldRatio: 0.1
+  CameraFollowRatio: 0.1
+  SafeZoneColor: {r: 0, g: 1, b: 0, a: 0.3}
+  MaxCameraWorldOffset: {x: 8, y: 2}
 --- !u!1 &889527859
 GameObject:
   m_ObjectHideFlags: 0
@@ -443,7 +461,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &961739750
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -131,6 +131,7 @@ GameObject:
   - component: {fileID: 7802920954825707041}
   - component: {fileID: 9186139691130824166}
   - component: {fileID: -1144720698834019350}
+  - component: {fileID: 1536712405208911644}
   m_Layer: 5
   m_Name: TpsBattlePanel
   m_TagString: Untagged
@@ -269,7 +270,7 @@ MonoBehaviour:
     - Name: 
       Entry: 8
       Data: 
-  ComponentTable: {fileID: 0}
+  ComponentTable: {fileID: 1536712405208911644}
   DataTable: {fileID: 0}
   EventTable: {fileID: -1144720698834019350}
   PkgName: TpsBattle
@@ -438,6 +439,87 @@ MonoBehaviour:
       Entry: 8
       Data: 
   AllEventParamType: 
+--- !u!114 &1536712405208911644
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5002625936419674461}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0af0d78ed910487782cd796592642ac5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  serializationData:
+    SerializedFormat: 2
+    SerializedBytes: 
+    ReferencedUnityObjects:
+    - {fileID: 548332448769199878}
+    SerializedBytesString: 
+    Prefab: {fileID: 0}
+    PrefabModificationsReferencedUnityObjects: []
+    PrefabModifications: []
+    SerializationNodes:
+    - Name: m_AllBindDic
+      Entry: 7
+      Data: 0|System.Collections.Generic.Dictionary`2[[System.String, mscorlib],[UnityEngine.Component,
+        UnityEngine.CoreModule]], mscorlib
+    - Name: comparer
+      Entry: 7
+      Data: 1|System.Collections.Generic.GenericEqualityComparer`1[[System.String,
+        mscorlib]], mscorlib
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 
+    - Name: $k
+      Entry: 1
+      Data: u_ComU_CrosshairRectTransform
+    - Name: $v
+      Entry: 10
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: m_AllBindPair
+      Entry: 7
+      Data: 2|System.Collections.Generic.List`1[[YIUIFramework.UIBindPairData, ET.YIUIFramework]],
+        mscorlib
+    - Name: 
+      Entry: 12
+      Data: 1
+    - Name: 
+      Entry: 7
+      Data: 3|YIUIFramework.UIBindPairData, ET.YIUIFramework
+    - Name: Name
+      Entry: 1
+      Data: u_ComU_CrosshairRectTransform
+    - Name: Component
+      Entry: 10
+      Data: 0
+    - Name: 
+      Entry: 8
+      Data: 
+    - Name: 
+      Entry: 13
+      Data: 
+    - Name: 
+      Entry: 8
+      Data: 
+  m_AutoSetNullName: 0
+  m_NullNameAddTypeName: 0
 --- !u!1 &5904752987514789323
 GameObject:
   m_ObjectHideFlags: 0
@@ -819,6 +901,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: Loading_Circle
+      objectReference: {fileID: 0}
+    - target: {fileID: 4127185848914326617, guid: 30c8ea377a1d849a99648ca80917a4e3,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

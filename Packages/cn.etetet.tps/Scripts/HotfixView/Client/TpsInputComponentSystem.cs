@@ -18,8 +18,21 @@ namespace ET.Client
             self.IsPressing = false;
             self.ScreenPosition = new Vector2(Screen.width / 2f, Screen.height / 2f);
             self.NormalizedAimDirection = Vector2.zero;
-            self.Sensitivity = 1.0f;
+            self.Sensitivity = 0.5f;
             self.IsInputEnabled = true;
+
+            // 初始化新增字段
+            self.AimScreenOffset = Vector2.zero;
+            self.MaxAimScreenOffset = new Vector2(Screen.width * 0.45f, Screen.height * 0.45f);
+            self.CrosshairScreenPosition = new Vector2(Screen.width / 2f, Screen.height / 2f);
+
+            // 尝试读取场景配置
+            TpsLevelConfig config = UnityEngine.Object.FindFirstObjectByType<TpsLevelConfig>();
+            if (config != null)
+            {
+                self.MaxAimScreenOffset = config.MaxAimScreenOffset;
+                Log.Info($"[TPS] 使用场景配置: MaxAimRange={config.MaxAimScreenOffset}");
+            }
         }
 
         [EntitySystem]
@@ -75,16 +88,44 @@ namespace ET.Client
             }
 #endif
 
-            // 计算归一化瞄准方向
+            // 计算相对于屏幕中心的偏移
+            float halfWidth = Screen.width / 2f;
+            float halfHeight = Screen.height / 2f;
+
             if (self.IsPressing)
             {
-                float halfWidth = Screen.width / 2f;
-                float halfHeight = Screen.height / 2f;
+                // 按下的第一帧：只记录位置，不计算 delta
+                if (!wasPressed)
+                {
+                    self.LastInputPosition = self.ScreenPosition;
+                }
+                else
+                {
+                    // 后续帧：计算 Delta 并累加
+                    Vector2 delta = self.ScreenPosition - self.LastInputPosition;
+                    self.LastInputPosition = self.ScreenPosition;
 
-                self.NormalizedAimDirection = new Vector2(
-                    Mathf.Clamp((self.ScreenPosition.x - halfWidth) / halfWidth, -1f, 1f) * self.Sensitivity,
-                    Mathf.Clamp((self.ScreenPosition.y - halfHeight) / halfHeight, -1f, 1f) * self.Sensitivity
+                    // 累加位移
+                    self.AimScreenOffset += delta * self.Sensitivity;
+
+                    // Clamp 限制边界
+                    self.AimScreenOffset = new Vector2(
+                        Mathf.Clamp(self.AimScreenOffset.x, -self.MaxAimScreenOffset.x, self.MaxAimScreenOffset.x),
+                        Mathf.Clamp(self.AimScreenOffset.y, -self.MaxAimScreenOffset.y, self.MaxAimScreenOffset.y)
+                    );
+                }
+
+                // 计算准星屏幕坐标（无论是否第一帧都要更新）
+                self.CrosshairScreenPosition = new Vector2(
+                    halfWidth + self.AimScreenOffset.x,
+                    halfHeight + self.AimScreenOffset.y
                 );
+
+                // 保留归一化方向用于兼容
+                self.NormalizedAimDirection = new Vector2(
+                    self.AimScreenOffset.x / self.MaxAimScreenOffset.x,
+                    self.AimScreenOffset.y / self.MaxAimScreenOffset.y
+                ) * self.Sensitivity;
             }
 
             // 检测状态切换
@@ -104,6 +145,9 @@ namespace ET.Client
         private static void OnPressDown(this TpsInputComponent self)
         {
             Log.Info("[TPS] OnPressDown 触发");
+
+            // 记录当前位置作为初始 LastInputPosition，防止第一帧跳变
+            self.LastInputPosition = self.ScreenPosition;
 
             // 通知状态组件切换到瞄准状态
             Scene scene = self.Scene();
@@ -128,8 +172,8 @@ namespace ET.Client
             TpsStateComponent stateComponent = self.Scene().GetComponent<TpsStateComponent>();
             stateComponent?.SwitchToCover();
 
-            // 重置瞄准方向
-            self.NormalizedAimDirection = Vector2.zero;
+            // 不再重置瞄准方向和准星位置，保持最后的瞄准状态
+            // self.NormalizedAimDirection = Vector2.zero;
         }
 
         /// <summary>

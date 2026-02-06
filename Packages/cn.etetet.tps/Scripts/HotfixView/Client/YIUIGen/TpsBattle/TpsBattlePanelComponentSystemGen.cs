@@ -37,6 +37,7 @@ namespace ET.Client
             self.UIPanel.Priority = 0;
             self.UIPanel.CachePanelTime = 10;
 
+            self.u_ComU_CrosshairRectTransform = self.UIBase.ComponentTable.FindComponent<UnityEngine.RectTransform>("u_ComU_CrosshairRectTransform");
             self.u_EventBack = self.UIBase.EventTable.FindEvent<UIEventP0>("u_EventBack");
             self.u_EventBackHandle = self.u_EventBack.Add(self,TpsBattlePanelComponent.OnEventBackInvoke);
 

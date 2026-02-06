@@ -49,48 +49,43 @@ namespace ET.Client
 
         /// <summary>
         /// 更新准星位置
+        /// 使用 TpsInputComponent 中已经 Clamp 过的 CrosshairScreenPosition
         /// </summary>
         private static void UpdateCrosshairPosition(this TpsCrosshairComponent self)
         {
             TpsInputComponent inputComponent = self.Scene().GetComponent<TpsInputComponent>();
-            if (inputComponent == null || !inputComponent.IsPressing)
+            if (inputComponent == null)
             {
                 return;
             }
 
-            // 平滑跟随输入位置
-            Vector2 currentPos = self.CrosshairRect.anchoredPosition;
+            // 使用经过 Clamp 的准星屏幕坐标（即使松开鼠标也保持位置）
             Vector2 targetPos = new Vector2(
-                inputComponent.ScreenPosition.x - Screen.width / 2f,
-                inputComponent.ScreenPosition.y - Screen.height / 2f
+                inputComponent.CrosshairScreenPosition.x - Screen.width / 2f,
+                inputComponent.CrosshairScreenPosition.y - Screen.height / 2f
             );
-
+            
+            // 快速跟随准星位置（准星响应要快于相机）
+            Vector2 currentPos = self.CrosshairRect.anchoredPosition;
             self.CrosshairRect.anchoredPosition = Vector2.Lerp(
                 currentPos,
                 targetPos,
                 Time.deltaTime * self.FollowSpeed
             );
+            // 直接设置准星位置
+            //self.CrosshairRect.anchoredPosition = targetPos;
         }
 
         /// <summary>
-        /// 更新准星可见性
+        /// 更新准星可见性（准星始终可见）
         /// </summary>
         private static void UpdateCrosshairVisibility(this TpsCrosshairComponent self)
         {
-            TpsStateComponent stateComponent = self.Scene().GetComponent<TpsStateComponent>();
-            if (stateComponent == null)
+            // 准星始终可见
+            if (!self.IsVisible && self.CrosshairGO != null)
             {
-                return;
-            }
-
-            bool shouldBeVisible = stateComponent.IsAiming();
-            if (self.IsVisible != shouldBeVisible)
-            {
-                self.IsVisible = shouldBeVisible;
-                if (self.CrosshairGO != null)
-                {
-                    self.CrosshairGO.SetActive(self.IsVisible);
-                }
+                self.IsVisible = true;
+                self.CrosshairGO.SetActive(true);
             }
         }
 

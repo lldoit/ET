@@ -22,6 +22,7 @@ namespace ET.Client
         public YIUIWindowComponent UIWindow => u_UIWindow;
         public EntityRef<YIUIPanelComponent> u_UIPanel;
         public YIUIPanelComponent UIPanel => u_UIPanel;
+        public UnityEngine.RectTransform u_ComU_CrosshairRectTransform;
         public UIEventP0 u_EventBack;
         public UIEventHandleP0 u_EventBackHandle;
         public const string OnEventBackInvoke = "TpsBattlePanelComponent.OnEventBackInvoke";

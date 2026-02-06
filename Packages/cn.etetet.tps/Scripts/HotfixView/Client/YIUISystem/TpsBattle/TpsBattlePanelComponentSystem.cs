@@ -26,12 +26,20 @@ namespace ET.Client
         [EntitySystem]
         private static async ETTask<bool> YIUIOpen(this TpsBattlePanelComponent self)
         {
+            var currentSceneComponent = self.Root().GetComponent<CurrentScenesComponent>();
+            var crosshairComponent = currentSceneComponent.Scene.GetComponent<TpsCrosshairComponent>();
+            if (crosshairComponent != null)
+            {
+                crosshairComponent.SetCrosshairUI(self.u_ComU_CrosshairRectTransform);
+                Log.Info("[TPS] UI Crosshair 绑定成功!");
+            }
+
             await ETTask.CompletedTask;
             return true;
         }
 
         #region YIUIEvent开始
-        
+
         [YIUIInvoke(TpsBattlePanelComponent.OnEventBackInvoke)]
         private static void OnEventBackInvoke(this TpsBattlePanelComponent self)
         {
