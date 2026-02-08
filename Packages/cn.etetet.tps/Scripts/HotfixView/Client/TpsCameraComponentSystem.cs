@@ -173,6 +173,22 @@ namespace ET.Client
             }
         }
 
+        /// <summary>
+        /// 获取枪口位置（用于子弹发射起点）
+        /// 暂时返回相机前方固定位置
+        /// </summary>
+        public static Vector3 GetMuzzlePosition(this TpsCameraComponent self)
+        {
+            if (self.MainCamera == null)
+            {
+                return Vector3.zero;
+            }
+            
+            // 使用配置的偏移量计算枪口世界坐标
+            // 默认值：右侧 0.5，下方 -0.2，前方 1.0
+            return self.MainCamera.transform.TransformPoint(new Vector3(0, -0.2f, 1f));
+        }
+
         #endregion
     }
 }

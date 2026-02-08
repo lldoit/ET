@@ -51,6 +51,7 @@ namespace ET.Client
             tpsScene.AddComponent<TpsCameraComponent>();
             tpsScene.AddComponent<TpsCrosshairComponent>();
             tpsScene.AddComponent<TpsShootingComponent>();
+            tpsScene.AddComponent<TpsBulletManagerComponent>();
 
             // 添加环境组件并初始化视差层
             TpsEnvironmentComponent environmentComponent = tpsScene.AddComponent<TpsEnvironmentComponent>();

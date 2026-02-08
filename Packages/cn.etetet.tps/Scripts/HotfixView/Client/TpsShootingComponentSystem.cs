@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace ET.Client
 {
     /// <summary>
@@ -6,6 +8,7 @@ namespace ET.Client
     /// </summary>
     [FriendOf(typeof(TpsShootingComponent))]
     [FriendOf(typeof(TpsInputComponent))]
+    [FriendOf(typeof(TpsCameraComponent))]
     [EntitySystemOf(typeof(TpsShootingComponent))]
     public static partial class TpsShootingComponentSystem
     {
@@ -92,6 +95,47 @@ namespace ET.Client
                 float aimY = (input.NormalizedAimDirection.y + 1f) / 2f;
 
                 EventSystem.Instance.Publish(scene, new TpsFireEvent { AimX = aimX, AimY = aimY });
+
+                // 2. 获取枪口位置和主相机
+                TpsCameraComponent cameraComp = scene.GetComponent<TpsCameraComponent>();
+                if (cameraComp == null || cameraComp.MainCamera == null)
+                {
+                    Log.Error("[TPS] TpsShootingComponent: TpsCameraComponent or MainCamera is null!");
+                    return;
+                }
+                Camera mainCamera = cameraComp.MainCamera;
+
+                // 1. 获取准星的目标点 (从相机通过准星发射射线)
+                // input.CrosshairScreenPosition 是准星在屏幕上的像素坐标
+                Ray crosshairRay = mainCamera.ScreenPointToRay(input.CrosshairScreenPosition);
+                Vector3 targetPoint;
+
+                // 射线检测，忽略 Trigger
+                if (Physics.Raycast(crosshairRay, out RaycastHit hitInfo, 1000f, Physics.DefaultRaycastLayers, QueryTriggerInteraction.Ignore))
+                {
+                    targetPoint = hitInfo.point;
+                }
+                else
+                {
+                    targetPoint = crosshairRay.GetPoint(100f); // 未命中则取100米远处
+                }
+
+                // 2. 获取枪口位置
+                UnityEngine.Vector3 muzzlePos = cameraComp.GetMuzzlePosition();
+
+                // 3. 计算从枪口到目标点的方向
+                Vector3 realShootDirection = (targetPoint - muzzlePos).normalized;
+
+                EventSystem.Instance.Publish(scene, new TpsBulletCreateEvent
+                {
+                    BulletType = ET.TpsBulletType.Hitscan,
+                    OriginX = muzzlePos.x,
+                    OriginY = muzzlePos.y,
+                    OriginZ = muzzlePos.z,
+                    DirectionX = realShootDirection.x,
+                    DirectionY = realShootDirection.y,
+                    DirectionZ = realShootDirection.z
+                });
             }
         }
 
