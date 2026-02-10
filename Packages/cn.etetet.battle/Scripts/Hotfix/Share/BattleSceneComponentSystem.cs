@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using ET.Client;
-
 namespace ET
 {
     [FriendOf(typeof(BattleSceneComponent))]
@@ -85,7 +82,7 @@ namespace ET
 
             // 发布战斗结束事件，UI层可以订阅此事件显示结算界面
             Scene scene = self.IScene as Scene;
-            EventSystem.Instance.Publish(scene, new ET.Client.BattleEndEvent { IsVictory = isVictory });
+            EventSystem.Instance.Publish(scene, new ET.BattleEndEvent { IsVictory = isVictory });
 
             await ETTask.CompletedTask;
         }

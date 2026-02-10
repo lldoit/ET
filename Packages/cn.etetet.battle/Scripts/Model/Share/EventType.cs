@@ -1,4 +1,4 @@
-namespace ET.Client
+namespace ET
 {
     /// <summary>
     /// 战斗场景开始切换事件

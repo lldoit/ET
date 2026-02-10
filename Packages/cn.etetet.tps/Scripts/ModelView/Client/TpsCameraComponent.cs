@@ -63,14 +63,6 @@ namespace ET.Client
         /// <summary>
         /// 像素到世界单位的转换系数
         /// </summary>
-        /// <summary>
-        /// 像素到世界单位的转换系数
-        /// </summary>
         public float PixelToWorldRatio;
-
-        /// <summary>
-        /// 枪口位置相对于相机的偏移量
-        /// </summary>
-        public Vector3 MuzzleOffset;
     }
 }

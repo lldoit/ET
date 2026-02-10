@@ -32,8 +32,6 @@ namespace ET
             enemy.AddComponent<TpsEnemyAIComponent>();
             self.AliveEnemyCount++;
 
-            Log.Info($"[TPS] 创建敌人: {enemy.EnemyName}, 当前存活: {self.AliveEnemyCount}");
-
             return enemy;
         }
 
@@ -62,21 +60,6 @@ namespace ET
                 }
             }
             return result;
-        }
-
-        /// <summary>
-        /// 检查命中敌人
-        /// </summary>
-        public static TpsEnemyComponent CheckHitEnemy(this TpsEnemyManagerComponent self, float aimX, float aimY)
-        {
-            foreach (Entity child in self.Children.Values)
-            {
-                if (child is TpsEnemyComponent enemy && enemy.CheckHit(aimX, aimY))
-                {
-                    return enemy;
-                }
-            }
-            return null;
         }
     }
 }

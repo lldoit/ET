@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace ET.Client
 {
     /// <summary>
@@ -26,8 +28,23 @@ namespace ET.Client
             if (enemyEntity is TpsEnemyComponent enemy)
             {
                 // 添加视图组件
-                enemy.AddComponent<TpsEnemyViewComponent>();
+                var viewComponent = enemy.AddComponent<TpsEnemyViewComponent>();
                 Log.Info($"[TPS] 敌人视图添加完成: EnemyId={args.EnemyId}");
+
+                string assetsName = "TpsOrcJackalTank";
+                GameObject prefab = await scene.Scene().GetComponent<ResourcesLoaderComponent>().LoadAssetAsync<GameObject>(assetsName);
+                GlobalComponent globalComponent = scene.Root().GetComponent<GlobalComponent>();
+                GameObject go = UnityEngine.Object.Instantiate(prefab, globalComponent.Unit, false);
+
+                // 挂载 TpsCharacterAnimancer，关联 Entity ID 用于射线命中检测
+                TpsCharacterAnimancer animancer = go.GetComponent<TpsCharacterAnimancer>();
+                if (animancer == null)
+                {
+                    animancer = go.AddComponent<TpsCharacterAnimancer>();
+                }
+                animancer.EnemyId = args.EnemyId;
+
+                viewComponent.Initialize(go);
             }
 
             await ETTask.CompletedTask;

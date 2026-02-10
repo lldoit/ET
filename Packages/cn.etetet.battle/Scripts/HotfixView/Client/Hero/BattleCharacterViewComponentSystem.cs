@@ -45,7 +45,7 @@ namespace ET.Client
         /// </summary>
         /// <param name="self">视图组件</param>
         /// <param name="characterGO">角色GameObject</param>
-        /// <param name="owner">所属英雄实体</param>
+        /// <param name="slotIndex">位置</param>
         public static void Initialize(this BattleCharacterViewComponent self, GameObject characterGO, int slotIndex)
         {
             self.CharacterGO = characterGO;

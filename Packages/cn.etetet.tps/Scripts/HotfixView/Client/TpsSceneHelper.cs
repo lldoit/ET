@@ -68,8 +68,6 @@ namespace ET.Client
             // 添加敌人管理器并创建测试敌人
             TpsEnemyManagerComponent enemyManager = tpsScene.AddComponent<TpsEnemyManagerComponent>();
             TpsEnemyComponent testEnemy = enemyManager.CreateEnemy(1);
-            testEnemy.SetScreenPosition(0.5f, 0.5f); // 屏幕中心
-            testEnemy.SetHitRadius(0.15f); // 较大的命中区域便于测试
 
             // 发布敌人创建事件，通知HotfixView创建视图
             EventSystem.Instance.Publish(tpsScene, new TpsEnemyCreatedEvent { EnemyId = testEnemy.Id });

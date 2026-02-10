@@ -1,4 +1,4 @@
-namespace ET.Client
+namespace ET
 {
     /// <summary>
     /// TPS场景切换开始事件

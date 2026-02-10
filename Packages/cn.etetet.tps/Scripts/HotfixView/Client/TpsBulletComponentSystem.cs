@@ -68,19 +68,18 @@ namespace ET.Client
 
         private static void ProcessHitscan(this TpsBulletComponent self)
         {
+            // 仅用于确定 tracer 视觉终点，命中检测由 TpsFireEvent_HitDetectionView (Physics2D) 处理
             bool didHit = Physics.Raycast(self.Origin, self.Direction, out RaycastHit hitInfo, self.Config.MaxRange);
             Vector3 endPoint;
 
             if (didHit)
             {
                 endPoint = hitInfo.point;
-                Log.Debug($"[TPS] Hitscan 命中: {hitInfo.collider.name} at {hitInfo.point}");
-                self.OnHit(hitInfo.point, hitInfo.normal, hitInfo.collider.gameObject);
+                Log.Debug($"[TPS] Hitscan tracer 终点（遮挡）: {hitInfo.collider.name} at {hitInfo.point}");
             }
             else
             {
                 endPoint = self.Origin + self.Direction * self.Config.MaxRange;
-                Log.Debug($"[TPS] Hitscan 未命中，终点: {endPoint}");
             }
 
             self.SpawnTracer(self.Origin, endPoint);
@@ -156,7 +155,7 @@ namespace ET.Client
             }
             // TODO: 对目标造成伤害
         }
-        
+
         /// <summary>
         /// 生成弹道轨迹效果
         /// 使用 LineRenderer 创建可见的弹道线 (3D)
@@ -170,7 +169,7 @@ namespace ET.Client
             // 添加 LineRenderer 组件
             LineRenderer lineRenderer = tracerGO.AddComponent<LineRenderer>();
 
-            // 设置线条的起点和终点 (3D)
+            // 设置线条的起点和终点
             lineRenderer.positionCount = 2;
             lineRenderer.SetPosition(0, start);
             lineRenderer.SetPosition(1, end);
@@ -181,8 +180,6 @@ namespace ET.Client
 
             // 使用 Sprites/Default 材质并设置颜色
             Material tracerMat = new Material(Shader.Find("Sprites/Default"));
-            // 关键：禁用深度测试，使其永远显示在最上层 (ZTest Always = 8)
-            tracerMat.SetInt("unity_GUIZTestMode", (int)UnityEngine.Rendering.CompareFunction.Always);
             lineRenderer.material = tracerMat;
 
             // 设置明亮的纯色（亮黄色）确保可见
@@ -192,11 +189,11 @@ namespace ET.Client
             // 设置为 World Space
             lineRenderer.useWorldSpace = true;
 
-            // 设置渲染层级
-            lineRenderer.sortingOrder = 100;
+            // 设置渲染排序，确保在所有 Sprite 之上
+            lineRenderer.sortingOrder = 999;
+            lineRenderer.sortingLayerName = "UI";
 
             // 启动渐隐协程
-            // 调试模式：2秒持续时间，确保可见
             FadeOutTracer(self.Root(), tracerGO, lineRenderer, 0.3f).NoContext();
         }
 

@@ -17,9 +17,6 @@ namespace ET
             self.MaxHp = 1000;
             self.CurrentHp = self.MaxHp;
             self.IsAlive = true;
-            self.ScreenPosX = 0.5f;
-            self.ScreenPosY = 0.5f;
-            self.HitRadius = 0.1f;
         }
 
         [EntitySystem]
@@ -71,40 +68,6 @@ namespace ET
                 manager.TotalKills++;
                 Log.Info($"[TPS] 敌人死亡统计 - 存活: {manager.AliveEnemyCount}, 总击杀: {manager.TotalKills}");
             }
-        }
-
-        /// <summary>
-        /// 设置屏幕位置（用于命中判定）
-        /// </summary>
-        public static void SetScreenPosition(this TpsEnemyComponent self, float x, float y)
-        {
-            self.ScreenPosX = x;
-            self.ScreenPosY = y;
-        }
-
-        /// <summary>
-        /// 设置命中半径
-        /// </summary>
-        public static void SetHitRadius(this TpsEnemyComponent self, float radius)
-        {
-            self.HitRadius = radius;
-        }
-
-        /// <summary>
-        /// 检查是否被命中
-        /// </summary>
-        public static bool CheckHit(this TpsEnemyComponent self, float aimX, float aimY)
-        {
-            if (!self.IsAlive)
-            {
-                return false;
-            }
-
-            float dx = aimX - self.ScreenPosX;
-            float dy = aimY - self.ScreenPosY;
-            float distSq = dx * dx + dy * dy;
-
-            return distSq <= self.HitRadius * self.HitRadius;
         }
     }
 }

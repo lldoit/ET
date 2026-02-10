@@ -31,20 +31,5 @@ namespace ET
         /// 是否存活
         /// </summary>
         public bool IsAlive;
-
-        /// <summary>
-        /// 屏幕位置X（用于命中判定，0-1归一化）
-        /// </summary>
-        public float ScreenPosX;
-
-        /// <summary>
-        /// 屏幕位置Y（用于命中判定，0-1归一化）
-        /// </summary>
-        public float ScreenPosY;
-
-        /// <summary>
-        /// 命中半径（屏幕空间，0-1归一化）
-        /// </summary>
-        public float HitRadius;
     }
 }

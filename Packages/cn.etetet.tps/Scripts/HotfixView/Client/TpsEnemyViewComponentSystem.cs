@@ -44,6 +44,37 @@ namespace ET.Client
             }
             self.Transform = null;
         }
+        
+        /// <summary>
+        /// 初始化视图组件
+        /// </summary>
+        /// <param name="self">视图组件</param>
+        /// <param name="characterGO">角色GameObject</param>
+        public static void Initialize(this TpsEnemyViewComponent self, GameObject characterGO)
+        {
+            self.GameObject = characterGO;
+
+            // if (characterGO != null)
+            // {
+            //     self.Animancer = characterGO.GetComponent<BattleCharacterAnimancer>();
+            //     if (self.Animancer == null)
+            //     {
+            //         self.Animancer = characterGO.GetComponentInChildren<BattleCharacterAnimancer>();
+            //     }
+            //
+            //     self.Animancer.Renderer.sortingOrder = slotIndex;
+            //
+            //     // 保存原始位置
+            //     self.OriginalPosition = characterGO.transform.position;
+            //     
+            //     // Event
+            //     self.Animancer.Animancer.AnimationState.Event -= self.HandleSpineEvent;
+            //     self.Animancer.Animancer.AnimationState.Event += self.HandleSpineEvent;
+            // }
+            //
+            // // 默认播放待机动画
+            // self.PlayIdle();
+        }
 
         /// <summary>
         /// 设置敌人世界坐标位置
