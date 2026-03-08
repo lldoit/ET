@@ -1,0 +1,10 @@
+{
+    "Id": 5003,
+    "Name": "KOF",
+    "ScriptsReferences": {
+        "Model": [],
+        "ModelView": [],
+        "Hotfix": [],
+        "HotfixView": []
+    }
+}
