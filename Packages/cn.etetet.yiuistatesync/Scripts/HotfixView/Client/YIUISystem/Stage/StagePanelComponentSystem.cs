@@ -31,19 +31,19 @@ namespace ET.Client
         }
 
         #region YIUIEvent开始
-        
+
         [YIUIInvoke(StagePanelComponent.OnEventBackInvoke)]
         private static void OnEventBackInvoke(this StagePanelComponent self)
         {
             self.YIUIMgr().HomePanel<MainPanelComponent>().NoContext();
         }
-        
+
         [YIUIInvoke(StagePanelComponent.OnEventEnterMapInvoke)]
         private static async ETTask OnEventEnterMapInvoke(this StagePanelComponent self)
         {
             // 获取root场景
             Scene root = self.Root();
-            
+
             // 从关卡配置获取三消关卡ID
             // StageConfig stageConfig = StageConfigCategory.Instance.GetOne();
             // if (stageConfig == null)
@@ -53,8 +53,10 @@ namespace ET.Client
             // }
             //
             // await BattleSceneHelper.EnterBattleAsync(root, stageConfig.Id);
+
+            //await TpsSceneHelper.EnterTpsAsync(root);
             
-            await TpsSceneHelper.EnterTpsAsync(root);
+            await KofBattleHelper.EnterKofBattleAsync(root);
         }
         #endregion YIUIEvent结束
     }

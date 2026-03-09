@@ -73,6 +73,14 @@
       "source": "embedded",
       "dependencies": {}
     },
+    "cn.etetet.kof": {
+      "version": "file:cn.etetet.kof",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "cn.etetet.core": "3.0.3"
+      }
+    },
     "cn.etetet.loader": {
       "version": "file:cn.etetet.loader",
       "depth": 0,

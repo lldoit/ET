@@ -20,6 +20,9 @@ namespace ET
         /// 伤害值（由View层碰撞检测确定基础值）
         /// </summary>
         public int Damage;
+
+        /// <summary>触发此次命中的招式ID（0=无）</summary>
+        public int MoveId;  // 新增：从 KofMoveConfig 读取伤害
     }
 
     /// <summary>
@@ -69,5 +72,60 @@ namespace ET
         /// 技能消耗的能量值
         /// </summary>
         public int EnergyCost;
+    }
+
+    /// <summary>
+    /// View→Model：请求执行招式
+    /// View层完成指令序列匹配后发出，携带招式ID
+    /// </summary>
+    public struct Evt_KofRequestMove
+    {
+        /// <summary>发出请求的角色实体ID</summary>
+        public long FighterId;
+        /// <summary>招式ID（对应 KofMoveConfig.Id）</summary>
+        public int MoveId;
+    }
+
+    /// <summary>
+    /// Model→View：战斗者状态变化
+    /// 用于View层触发对应动画
+    /// </summary>
+    public struct Evt_KofStateChanged
+    {
+        /// <summary>角色实体ID</summary>
+        public long FighterId;
+        /// <summary>新状态</summary>
+        public KofFighterState NewState;
+        /// <summary>当前招式ID（仅Attacking状态有效，其他为-1）</summary>
+        public int MoveId;
+    }
+
+    /// <summary>
+    /// Model→View：位置变化（每Tick发出）
+    /// View层用此事件同步 GameObject.transform
+    /// </summary>
+    public struct Evt_KofPositionChanged
+    {
+        /// <summary>角色实体ID</summary>
+        public long FighterId;
+        /// <summary>世界X坐标</summary>
+        public float PosX;
+        /// <summary>世界Y坐标（地面=0）</summary>
+        public float PosY;
+        /// <summary>是否面朝右方</summary>
+        public bool FacingRight;
+    }
+
+    /// <summary>
+    /// Model→View/Model：回合/对战状态变化
+    /// </summary>
+    public struct Evt_KofRoundStateChanged
+    {
+        /// <summary>新的对战状态</summary>
+        public KofBattleState NewState;
+        /// <summary>当前回合数</summary>
+        public int RoundNumber;
+        /// <summary>胜者实体ID（PreRound/Fighting 阶段为0）</summary>
+        public long WinnerFighterId;
     }
 }
