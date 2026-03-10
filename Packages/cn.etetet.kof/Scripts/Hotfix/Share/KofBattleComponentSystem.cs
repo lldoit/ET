@@ -4,6 +4,9 @@ namespace ET
     /// KOF全局对战管理系统
     /// </summary>
     [FriendOf(typeof(KofBattleComponent))]
+    [FriendOf(typeof(KofFighterComponent))]
+    [FriendOf(typeof(KofFrameInputComponent))]
+    [FriendOf(typeof(KofRandomAIComponent))]
     [EntitySystemOf(typeof(KofBattleComponent))]
     public static partial class KofBattleComponentSystem
     {
@@ -23,6 +26,75 @@ namespace ET
         private static void Destroy(this KofBattleComponent self)
         {
             Log.Info("[KOF] 对战管理器销毁");
+        }
+
+        /// <summary>
+        /// 主 Tick 循环（每 Unity 帧由 ET IUpdate 驱动）
+        /// 执行顺序：AI 决策 → 基础输入驱动 → 物理 → 状态机
+        /// </summary>
+        [EntitySystem]
+        private static void Update(this KofBattleComponent self)
+        {
+            // 比赛结束时停止 Tick
+            if (self.BattleState == KofBattleState.GameOver) return;
+
+            self.TickCount++;
+
+
+            KofFighterComponent fighter1 = self.Player1Ref;
+            KofFighterComponent fighter2 = self.Player2Ref;
+
+            if (fighter1 == null || fighter2 == null) return;
+
+            Scene scene = self.Scene();
+
+            // ── 阶段1：AI 决策（写 KofFrameInputComponent）──
+            KofRandomAIComponent aiP1 = fighter1.RandomAIRef;
+            if (aiP1 != null)
+            {
+                KofRandomAISystem.Tick(aiP1, fighter1, fighter2);
+            }
+
+            KofRandomAIComponent aiP2 = fighter2.RandomAIRef;
+            if (aiP2 != null)
+            {
+                KofRandomAISystem.Tick(aiP2, fighter2, fighter1);
+            }
+
+            // ── 阶段2：基础输入驱动（读 KofFrameInputComponent → 状态机/速度）──
+            KofFrameInputComponent inputP1 = fighter1.FrameInputRef;
+            if (inputP1 != null)
+            {
+                KofBasicInputSystem.Tick(fighter1, inputP1, scene);
+            }
+
+            KofFrameInputComponent inputP2 = fighter2.FrameInputRef;
+            if (inputP2 != null)
+            {
+                KofBasicInputSystem.Tick(fighter2, inputP2, scene);
+            }
+
+            // ── 阶段3：物理 Tick ──
+            KofPhysicsSystem.Tick(fighter1);
+            KofPhysicsSystem.Tick(fighter2);
+
+            // ── 阶段4：状态机 Tick（落地检测等时序推进）──
+            KofFighterStateSystem.Tick(fighter1, scene);
+            KofFighterStateSystem.Tick(fighter2, scene);
+            EventSystem.Instance.Publish(scene, new Evt_KofPositionChanged
+            {
+                FighterId = fighter1.Id,
+                PosX = fighter1.PosX,
+                PosY = fighter1.PosY,
+                FacingRight = fighter1.FacingRight,
+            });
+            EventSystem.Instance.Publish(scene, new Evt_KofPositionChanged
+            {
+                FighterId = fighter2.Id,
+                PosX = fighter2.PosX,
+                PosY = fighter2.PosY,
+                FacingRight = fighter2.FacingRight,
+            });
         }
 
         /// <summary>

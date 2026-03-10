@@ -97,5 +97,17 @@ namespace ET
         /// 跳跃前摇倒计时（帧数，>0时角色处于起跳前摇，对应 UFE jumpDelay）
         /// </summary>
         public int JumpDelayCounter;
+
+        // ── AI / 输入子组件引用 ──
+        /// <summary>
+        /// 统一帧输入组件引用（Virtual Gamepad）
+        /// AI 和人类共用此组件写入，由 KofBasicInputSystem 统一读取
+        /// </summary>
+        public EntityRef<KofFrameInputComponent> FrameInputRef;
+
+        /// <summary>
+        /// 随机 AI 大脑组件引用（仅 AI 玩家非空）
+        /// </summary>
+        public EntityRef<KofRandomAIComponent> RandomAIRef;
     }
 }

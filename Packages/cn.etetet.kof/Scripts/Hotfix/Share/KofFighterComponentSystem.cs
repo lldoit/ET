@@ -5,6 +5,8 @@ namespace ET
     /// 管理格斗角色的生命周期和战斗逻辑
     /// </summary>
     [FriendOf(typeof(KofFighterComponent))]
+    [FriendOf(typeof(KofFrameInputComponent))]
+    [FriendOf(typeof(KofRandomAIComponent))]
     [EntitySystemOf(typeof(KofFighterComponent))]
     public static partial class KofFighterComponentSystem
     {
@@ -30,6 +32,10 @@ namespace ET
             self.StateEndFrame = 0;
             self.CurrentMoveId = -1;     // -1 表示当前无招式执行
             self.JumpDelayCounter = 0;
+
+            // 创建统一帧输入组件（AI 和人类共用）
+            KofFrameInputComponent frameInput = self.AddChild<KofFrameInputComponent>();
+            self.FrameInputRef = frameInput;
 
             Log.Info($"[KOF] 格斗角色初始化: HP={self.HP}/{self.MaxHP}, Energy={self.Energy}/{self.MaxEnergy}");
         }
@@ -136,6 +142,19 @@ namespace ET
             self.PlayerId = playerId;
             self.FacingRight = facingRight;
             self.PosX = posX;
+
+            // 如果是 AI 玩家（PlayerId==2 默认为 AI）则创建 AI 大脑组件
+            if (playerId == 2)
+            {
+                KofRandomAIComponent ai = self.AddChild<KofRandomAIComponent>();
+                ai.DecisionInterval = 10;
+                ai.FrameCounter = 0;
+                ai.RandomSeed = self.Id.GetHashCode() & 0x7FFFFFFF;
+                ai.Behaviors = KofRandomAISystem.CreateDefaultBehaviors();
+                self.RandomAIRef = ai;
+                Log.Info($"[KOF] P{playerId} AI 大脑初始化完成 DecisionInterval={ai.DecisionInterval}");
+            }
+
             Log.Info($"[KOF] 角色配置加载：P{playerId} charId={characterId} pos={posX:F1}");
         }
     }

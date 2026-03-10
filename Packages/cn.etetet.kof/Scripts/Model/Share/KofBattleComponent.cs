@@ -6,7 +6,7 @@ namespace ET
     /// 对应 UFE 中的全局 GlobalInfo 和 RoundInfo 整合
     /// </summary>
     [ComponentOf(typeof(Scene))]
-    public class KofBattleComponent : Entity, IAwake, IDestroy
+    public class KofBattleComponent : Entity, IAwake, IDestroy, IUpdate
     {
         /// <summary>
         /// 玩家1格斗角色组件引用（使用EntityRef保证async/await安全）

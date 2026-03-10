@@ -20,6 +20,9 @@ namespace ET.Client
             CurrentScenesComponent currentScenesComponent = root.GetComponent<CurrentScenesComponent>();
             currentScenesComponent.Scene?.Dispose();
 
+            // 发布场景开始事件（可显示 Loading）- 必须等待完成
+            await EventSystem.Instance.PublishAsync(root, new TpsSceneChangeStart());
+
             // 创建 KOF 格斗 ECS 场景
             Scene kofScene = EntitySceneFactory.CreateScene(
                 root,
@@ -31,13 +34,12 @@ namespace ET.Client
             currentScenesComponent.Scene = kofScene;
 
             // 加载 Unity 场景资源
-            // TODO: 创建 KofBattle.unity 场景文件后取消注释
-            // var resourcesLoaderComponent = kofScene.AddComponent<ResourcesLoaderComponent>();
-            // await resourcesLoaderComponent.LoadSceneAsync(
-            //     "Packages/cn.etetet.kof/Assets/GameRes/Scenes/KofBattle.unity",
-            //     LoadSceneMode.Additive);
-            // var unityScene = SceneManager.GetSceneAt(SceneManager.sceneCount - 1);
-            // SceneManager.SetActiveScene(unityScene);
+            var resourcesLoaderComponent = kofScene.AddComponent<ResourcesLoaderComponent>();
+            await resourcesLoaderComponent.LoadSceneAsync(
+                "Packages/cn.etetet.kof/Assets/GameRes/Scenes/KofBattle.unity",
+                LoadSceneMode.Additive);
+            var unityScene = SceneManager.GetSceneAt(SceneManager.sceneCount - 1);
+            SceneManager.SetActiveScene(unityScene);
 
             // ── 初始化 Model 层核心组件 ──
 
@@ -69,6 +71,8 @@ namespace ET.Client
                 Damage = 0,    // MoveId > 0 时此值被忽略
                 MoveId = 101,  // 轻拳
             });
+            
+            EventSystem.Instance.Publish(kofScene, new Evt_KofSceneChangeFinish());
 
             await ETTask.CompletedTask;
         }

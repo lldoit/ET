@@ -57,7 +57,7 @@ namespace ET
             fighter.StateEndFrame = totalFrames;
             fighter.CurrentMoveId = args.MoveId;
 
-            await KofFighterStateSystem.ChangeState(fighter, scene, KofFighterState.Attacking, args.MoveId);
+            KofFighterStateSystem.ChangeState(fighter, scene, KofFighterState.Attacking, args.MoveId);
 
             Log.Info($"[KOF] 角色{args.FighterId}开始执行招式：{moveCfg.MoveName}（总帧数={totalFrames}）");
             await ETTask.CompletedTask;

@@ -8,6 +8,9 @@ namespace ET.Client
     /// 每Tick采集按键状态，匹配 KofMoveConfig.InputSequence 后发出 Evt_KofRequestMove
     /// </summary>
     [FriendOf(typeof(KofInputBufferComponent))]
+    [FriendOf(typeof(KofBattleComponent))]
+    [FriendOf(typeof(KofFighterComponent))]
+    [FriendOf(typeof(KofFrameInputComponent))]
     [EntitySystemOf(typeof(KofInputBufferComponent))]
     public static partial class KofInputBufferComponentSystem
     {
@@ -41,18 +44,39 @@ namespace ET.Client
             // 读取原始按键（P1用WASD+UIJK，P2用方向键+数字键，可根据项目调整）
             KofInputRecord record = new KofInputRecord
             {
-                Frame   = globalTick,
-                Forward = isP1 ? Input.GetKey(KeyCode.D)        : Input.GetKey(KeyCode.RightArrow),
-                Back    = isP1 ? Input.GetKey(KeyCode.A)        : Input.GetKey(KeyCode.LeftArrow),
-                Up      = isP1 ? Input.GetKeyDown(KeyCode.W)    : Input.GetKeyDown(KeyCode.UpArrow),
-                Down    = isP1 ? Input.GetKey(KeyCode.S)        : Input.GetKey(KeyCode.DownArrow),
-                LP      = isP1 ? Input.GetKeyDown(KeyCode.U)    : Input.GetKeyDown(KeyCode.Keypad7),
-                HP      = isP1 ? Input.GetKeyDown(KeyCode.I)    : Input.GetKeyDown(KeyCode.Keypad8),
-                LK      = isP1 ? Input.GetKeyDown(KeyCode.J)    : Input.GetKeyDown(KeyCode.Keypad4),
-                HK      = isP1 ? Input.GetKeyDown(KeyCode.K)    : Input.GetKeyDown(KeyCode.Keypad5),
+                Frame = globalTick,
+                Forward = isP1 ? Input.GetKey(KeyCode.D) : Input.GetKey(KeyCode.RightArrow),
+                Back = isP1 ? Input.GetKey(KeyCode.A) : Input.GetKey(KeyCode.LeftArrow),
+                Up = isP1 ? Input.GetKeyDown(KeyCode.W) : Input.GetKeyDown(KeyCode.UpArrow),
+                Down = isP1 ? Input.GetKey(KeyCode.S) : Input.GetKey(KeyCode.DownArrow),
+                LP = isP1 ? Input.GetKeyDown(KeyCode.U) : Input.GetKeyDown(KeyCode.Keypad7),
+                HP = isP1 ? Input.GetKeyDown(KeyCode.I) : Input.GetKeyDown(KeyCode.Keypad8),
+                LK = isP1 ? Input.GetKeyDown(KeyCode.J) : Input.GetKeyDown(KeyCode.Keypad4),
+                HK = isP1 ? Input.GetKeyDown(KeyCode.K) : Input.GetKeyDown(KeyCode.Keypad5),
             };
 
             self.InputHistory.Enqueue(record);
+
+            // ── 新增：将方向键状态写入 Model 层的 KofFrameInputComponent ──
+            // 通过场景的 KofBattleComponent 找到对应角色的 EntityRef
+            KofBattleComponent battle = self.Scene().GetComponent<KofBattleComponent>();
+            if (battle != null)
+            {
+                KofFighterComponent fighter = self.PlayerId == 1 ? battle.Player1Ref : battle.Player2Ref;
+                if (fighter != null)
+                {
+                    KofFrameInputComponent frameInput = fighter.FrameInputRef;
+                    if (frameInput != null)
+                    {
+                        frameInput.HorizontalAxis = record.Forward ? 1 : record.Back ? -1 : 0;
+                        frameInput.VerticalAxis = record.Up ? 1 : record.Down ? -1 : 0;
+                        frameInput.LP = record.LP;
+                        frameInput.HP = record.HP;
+                        frameInput.LK = record.LK;
+                        frameInput.HK = record.HK;
+                    }
+                }
+            }
 
             // 超过最大历史长度时移除最老记录
             while (self.InputHistory.Count > KofInputBufferComponent.MaxHistoryFrames)
@@ -148,12 +172,12 @@ namespace ET.Client
         {
             return btn switch
             {
-                "LP"    => record.LP,
-                "HP"    => record.HP,
-                "LK"    => record.LK,
-                "HK"    => record.HK,
+                "LP" => record.LP,
+                "HP" => record.HP,
+                "LK" => record.LK,
+                "HK" => record.HK,
                 "HP+HK" => record.HP && record.HK,
-                _       => false,
+                _ => false,
             };
         }
 

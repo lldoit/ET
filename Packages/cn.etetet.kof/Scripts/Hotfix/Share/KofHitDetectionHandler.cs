@@ -37,7 +37,7 @@ namespace ET
 
             // 触发受击硬直（5帧基础硬直）
             fighter.StateEndFrame = 5;
-            await KofFighterStateSystem.ChangeState(fighter, scene, KofFighterState.Hitstun, -1);
+            KofFighterStateSystem.ChangeState(fighter, scene, KofFighterState.Hitstun, -1);
 
             // 发布HP变化事件，通知View层更新UI
             await EventSystem.Instance.PublishAsync(scene,

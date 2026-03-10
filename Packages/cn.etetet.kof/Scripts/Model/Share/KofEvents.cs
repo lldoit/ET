@@ -1,5 +1,13 @@
 namespace ET
 {
+    public struct Evt_KofSceneChangeStart
+    {
+    }
+
+    public struct Evt_KofSceneChangeFinish
+    {
+    }
+    
     /// <summary>
     /// KOF命中检测事件（View -> Model）
     /// Unity View层检测到碰撞后，通过此事件通知Model层进行伤害计算

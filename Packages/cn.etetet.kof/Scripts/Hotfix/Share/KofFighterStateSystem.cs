@@ -11,7 +11,7 @@ namespace ET
         /// <summary>
         /// 每Tick推进状态机（调用时机：物理Tick之后）
         /// </summary>
-        public static async ETTask Tick(KofFighterComponent fighter, Scene scene)
+        public static void Tick(KofFighterComponent fighter, Scene scene)
         {
             if (fighter == null || !fighter.IsAlive) return;
 
@@ -23,7 +23,7 @@ namespace ET
                     // 攻击状态：StateEndFrame 到达时转回 Idle
                     if (fighter.StateEndFrame > 0 && fighter.FrameCounter >= fighter.StateEndFrame)
                     {
-                        await ChangeState(fighter, scene, KofFighterState.Idle, -1);
+                        ChangeState(fighter, scene, KofFighterState.Idle, -1);
                     }
                     break;
 
@@ -32,7 +32,7 @@ namespace ET
                     // 硬直结束
                     if (fighter.StateEndFrame > 0 && fighter.FrameCounter >= fighter.StateEndFrame)
                     {
-                        await ChangeState(fighter, scene, KofFighterState.Idle, -1);
+                        ChangeState(fighter, scene, KofFighterState.Idle, -1);
                     }
                     break;
 
@@ -49,18 +49,17 @@ namespace ET
                         KofCharacterConfig cfg = KofCharacterConfigRegistry.Get(fighter.CharacterId);
                         fighter.StateEndFrame = cfg.LandingDelay;
                         fighter.FrameCounter = 0;
-                        await ChangeState(fighter, scene, KofFighterState.Idle, -1);
+                        ChangeState(fighter, scene, KofFighterState.Idle, -1);
                     }
                     break;
             }
 
-            await ETTask.CompletedTask;
         }
 
         /// <summary>
         /// 切换角色状态并发布 Evt_KofStateChanged 事件
         /// </summary>
-        public static async ETTask ChangeState(KofFighterComponent fighter, Scene scene, KofFighterState newState, int moveId)
+        public static void ChangeState(KofFighterComponent fighter, Scene scene, KofFighterState newState, int moveId)
         {
             fighter.State = newState;
             fighter.FrameCounter = 0;
@@ -73,7 +72,6 @@ namespace ET
                 MoveId = moveId,
             });
 
-            await ETTask.CompletedTask;
         }
 
         /// <summary>
