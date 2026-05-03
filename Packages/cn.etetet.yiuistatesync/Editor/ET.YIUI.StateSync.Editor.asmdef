@@ -4,6 +4,9 @@
     "references": [
         "ET.YooAssets",
         "ET.YooAssets.Editor",
+        "ET.YIUIFramework",
+        "ET.YIUIFramework.Editor",
+        "MCPForUnity.Editor",
         "Unity.TextMeshPro"
     ],
     "includePlatforms": [
