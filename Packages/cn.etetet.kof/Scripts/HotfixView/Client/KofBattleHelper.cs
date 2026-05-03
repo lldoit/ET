@@ -58,6 +58,49 @@ namespace ET.Client
             // 绑定双方到对战管理器（通过 SetPlayers 方法，规避 ET0002）
             battle.SetPlayers(p1, p2);
 
+            // ── 初始化 View 层配置投射 ──
+            var p1Go = UnityEngine.GameObject.Find("Player1");
+            if (p1Go != null)
+            {
+                var viewBoxes = p1Go.GetComponent<KofHitBoxesView>();
+                if (viewBoxes != null)
+                {
+                    var hitBoxesComp = p1.AddComponent<KofHitBoxesComponent>();
+                    foreach (var b in viewBoxes.BoxConfigs)
+                    {
+                        hitBoxesComp.AddBox(new KofHitBoxData
+                        {
+                            BoxType = b.BoxType == EditorKofHitBoxType.High ? KofHitBoxType.High : KofHitBoxType.Low,
+                            Shape = b.Shape == EditorKofHitBoxShape.Circle ? KofHitBoxShape.Circle : KofHitBoxShape.Rectangle,
+                            Radius = b.Radius,
+                            Offset = new Unity.Mathematics.float2(b.Offset.x, b.Offset.y),
+                            BoneName = b.BoneName
+                        });
+                    }
+                }
+            }
+            
+            var p2Go = UnityEngine.GameObject.Find("Player2");
+            if (p2Go != null)
+            {
+                var viewBoxes = p2Go.GetComponent<KofHitBoxesView>();
+                if (viewBoxes != null)
+                {
+                    var hitBoxesComp = p2.AddComponent<KofHitBoxesComponent>();
+                    foreach (var b in viewBoxes.BoxConfigs)
+                    {
+                        hitBoxesComp.AddBox(new KofHitBoxData
+                        {
+                            BoxType = b.BoxType == EditorKofHitBoxType.High ? KofHitBoxType.High : KofHitBoxType.Low,
+                            Shape = b.Shape == EditorKofHitBoxShape.Circle ? KofHitBoxShape.Circle : KofHitBoxShape.Rectangle,
+                            Radius = b.Radius,
+                            Offset = new Unity.Mathematics.float2(b.Offset.x, b.Offset.y),
+                            BoneName = b.BoneName
+                        });
+                    }
+                }
+            }
+
             // ── 初始化 View 层输入缓冲组件 ──
             kofScene.AddChild<KofInputBufferComponent, int>(1);  // P1 输入缓冲
             kofScene.AddChild<KofInputBufferComponent, int>(2);  // P2 输入缓冲

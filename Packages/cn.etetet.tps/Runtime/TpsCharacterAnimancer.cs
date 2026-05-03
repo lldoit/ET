@@ -7,7 +7,6 @@ namespace ET.Client
     /// 挂载到敌人预制体上，用于关联 Unity GameObject 与 ET Entity
     /// 同时作为 Physics2D Raycast 的命中目标标识
     /// </summary>
-    [EnableClass]
     public class TpsCharacterAnimancer : MonoBehaviour
     {
         /// <summary>
