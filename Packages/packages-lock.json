@@ -354,14 +354,13 @@
       "hash": "d2d96ca6183c6186f836ae66904d23d1d9734493"
     },
     "com.coplaydev.unity-mcp": {
-      "version": "https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity#main",
+      "version": "file:com.coplaydev.unity-mcp/MCPForUnity",
       "depth": 0,
-      "source": "git",
+      "source": "embedded",
       "dependencies": {
         "com.unity.nuget.newtonsoft-json": "3.0.2",
         "com.unity.test-framework": "1.1.31"
-      },
-      "hash": "b92c05a25820cfc9f59ce4094eb46aaec8632ea2"
+      }
     },
     "com.etetet.init": {
       "version": "file:com.etetet.init",

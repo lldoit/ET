@@ -9,7 +9,7 @@
     "cn.etetet.yiuitips": "3.0.2",
     "cn.etetet.yiuiyooassets": "3.1.0",
     "com.boxqkrtm.ide.cursor": "https://github.com/liyingsong99/com.unity.ide.cursor-et.git",
-    "com.coplaydev.unity-mcp": "https://github.com/CoplayDev/unity-mcp.git?path=/MCPForUnity#main",
+    "com.coplaydev.unity-mcp": "file:com.coplaydev.unity-mcp/MCPForUnity",
     "com.kyrylokuzyk.primetween": "file:../Assets/Plugins/PrimeTween/internal/com.kyrylokuzyk.primetween.tgz",
     "com.unity.2d.sprite": "1.0.0",
     "com.unity.ai.navigation": "2.0.9",

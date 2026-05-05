@@ -1,0 +1,4 @@
+[submodule "Packages/com.coplaydev.unity-mcp"]
+	path = Packages/com.coplaydev.unity-mcp
+	url = https://github.com/lldoit/unity-mcp.git
+	branch = main
