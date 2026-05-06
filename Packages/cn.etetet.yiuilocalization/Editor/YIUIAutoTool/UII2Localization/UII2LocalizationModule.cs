@@ -135,6 +135,36 @@ namespace YIUIFramework.Editor
                 });
         }
 
+        [BoxGroup("多语言扫描", CenterLabel = true)]
+        [Button("扫描配置表 i18n 列", 30)]
+        private void ScanExcelI18nColumns()
+        {
+            var editorAsset = LocalizationManager.GetEditorAsset(true);
+            var report = UII2LocalizationExcelI18nScanner.Scan(editorAsset?.SourceData);
+            ShowScanReport(report);
+        }
+
+        [BoxGroup("多语言扫描", CenterLabel = true)]
+        [Button("扫描代码多语言 API", 30)]
+        private void ScanCodeLocalizationApis()
+        {
+            var editorAsset = LocalizationManager.GetEditorAsset(true);
+            var report = UII2LocalizationCodeApiScanner.Scan(editorAsset?.SourceData);
+            ShowScanReport(report);
+        }
+
+        private static void ShowScanReport(LocalizationScanReport report)
+        {
+            report.LogDetails();
+            if (report.HasIssues)
+            {
+                UnityTipsHelper.ShowError(report.ToMessage());
+                return;
+            }
+
+            UnityTipsHelper.Show(report.ToMessage());
+        }
+
         private BaiduBatchTranslationOptions GetBaiduBatchOptions()
         {
             return new BaiduBatchTranslationOptions
