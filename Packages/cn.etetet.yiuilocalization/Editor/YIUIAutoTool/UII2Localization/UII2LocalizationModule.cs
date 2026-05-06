@@ -54,6 +54,117 @@ namespace YIUIFramework.Editor
             BaiduTranslationSettings.Clear();
         }
 
+        [BoxGroup("百度批量翻译", CenterLabel = true)]
+        [LabelText("源语言")]
+        [ShowInInspector]
+        [ValueDropdown("GetI2LanguageNames")]
+        private string BaiduBatchSourceLanguage = YIUIConstHelper.Const.I2DefaultLanguage;
+
+        [BoxGroup("百度批量翻译", CenterLabel = true)]
+        [LabelText("目标语言")]
+        [ShowInInspector]
+        [ValueDropdown("GetI2LanguageNames")]
+        private string BaiduBatchTargetLanguage = "English";
+
+        [BoxGroup("百度批量翻译", CenterLabel = true)]
+        [LabelText("只翻译空值")]
+        [ShowInInspector]
+        private bool BaiduBatchOnlyEmpty = true;
+
+        [BoxGroup("百度批量翻译", CenterLabel = true)]
+        [LabelText("失败重试次数")]
+        [ShowInInspector]
+        private int BaiduBatchRetryCount = 1;
+
+        [BoxGroup("百度批量翻译", CenterLabel = true)]
+        [LabelText("请求间隔毫秒")]
+        [ShowInInspector]
+        private int BaiduBatchRequestIntervalMs = 300;
+
+        [BoxGroup("百度批量翻译", CenterLabel = true)]
+        [Button("校验百度语言码", 30)]
+        private void ValidateBaiduBatchLanguage()
+        {
+            var editorAsset = LocalizationManager.GetEditorAsset(true);
+            var sourceData = editorAsset?.SourceData;
+            if (UII2LocalizationBaiduBatchTranslator.Validate(sourceData, GetBaiduBatchOptions(), out var message))
+            {
+                UnityTipsHelper.Show(message);
+            }
+            else
+            {
+                UnityTipsHelper.ShowError(message);
+            }
+        }
+
+        [BoxGroup("百度批量翻译", CenterLabel = true)]
+        [Button("统计待翻译项", 30)]
+        private void PreviewBaiduBatchMissing()
+        {
+            var editorAsset = LocalizationManager.GetEditorAsset(true);
+            var report = UII2LocalizationBaiduBatchTranslator.Preview(editorAsset, GetBaiduBatchOptions());
+            if (report.Failed > 0)
+            {
+                UnityTipsHelper.ShowError(report.ToMessage(true));
+            }
+            else
+            {
+                UnityTipsHelper.Show(report.ToMessage(true));
+            }
+        }
+
+        [BoxGroup("百度批量翻译", CenterLabel = true)]
+        [Button("翻译目标语言空白项", 35)]
+        [GUIColor(0.2f, 0.8f, 0.4f)]
+        private void TranslateBaiduBatchMissing()
+        {
+            UnityTipsHelper.CallBack(
+                "确认使用百度翻译批量补全目标语言吗\n\n默认只会翻译空白项\n\n请确认",
+                () =>
+                {
+                    var editorAsset = LocalizationManager.GetEditorAsset(true);
+                    var report = UII2LocalizationBaiduBatchTranslator.Translate(editorAsset, GetBaiduBatchOptions());
+                    if (report.Failed > 0)
+                    {
+                        UnityTipsHelper.ShowError(report.ToMessage(false));
+                    }
+                    else
+                    {
+                        UnityTipsHelper.Show(report.ToMessage(false));
+                    }
+                });
+        }
+
+        private BaiduBatchTranslationOptions GetBaiduBatchOptions()
+        {
+            return new BaiduBatchTranslationOptions
+            {
+                SourceLanguage = BaiduBatchSourceLanguage,
+                TargetLanguage = BaiduBatchTargetLanguage,
+                OnlyEmpty = BaiduBatchOnlyEmpty,
+                RetryCount = Mathf.Max(0, BaiduBatchRetryCount),
+                RequestIntervalMs = Mathf.Max(0, BaiduBatchRequestIntervalMs)
+            };
+        }
+
+        private static string[] GetI2LanguageNames()
+        {
+            var editorAsset = LocalizationManager.GetEditorAsset(true);
+            var sourceData = editorAsset?.SourceData;
+            if (sourceData == null)
+            {
+                return Array.Empty<string>();
+            }
+
+            var result = new string[sourceData.mLanguages.Count];
+            for (var i = 0; i < sourceData.mLanguages.Count; i++)
+            {
+                result[i] = sourceData.mLanguages[i].Name;
+            }
+
+            return result;
+        }
+
         private LanguageSourceData m_LanguageSourceData;
 
         [LabelText("全数据名称")]

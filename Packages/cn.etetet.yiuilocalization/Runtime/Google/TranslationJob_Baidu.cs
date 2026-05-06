@@ -82,15 +82,8 @@ namespace I2.Loc
 
             var salt = DateTime.UtcNow.Ticks.ToString();
             var sign = BaiduTranslationUtility.GenerateSign(BaiduTranslationSettings.AppId, text, salt, BaiduTranslationSettings.SecretKey);
-            www = UnityWebRequest.Get(BuildUrl(text, from, to, salt, sign));
+            www = UnityWebRequest.Get(BaiduTranslationUtility.BuildRequestUrl(text, from, to, salt, sign, BaiduTranslationSettings.AppId));
             I2Utils.SendWebRequest(www);
-        }
-
-        private static string BuildUrl(string text, string from, string to, string salt, string sign)
-        {
-            return $"{BaiduTranslationUtility.Endpoint}?q={UnityWebRequest.EscapeURL(text)}" +
-                   $"&from={from}&to={to}&appid={UnityWebRequest.EscapeURL(BaiduTranslationSettings.AppId)}" +
-                   $"&salt={salt}&sign={sign}";
         }
 
         private void ProcessResult(string response, string requestError)

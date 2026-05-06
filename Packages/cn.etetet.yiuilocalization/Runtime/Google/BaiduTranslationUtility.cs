@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Security.Cryptography;
 using System.Text;
 using I2.Loc.SimpleJSON;
+using UnityEngine.Networking;
 
 namespace I2.Loc
 {
@@ -67,6 +68,19 @@ namespace I2.Loc
 
             var parentCode = internationalCode.Substring(0, dashIndex);
             return LanguageCodes.TryGetValue(parentCode, out baiduCode) ? baiduCode : string.Empty;
+        }
+
+        public static string BuildRequestUrl(string text, string from, string to, string salt, string sign, string appId)
+        {
+            return string.Format(
+                "{0}?q={1}&from={2}&to={3}&appid={4}&salt={5}&sign={6}",
+                Endpoint,
+                UnityWebRequest.EscapeURL(text),
+                from,
+                to,
+                UnityWebRequest.EscapeURL(appId),
+                salt,
+                sign);
         }
 
         public static bool TryParseResponse(string json, out string translation, out string error)
