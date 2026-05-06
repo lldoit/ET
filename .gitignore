@@ -58,3 +58,5 @@ DotNet~/Exe/
 Assets/Plugins/Sirenix*
 Assets/HybridCLR*
 Assets/Tool*
+/Assets/Screenshots
+/Assets/Screenshots.meta
