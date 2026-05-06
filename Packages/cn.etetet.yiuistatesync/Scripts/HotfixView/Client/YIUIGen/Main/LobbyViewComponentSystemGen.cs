@@ -47,6 +47,9 @@ namespace ET.Client
             self.u_EventClanHandle = self.u_EventClan.Add(self,LobbyViewComponent.OnEventClanInvoke);
             self.u_EventMission = self.UIBase.EventTable.FindEvent<UITaskEventP0>("u_EventMission");
             self.u_EventMissionHandle = self.u_EventMission.Add(self,LobbyViewComponent.OnEventMissionInvoke);
+            self.u_EventInbox = self.UIBase.EventTable.FindEvent<UITaskEventP0>("u_EventInbox");
+            self.u_EventInboxHandle = self.u_EventInbox.Add(self,LobbyViewComponent.OnEventInboxInvoke);
+            self.u_UIResourceBar = self.UIBase.CDETable.FindUIOwner<ET.Client.ResourceBarComponent>("ResourceBar");
 
         }
     }

@@ -23,6 +23,8 @@ namespace ET.Client
         public EntityRef<YIUIViewComponent> u_UIView;
         public YIUIViewComponent UIView => u_UIView;
         public UnityEngine.RectTransform u_ComMenuRectTransform;
+        public EntityRef<ET.Client.ResourceBarComponent> u_UIResourceBar;
+        public ET.Client.ResourceBarComponent UIResourceBar => u_UIResourceBar;
         public UIEventP0 u_EventMenu;
         public UIEventHandleP0 u_EventMenuHandle;
         public const string OnEventMenuInvoke = "LobbyViewComponent.OnEventMenuInvoke";
@@ -41,6 +43,9 @@ namespace ET.Client
         public UITaskEventP0 u_EventMission;
         public UITaskEventHandleP0 u_EventMissionHandle;
         public const string OnEventMissionInvoke = "LobbyViewComponent.OnEventMissionInvoke";
+        public UITaskEventP0 u_EventInbox;
+        public UITaskEventHandleP0 u_EventInboxHandle;
+        public const string OnEventInboxInvoke = "LobbyViewComponent.OnEventInboxInvoke";
 
     }
 }

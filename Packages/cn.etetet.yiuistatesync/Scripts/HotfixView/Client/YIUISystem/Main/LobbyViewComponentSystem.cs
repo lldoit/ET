@@ -68,6 +68,13 @@ namespace ET.Client
         {
             await self.YIUIMgr().Root.OpenPanelAsync<MissionPanelComponent, EMissionPanelViewEnum>(EMissionPanelViewEnum.DailyView);
         }
+        
+        [YIUIInvoke(LobbyViewComponent.OnEventInboxInvoke)]
+        private static async ETTask OnEventInboxInvoke(this LobbyViewComponent self)
+        {
+            self.u_ComMenuRectTransform.gameObject.SetActive(false);
+            await self.YIUIMgr().Root.OpenPanelAsync<MailBoxPanelComponent>();
+        }
         #endregion YIUIEvent结束
     }
 }
