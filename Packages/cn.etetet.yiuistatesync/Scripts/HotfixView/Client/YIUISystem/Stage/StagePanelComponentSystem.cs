@@ -53,10 +53,10 @@ namespace ET.Client
             // }
             //
             // await BattleSceneHelper.EnterBattleAsync(root, stageConfig.Id);
-
-            //await TpsSceneHelper.EnterTpsAsync(root);
             
-            await KofBattleHelper.EnterKofBattleAsync(root);
+            await TpsSceneHelper.EnterTpsAsync(root);
+            
+            //await KofBattleHelper.EnterKofBattleAsync(root);
         }
         #endregion YIUIEvent结束
     }
