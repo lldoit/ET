@@ -107,6 +107,33 @@ namespace YIUIFramework.Editor
             });
         }
 
+        public static YiuiMcpResult UnbindYIUIEvent(string prefabPath, string objectName)
+        {
+            if (!ValidatePrefabPath(prefabPath, out var error)) return YiuiMcpResult.Fail(error);
+            if (!IsSafeName(objectName)) return YiuiMcpResult.Fail("Invalid objectName.");
+
+            return EditPrefab(prefabPath, root =>
+            {
+                var target = FindUniqueByName(root.transform, objectName);
+                if (target == null) return YiuiMcpResult.Fail($"Object not found or duplicated: {objectName}");
+
+                var removed = 0;
+                foreach (var bind in target.GetComponents<UITaskEventBindClick>())
+                {
+                    UnityEngine.Object.DestroyImmediate(bind, true);
+                    removed++;
+                }
+
+                EditorUtility.SetDirty(target);
+                return YiuiMcpResult.Ok("YIUI event unbound.", new
+                {
+                    prefabPath,
+                    objectName,
+                    removed
+                });
+            });
+        }
+
         public static YiuiMcpResult GenerateYIUICode(string prefabPath)
         {
             if (!ValidatePrefabPath(prefabPath, out var error)) return YiuiMcpResult.Fail(error);

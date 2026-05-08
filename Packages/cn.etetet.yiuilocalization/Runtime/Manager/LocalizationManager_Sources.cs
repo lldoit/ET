@@ -26,7 +26,7 @@ namespace I2.Loc
 			#if UNITY_EDITOR
 	        m_LastLanguageSourceAsset = null;
 	        #endif
-	        //Debug.Log("I2LocalizationManager 重置初始化");
+	        //Debug.Log("I2LocalizationManager reset.");
         }
         
         public static bool UpdateSources()
@@ -75,11 +75,11 @@ namespace I2.Loc
 				return m_LastLanguageSourceAsset;
 			}
 			
-			Debug.Log("I2LocalizationManager 加载编辑器资源数据");
+			Debug.Log("I2LocalizationManager loading editor source asset.");
 			var sourceAsset = UnityEditor.AssetDatabase.LoadAssetAtPath<LanguageSourceAsset>(I2LocalizeHelper.I2GlobalSourcesEditorPath);
 			if (sourceAsset == null)
 			{
-				Debug.LogError($"错误 没有找到编辑器下的资源 {I2LocalizeHelper.I2GlobalSourcesEditorPath}");
+				Debug.LogError($"Editor source asset not found: {I2LocalizeHelper.I2GlobalSourcesEditorPath}");
 				return null;
 			}
 
@@ -132,12 +132,12 @@ namespace I2.Loc
 
 			#if UNITY_EDITOR
 
-			Debug.Log($">>----------添加多语言数据----------<<");
+			Debug.Log(">>----------Add localization source----------<<");
 			foreach (var languageName in Source.owner.SourceData.GetLanguages())
 			{
 				Debug.Log(languageName);
 			}
-			Debug.Log($">>----------添加多语言数据----------<<");
+			Debug.Log(">>----------Add localization source----------<<");
 			
 			#endif
 			

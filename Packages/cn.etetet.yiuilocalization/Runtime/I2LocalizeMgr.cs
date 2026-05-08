@@ -118,7 +118,7 @@ namespace I2.Loc
                 //TODO 这里也可以读取上一次选择的语言
                 //TODO 初始化时还需要配合如果没有这个语言需要从服务器拉取的情况
                 //TODO 也可以在语言设置界面 如果设置某个语言 发现没有这些数据 当时就加载 然后重启游戏
-                Debug.LogError($"必须设置默认语言");
+                Debug.LogError("Default language must be set.");
                 return false;
             }
 
@@ -150,14 +150,14 @@ namespace I2.Loc
             #if UNITY_EDITOR
             if (!m_UseRuntimeModule)
             {
-                Debug.LogError($"禁止在此模式下 动态加载语言 {language}");
+                Debug.LogError($"Dynamic language loading is disabled in this mode: {language}");
                 return;
             }
             #endif
 
             if (CheckLanguage(language))
             {
-                Debug.LogError($"当前语言已存在 请勿重复加载 {language}");
+                Debug.LogError($"Language is already loaded: {language}");
                 return;
             }
 
@@ -171,13 +171,13 @@ namespace I2.Loc
 
             if (loadResult == null)
             {
-                Debug.LogError($"没有加载到目标语言资源 {language}");
+                Debug.LogError($"Language asset load failed: {language}");
                 return;
             }
 
             var assetTextAsset = (TextAsset)loadResult;
 
-            Debug.Log($"加载语言成功 {language}");
+            Debug.Log($"Language loaded: {language}");
 
             UseLocalizationCSV(assetTextAsset.text, !setCurrent);
             if (setCurrent)
@@ -234,7 +234,7 @@ namespace I2.Loc
                     return true;
                 }
 
-                Debug.LogError($"当前没有这个语言无法切换到此语言 {language}");
+                Debug.LogError($"Language is not loaded, cannot switch: {language}");
                 return false;
             }
 
@@ -243,10 +243,10 @@ namespace I2.Loc
                 return true;
             }
 
-            Debug.Log($"设置当前语言 = {language}");
+            Debug.Log($"Current language set: {language}");
             LocalizationManager.CurrentLanguage = language;
             m_CurrentLanguage                   = language;
-            ET.EventSystem.Instance?.YIUIInvokeSync(new EventView_ChangeLanguage
+            ET.EventSystem.Instance?.YIUIInvokeEntitySync(Entity, new EventView_ChangeLanguage
             {
                 Language = language
             });
@@ -257,7 +257,7 @@ namespace I2.Loc
         {
             if (id < 0 || id >= m_AllLanguage.Count)
             {
-                Debug.LogError($"错误的语言ID 无法设定 请检查 {id}  Language.Count = {m_AllLanguage.Count}");
+                Debug.LogError($"Invalid language id: {id}, language count: {m_AllLanguage.Count}");
                 return false;
             }
 

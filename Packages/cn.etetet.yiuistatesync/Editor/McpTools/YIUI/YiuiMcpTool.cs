@@ -14,7 +14,7 @@ namespace YIUIFramework.Editor
     {
         public sealed class Parameters
         {
-            [ToolParameter("Action: ping, create_panel, add_button, bind_event, generate_code, open_preview")]
+            [ToolParameter("Action: ping, create_panel, add_button, bind_event, unbind_event, generate_code, open_preview")]
             public string Action { get; set; }
 
             [ToolParameter("YIUI package name such as Lobby.", Required = false)]
@@ -63,6 +63,9 @@ namespace YIUIFramework.Editor
                         Read(@params, "prefabPath", "PrefabPath"),
                         Read(@params, "objectName", "ObjectName"),
                         Read(@params, "eventName", "EventName")),
+                    "unbind_event" => YiuiPrefabToolService.UnbindYIUIEvent(
+                        Read(@params, "prefabPath", "PrefabPath"),
+                        Read(@params, "objectName", "ObjectName")),
                     "generate_code" => YiuiPrefabToolService.GenerateYIUICode(
                         Read(@params, "prefabPath", "PrefabPath")),
                     "open_preview" => YiuiPrefabToolService.OpenPrefabAndCapturePreview(
