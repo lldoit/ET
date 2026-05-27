@@ -30,5 +30,6 @@
     "explorerExclude.backup": {},
     "claudeCodeChat.permissions.yoloMode": true,
     "Codegeex.GenerationPreference": "block",
-    "Codegeex.CompletionDelay": 0.2
+    "Codegeex.CompletionDelay": 0.2,
+    "specstory.cloudSync.enabled": "never"
 }
