@@ -11,13 +11,13 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 185f6993d5150494d98da50e26cb1c25, type: 3}
   m_Name: AssetBundleCollectorSetting
-  m_EditorClassIdentifier: 
+  m_EditorClassIdentifier:
   ShowPackageView: 0
   ShowEditorAlias: 0
   UniqueBundleName: 1
   Packages:
   - PackageName: DefaultPackage
-    PackageDesc: 
+    PackageDesc:
     EnableAddressable: 1
     LocationToLower: 0
     IncludeAssetGUID: 0
@@ -25,8 +25,8 @@ MonoBehaviour:
     IgnoreRuleName: NormalIgnoreRule
     Groups:
     - GroupName: AotDlls
-      GroupDesc: 
-      AssetTags: 
+      GroupDesc:
+      AssetTags:
       ActiveRuleName: EnableGroup
       Collectors:
       - CollectPath: Packages/cn.etetet.loader/Bundles/AotDlls
@@ -35,11 +35,11 @@ MonoBehaviour:
         AddressRuleName: AddressByFileName
         PackRuleName: PackDirectory
         FilterRuleName: CollectAll
-        AssetTags: 
-        UserData: 
+        AssetTags:
+        UserData:
     - GroupName: Code
-      GroupDesc: 
-      AssetTags: 
+      GroupDesc:
+      AssetTags:
       ActiveRuleName: EnableGroup
       Collectors:
       - CollectPath: Packages/cn.etetet.loader/Bundles/Code
@@ -48,11 +48,11 @@ MonoBehaviour:
         AddressRuleName: AddressByFileName
         PackRuleName: PackDirectory
         FilterRuleName: CollectAll
-        AssetTags: 
-        UserData: 
+        AssetTags:
+        UserData:
     - GroupName: Scenes
-      GroupDesc: 
-      AssetTags: 
+      GroupDesc:
+      AssetTags:
       ActiveRuleName: EnableGroup
       Collectors:
       - CollectPath: Packages/cn.etetet.map/Bundles/Scenes
@@ -61,11 +61,11 @@ MonoBehaviour:
         AddressRuleName: AddressByFileName
         PackRuleName: PackSeparately
         FilterRuleName: CollectScene
-        AssetTags: 
-        UserData: 
+        AssetTags:
+        UserData:
     - GroupName: Units
-      GroupDesc: 
-      AssetTags: 
+      GroupDesc:
+      AssetTags:
       ActiveRuleName: EnableGroup
       Collectors:
       - CollectPath: Packages/cn.etetet.map/Bundles/Units
@@ -74,11 +74,11 @@ MonoBehaviour:
         AddressRuleName: AddressByFileName
         PackRuleName: PackSeparately
         FilterRuleName: CollectPrefab
-        AssetTags: 
-        UserData: 
+        AssetTags:
+        UserData:
     - GroupName: YIUI
-      GroupDesc: 
-      AssetTags: 
+      GroupDesc:
+      AssetTags:
       ActiveRuleName: EnableGroup
       Collectors:
       - CollectPath: Packages/cn.etetet.yiuigm/Assets/GameRes/YIUI/GM
@@ -87,83 +87,91 @@ MonoBehaviour:
         AddressRuleName: AddressByFileName
         PackRuleName: PackDirectory
         FilterRuleName: YIUIFilterRule
-        AssetTags: 
-        UserData: 
+        AssetTags:
+        UserData:
       - CollectPath: Packages/cn.etetet.yiuireddot/Assets/GameRes/YIUI/RedDot
         CollectorGUID: 064901bcbdeacd040a95ac689b59f03b
         CollectorType: 0
         AddressRuleName: AddressByFileName
         PackRuleName: PackDirectory
         FilterRuleName: YIUIFilterRule
-        AssetTags: 
-        UserData: 
+        AssetTags:
+        UserData:
       - CollectPath: Packages/cn.etetet.yiuireddot/Assets/GameRes/RedDot
         CollectorGUID: 482fe48fe3ff5de42a40efdbc9e4d9f4
         CollectorType: 0
         AddressRuleName: AddressByFileName
         PackRuleName: PackDirectory
         FilterRuleName: CollectAll
-        AssetTags: 
-        UserData: 
+        AssetTags:
+        UserData:
       - CollectPath: Packages/cn.etetet.yiuitips/Assets/GameRes/YIUI/Tips
         CollectorGUID: cb1c91773e8a26749a29d3d8d2283b09
         CollectorType: 0
         AddressRuleName: AddressByFileName
         PackRuleName: PackDirectory
         FilterRuleName: YIUIFilterRule
-        AssetTags: 
-        UserData: 
+        AssetTags:
+        UserData:
       - CollectPath: Packages/cn.etetet.statesync/Assets/GameRes/YIUI
         CollectorGUID: 38aff9b4b3f3ca0459417ed8f1416685
         CollectorType: 0
         AddressRuleName: AddressByFileName
         PackRuleName: PackDirectory
         FilterRuleName: YIUIFilterRule
-        AssetTags: 
-        UserData: 
+        AssetTags:
+        UserData:
+      - CollectPath: Packages/cn.etetet.crawlers/Assets/GameRes/YIUI
+        CollectorGUID: ac025f3eaa97421c858a3dfdb159c4cf
+        CollectorType: 0
+        AddressRuleName: AddressByFileName
+        PackRuleName: PackDirectory
+        FilterRuleName: CollectAll
+        AssetTags:
+        UserData:
       - CollectPath: Packages/cn.etetet.yiui3ddisplay/Assets/GameRes/YIUI
         CollectorGUID: fc254c93445b7b044924c9b531f8e1a2
         CollectorType: 0
         AddressRuleName: AddressByFileName
         PackRuleName: PackDirectory
         FilterRuleName: CollectPrefab
-        AssetTags: 
-        UserData: 
+        AssetTags:
+        UserData:
       - CollectPath: Packages/cn.etetet.yiuiloopscrollrectasync/Assets/GameRes/YIUI/LoopScrollRectDemo
         CollectorGUID: 9881c6d802eddfa46a3521cc088d1ba2
         CollectorType: 0
         AddressRuleName: AddressByFileName
         PackRuleName: PackDirectory
         FilterRuleName: CollectAll
-        AssetTags: 
-        UserData: 
+        AssetTags:
+        UserData:
       - CollectPath: Packages/cn.etetet.yiuiframework/Assets/GameRes/YIUI/YIUI
         CollectorGUID: 390e2414befd53e4e83c786dc51e17eb
         CollectorType: 0
         AddressRuleName: AddressByFileName
         PackRuleName: PackDirectory
         FilterRuleName: CollectAll
-        AssetTags: 
-        UserData: 
+        AssetTags:
+        UserData:
       - CollectPath: Assets/GameRes/YIUI/YIUISettings/YIUIConstAsset.txt
         CollectorGUID: 0e1c18410eb58524b8d983b5f0a0fd5e
         CollectorType: 0
         AddressRuleName: AddressByFileName
         PackRuleName: PackDirectory
         FilterRuleName: CollectAll
-        AssetTags: 
-        UserData: 
+        AssetTags:
+        UserData:
       - CollectPath: Assets/GameRes/YIUI/YIUISettings/YIUIAtlasData.asset
         CollectorGUID: 42863e71f2c2f30478ac9c87ca48bcae
         CollectorType: 0
         AddressRuleName: AddressByFileName
         PackRuleName: PackDirectory
         FilterRuleName: CollectAll
-        AssetTags: 
-        UserData: 
+        AssetTags:
+        UserData:
     - GroupName: Recast
-      GroupDesc: 
-      AssetTags: 
+      GroupDesc:
+      AssetTags:
       ActiveRuleName: EnableGroup
       Collectors:
       - CollectPath: Packages/cn.etetet.map/Bundles/Recast
@@ -172,11 +180,11 @@ MonoBehaviour:
         AddressRuleName: AddressByFolderAndFileName
         PackRuleName: PackSeparately
         FilterRuleName: CollectAll
-        AssetTags: 
-        UserData: 
+        AssetTags:
+        UserData:
     - GroupName: Sprites
       GroupDesc: "\u56FE\u7247 \u4E00\u628A\u68AD"
-      AssetTags: 
+      AssetTags:
       ActiveRuleName: EnableGroup
       Collectors:
       - CollectPath: Packages/cn.etetet.statesync/Bundles/Sprites
@@ -185,11 +193,11 @@ MonoBehaviour:
         AddressRuleName: AddressByFileName
         PackRuleName: PackDirectory
         FilterRuleName: CollectAll
-        AssetTags: 
-        UserData: 
+        AssetTags:
+        UserData:
     - GroupName: Effect
-      GroupDesc: 
-      AssetTags: 
+      GroupDesc:
+      AssetTags:
       ActiveRuleName: EnableGroup
       Collectors:
       - CollectPath: Packages/cn.etetet.statesync/Bundles/Effect
@@ -198,11 +206,11 @@ MonoBehaviour:
         AddressRuleName: AddressByFileName
         PackRuleName: PackSeparately
         FilterRuleName: CollectPrefab
-        AssetTags: 
-        UserData: 
+        AssetTags:
+        UserData:
     - GroupName: SpellIndicator
-      GroupDesc: 
-      AssetTags: 
+      GroupDesc:
+      AssetTags:
       ActiveRuleName: EnableGroup
       Collectors:
       - CollectPath: Packages/cn.etetet.statesync/Bundles/SpellIndicator
@@ -211,5 +219,5 @@ MonoBehaviour:
         AddressRuleName: AddressByFileName
         PackRuleName: PackDirectory
         FilterRuleName: CollectAll
-        AssetTags: 
-        UserData: 
+        AssetTags:
+        UserData:

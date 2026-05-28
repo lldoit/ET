@@ -116,6 +116,20 @@
         "cn.etetet.memorypack": "1.10.0"
       }
     },
+    "cn.etetet.crawlers": {
+      "version": "file:cn.etetet.crawlers",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "cn.etetet.core": "4.0.0",
+        "cn.etetet.config": "4.0.0",
+        "cn.etetet.yiuiframework": "4.0.0",
+        "cn.etetet.yiuiinvoke": "4.0.0",
+        "cn.etetet.statesync": "4.0.0",
+        "cn.etetet.map": "4.0.0",
+        "cn.etetet.yooassets": "4.0.0"
+      }
+    },
     "cn.etetet.db": {
       "version": "file:cn.etetet.db",
       "depth": 0,

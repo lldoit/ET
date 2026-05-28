@@ -46,10 +46,33 @@ namespace ET.Client
         [YIUIInvoke(StagePanelComponent.OnEventEnterMapInvoke)]
         private static async ETTask OnEventEnterMapInvoke(this StagePanelComponent self)
         {
-            EntityRef<StagePanelComponent> selfRef = self;
-            await EnterMapHelper.EnterMapAsync(self.Root());
-            self = selfRef;
-            await self.UIPanel.CloseAsync();
+            Scene root = self.Root();
+            CrawlerBattleStageConfig stageConfig = GetFirstCrawlerBattleStageConfig(self);
+            if (stageConfig == null)
+            {
+                Log.Error("Crawlers 关卡配置为空，无法进入战斗");
+                return;
+            }
+
+            await EventSystem.Instance.PublishAsync(root, new EnterStageBattle
+            {
+                StageId = stageConfig.Id,
+                BattleType = StageBattleType.Crawlers
+            });
+        }
+
+        private static CrawlerBattleStageConfig GetFirstCrawlerBattleStageConfig(this StagePanelComponent self)
+        {
+            CrawlerBattleStageConfig firstConfig = null;
+            foreach (CrawlerBattleStageConfig config in self.Fiber().GetSingleton<CrawlerBattleStageConfigCategory>().GetAll().Values)
+            {
+                if (firstConfig == null || config.Id < firstConfig.Id)
+                {
+                    firstConfig = config;
+                }
+            }
+
+            return firstConfig;
         }
         #endregion YIUIEvent结束
     }

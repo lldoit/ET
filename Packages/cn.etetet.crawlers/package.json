@@ -1,0 +1,28 @@
+{
+  "name": "cn.etetet.crawlers",
+  "displayName": "ET.Crawlers",
+  "version": "0.1.0",
+  "unity": "2022.3",
+  "description": "类 Vampire Crawlers 的第一人称卡牌战斗原型包，包含战斗规则核心与手牌 UI 原型组件",
+  "author": {
+    "name": "ET Framework",
+    "url": "https://github.com/egametang/ET"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/egametang/ET"
+  },
+  "dependencies": {
+    "cn.etetet.core": "4.0.0",
+    "cn.etetet.config": "4.0.0",
+    "cn.etetet.yiuiframework": "4.0.0",
+    "cn.etetet.yiuiinvoke": "4.0.0",
+    "cn.etetet.statesync": "4.0.0",
+    "cn.etetet.map": "4.0.0",
+    "cn.etetet.yooassets": "4.0.0"
+  },
+  "relatedPackages": {},
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/@ET-Packages"
+  }
+}
