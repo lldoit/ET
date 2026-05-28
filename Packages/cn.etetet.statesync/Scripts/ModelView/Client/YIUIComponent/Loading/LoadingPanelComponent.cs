@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using YIUIFramework;
 using System.Collections.Generic;
@@ -6,12 +6,12 @@ using System.Collections.Generic;
 namespace ET.Client
 {
     /// <summary>
-    /// Author  YIUI
-    /// Date    2024.10.28
+    /// Author  LL
+    /// Date    2026.1.7
     /// Desc
     /// </summary>
     public partial class LoadingPanelComponent : Entity
     {
-
+        public ETCancellationToken LoadingAnimationToken;
     }
 }
