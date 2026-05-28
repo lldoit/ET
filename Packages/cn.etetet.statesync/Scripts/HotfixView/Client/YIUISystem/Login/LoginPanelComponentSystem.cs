@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 namespace ET.Client
 {
+    [FriendOf(typeof(LoginPanelComponent))]
     public static partial class LoginPanelComponentSystem
     {
         [EntitySystem]
@@ -29,9 +30,11 @@ namespace ET.Client
         [YIUIInvoke(LoginPanelComponent.OnEventLoginInvoke)]
         private static async ETTask OnEventLoginInvoke(this LoginPanelComponent self)
         {
-            Log.Info($"登录");
             GlobalComponent globalComponent = self.Root().GetComponent<GlobalComponent>();
-            await LoginHelper.Login(self.Root(), globalComponent.GlobalConfig.Address, self.u_ComAccount.text, self.u_ComPassword.text);
+            await LoginHelper.Login(self.Root(),
+                globalComponent.GlobalConfig.Address,
+                "",
+                "");
         }
 
         #endregion YIUIEvent结束
