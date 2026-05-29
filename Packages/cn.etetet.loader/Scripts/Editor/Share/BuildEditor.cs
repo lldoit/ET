@@ -15,6 +15,18 @@ namespace ET
         WebGL
     }
 
+    /// <summary>
+    /// ET菜单顺序。
+    /// </summary>
+    public static class ETMenuItemPriority
+    {
+        public const int BuildTool = 1001;
+        public const int ChangeDefine = 1002;
+        public const int Compile = 1003;
+        public const int Reload = 1004;
+        public const int NavMesh = 1005;
+        public const int ServerTools = 1006;
+    }
 
     public class BuildEditor : EditorWindow
     {
@@ -33,7 +45,7 @@ namespace ET
 
         private void OnEnable()
         {
-            globalConfig = AssetDatabase.LoadAssetAtPath<GlobalConfig>("Packages/cn.etetet.loader/Resources/GlobalConfig.asset");
+            globalConfig = AssetDatabase.LoadAssetAtPath<GlobalConfig>("Packages/com.etetet.init/Resources/GlobalConfig.asset");
             yooConfig = AssetDatabase.LoadAssetAtPath<YooConfig>("Packages/cn.etetet.yooassets/YooConfig.asset");
 
 #if UNITY_ANDROID
