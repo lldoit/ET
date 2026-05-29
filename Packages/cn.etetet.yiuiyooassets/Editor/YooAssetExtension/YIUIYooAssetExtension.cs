@@ -151,4 +151,22 @@ namespace YooAsset.Editor
             return true;
         }
     }
+
+    /// <summary>
+    /// 收集预制体、图集和没有纳入图集的图片
+    /// </summary>
+    [DisplayName("YIUI_预制体+图集+没有图集的图片")]
+    public class YIUIFilterRule_PrefabAtlasNoAtlasSprite : IFilterRule
+    {
+        private readonly YIUIFilterRule_Prefab m_PrefabRule = new();
+        private readonly YIUIFilterRule_Atlas m_AtlasRule = new();
+        private readonly YIUIFilterRule_NoAtlas_Sprite m_NoAtlasSpriteRule = new();
+
+        public bool IsCollectAsset(FilterRuleData data)
+        {
+            return m_PrefabRule.IsCollectAsset(data)
+                   || m_AtlasRule.IsCollectAsset(data)
+                   || m_NoAtlasSpriteRule.IsCollectAsset(data);
+        }
+    }
 }

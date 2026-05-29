@@ -118,7 +118,7 @@ MonoBehaviour:
         CollectorType: 0
         AddressRuleName: AddressByFileName
         PackRuleName: PackDirectory
-        FilterRuleName: YIUIFilterRule
+        FilterRuleName: YIUIFilterRule_PrefabAtlasNoAtlasSprite
         AssetTags:
         UserData:
       - CollectPath: Packages/cn.etetet.crawlers/Assets/GameRes/YIUI
@@ -126,7 +126,7 @@ MonoBehaviour:
         CollectorType: 0
         AddressRuleName: AddressByFileName
         PackRuleName: PackDirectory
-        FilterRuleName: CollectAll
+        FilterRuleName: YIUIFilterRule_PrefabAtlasNoAtlasSprite
         AssetTags:
         UserData:
       - CollectPath: Packages/cn.etetet.yiui3ddisplay/Assets/GameRes/YIUI
@@ -215,6 +215,19 @@ MonoBehaviour:
       Collectors:
       - CollectPath: Packages/cn.etetet.statesync/Bundles/SpellIndicator
         CollectorGUID: a49841fa1f1fe6c4da820cd4bd4e1061
+        CollectorType: 0
+        AddressRuleName: AddressByFileName
+        PackRuleName: PackDirectory
+        FilterRuleName: CollectAll
+        AssetTags:
+        UserData:
+    - GroupName: I2
+      GroupDesc:
+      AssetTags:
+      ActiveRuleName: EnableGroup
+      Collectors:
+      - CollectPath: Packages/cn.etetet.yiuilocalization/Assets/GameRes/I2Localization
+        CollectorGUID: c4920432a4d094241a7ac5e7736f1313
         CollectorType: 0
         AddressRuleName: AddressByFileName
         PackRuleName: PackDirectory
