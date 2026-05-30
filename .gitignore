@@ -62,3 +62,11 @@ MainPackage.txt
 .omx/
 docs/
 .worktrees/
+.specstory/
+
+/Assets/Screenshots
+/Assets/Screenshots.meta
+.cursorindexingignore
+/Assets/Art/.DS_Store
+/Assets/Art/Layer Lab/
+/Assets/Art/Layer Lab.meta
