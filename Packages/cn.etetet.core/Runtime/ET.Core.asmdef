@@ -2,7 +2,7 @@
     "name": "ET.Core",
     "rootNamespace": "ET",
     "references": [
-        "ET.MemoryPack"
+        "Nino.Core"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

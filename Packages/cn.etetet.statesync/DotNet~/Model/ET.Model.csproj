@@ -1,113 +1,106 @@
-<Project Sdk="Microsoft.NET.Sdk">    
-    <PropertyGroup>
-        <TargetFramework>net10.0</TargetFramework>
-        <RootNamespace>ET</RootNamespace>
-        <LangVersion>default</LangVersion>
-        <AssemblyName>ET.Model</AssemblyName>
-        <Configurations>Debug;Release</Configurations>
-        <Platforms>AnyCPU</Platforms>
-    </PropertyGroup>
-    <PropertyGroup>
-        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-        <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
-    </PropertyGroup>
-    <PropertyGroup>
-        <ETRootDir>$([MSBuild]::EnsureTrailingSlash($([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\..\..\' ))))</ETRootDir>
-        <ETRootDirForPwsh>$(ETRootDir).</ETRootDirForPwsh>
-        <MainPackageFile>$(ETRootDir)MainPackage.txt</MainPackageFile>
-        <MainPackageDesignTimeProps>$(MSBuildProjectDirectory)/$(BaseIntermediateOutputPath)ET.Model.MainPackage.g.props</MainPackageDesignTimeProps>
-    </PropertyGroup>
-    
-    <Import Project="$(MainPackageDesignTimeProps)" Condition="'$(DesignTimeBuild)' == 'true' and Exists('$(MainPackageDesignTimeProps)')" />
-    
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
-        <DefineConstants>DOTNET</DefineConstants>
-        <OutputPath>$(ETRootDir)Bin</OutputPath> 
-        <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <Optimize>false</Optimize>
-        <NoWarn>NU1903;NU1902</NoWarn>
-    </PropertyGroup>
-    <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'"> 
-        <DefineConstants>DOTNET</DefineConstants>
-        <OutputPath>$(ETRootDir)Bin</OutputPath>
-        <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <NoWarn>NU1903;NU1902</NoWarn>      
-        <Optimize>true</Optimize>
-        <DebugType>full</DebugType>
-        <DebugSymbols>true</DebugSymbols>
-        <Deterministic>false</Deterministic>
-    </PropertyGroup>
-
-    <Target Name="GenerateDesignTimePackageProps" BeforeTargets="BeforeBuild" Inputs="$(MainPackageFile)" Outputs="$(MainPackageDesignTimeProps)" Condition="Exists('$(MainPackageFile)')">
-        <Exec Command="pwsh -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildThisFileDirectory)Generate-ETModelMainPackageProps.ps1&quot; -RootDir &quot;$(ETRootDirForPwsh)&quot; -OutputPath &quot;$(MainPackageDesignTimeProps)&quot;" />
-    </Target>
-
-    <Target Name="AddPackageCompileItems" BeforeTargets="BeforeBuild;BeforeResolveReferences;CoreCompile">
-        <ReadLinesFromFile File="$(MainPackageFile)">
-            <Output TaskParameter="Lines" ItemName="PackageNames" />
-        </ReadLinesFromFile>
-        <ItemGroup>
-            <PackageNames Remove="@(PackageNames)" Condition="'%(Identity)' == ''" />
-        </ItemGroup>
-        <ItemGroup>
-            <ModelShareGlobs Include="@(PackageNames->'$(ETRootDir)Packages/%(Identity)/Scripts/Model/Share/**/*.cs')" />
-            <ModelServerGlobs Include="@(PackageNames->'$(ETRootDir)Packages/%(Identity)/Scripts/Model/Server/**/*.cs')" />
-            <ModelClientGlobs Include="@(PackageNames->'$(ETRootDir)Packages/%(Identity)/Scripts/Model/Client/**/*.cs')" />
-            <CodeModeModelGlobs Include="@(PackageNames->'$(ETRootDir)Packages/%(Identity)/CodeMode/Model/Server/**/*.cs')" />
-        </ItemGroup>
-        <CreateItem Include="@(ModelShareGlobs)">
-            <Output TaskParameter="Include" ItemName="Compile" />
-        </CreateItem>
-        <CreateItem Include="@(ModelServerGlobs)">
-            <Output TaskParameter="Include" ItemName="Compile" />
-        </CreateItem>
-        <CreateItem Include="@(ModelClientGlobs)">
-            <Output TaskParameter="Include" ItemName="Compile" />
-        </CreateItem>
-        <CreateItem Include="@(CodeModeModelGlobs)">
-            <Output TaskParameter="Include" ItemName="Compile" />
-        </CreateItem>
-    </Target>
-
-    <Target Name="AddTestCompileItems" BeforeTargets="BeforeBuild;BeforeResolveReferences;CoreCompile" Condition="'$(Configuration)'=='Debug'">
-        <ReadLinesFromFile File="$(MainPackageFile)">
-            <Output TaskParameter="Lines" ItemName="TestPackageNames" />
-        </ReadLinesFromFile>
-        <ItemGroup>
-            <TestPackageNames Remove="@(TestPackageNames)" Condition="'%(Identity)' == ''" />
-            <ModelTestGlobs Include="@(TestPackageNames->'$(ETRootDir)Packages/%(Identity)/Scripts/Model/Test/**/*.cs')" />
-        </ItemGroup>
-        <CreateItem Include="@(ModelTestGlobs)">
-            <Output TaskParameter="Include" ItemName="Compile" />
-        </CreateItem>
-    </Target>
-    
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <RootNamespace>ET</RootNamespace>
+    <LangVersion>default</LangVersion>
+    <AssemblyName>ET.Model</AssemblyName>
+    <Configurations>Debug;Release</Configurations>
+    <Platforms>AnyCPU</Platforms>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ETRootDir>$([MSBuild]::EnsureTrailingSlash($([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\..\..\' ))))</ETRootDir>
+    <ETRootDirForPwsh>$(ETRootDir).</ETRootDirForPwsh>
+    <MainPackageFile>$(ETRootDir)MainPackage.txt</MainPackageFile>
+    <MainPackageDesignTimeProps>$(MSBuildProjectDirectory)/$(BaseIntermediateOutputPath)ET.Model.MainPackage.g.props</MainPackageDesignTimeProps>
+  </PropertyGroup>
+  <Import Project="$(MainPackageDesignTimeProps)" Condition="'$(DesignTimeBuild)' == 'true' and Exists('$(MainPackageDesignTimeProps)')" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <DefineConstants>DOTNET</DefineConstants>
+    <OutputPath>$(ETRootDir)Bin</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Optimize>false</Optimize>
+    <NoWarn>NU1903;NU1902</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DefineConstants>DOTNET</DefineConstants>
+    <OutputPath>$(ETRootDir)Bin</OutputPath>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>NU1903;NU1902</NoWarn>
+    <Optimize>true</Optimize>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <Deterministic>false</Deterministic>
+  </PropertyGroup>
+  <Target Name="GenerateDesignTimePackageProps" BeforeTargets="BeforeBuild" Inputs="$(MainPackageFile)" Outputs="$(MainPackageDesignTimeProps)" Condition="Exists('$(MainPackageFile)')">
+    <Exec Command="pwsh -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildThisFileDirectory)Generate-ETModelMainPackageProps.ps1&quot; -RootDir &quot;$(ETRootDirForPwsh)&quot; -OutputPath &quot;$(MainPackageDesignTimeProps)&quot;" />
+  </Target>
+  <Target Name="AddPackageCompileItems" BeforeTargets="BeforeBuild;BeforeResolveReferences;CoreCompile">
+    <ReadLinesFromFile File="$(MainPackageFile)">
+      <Output TaskParameter="Lines" ItemName="PackageNames" />
+    </ReadLinesFromFile>
     <ItemGroup>
-        <ProjectReference Include="$(ETRootDir)Packages/cn.etetet.memorypack/DotNet~/ET.MemoryPack.Generator/ET.MemoryPack.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-        <ProjectReference Include="$(ETRootDir)Packages/cn.etetet.sourcegenerator/DotNet~/ET.SourceGenerator/ET.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-        <ProjectReference Include="..\..\..\cn.etetet.loader\DotNet~\ET.Loader.csproj" />
-        <ProjectReference Include="..\..\..\cn.etetet.mathematics\DotNet~\ET.Mathematics.csproj" />
+      <PackageNames Remove="@(PackageNames)" Condition="'%(Identity)' == ''" />
     </ItemGroup>
-
     <ItemGroup>
-        <CompilerVisibleProperty Include="DotNetAssembly" />
+      <ModelShareGlobs Include="@(PackageNames-&gt;'$(ETRootDir)Packages/%(Identity)/Scripts/Model/Share/**/*.cs')" />
+      <ModelServerGlobs Include="@(PackageNames-&gt;'$(ETRootDir)Packages/%(Identity)/Scripts/Model/Server/**/*.cs')" />
+      <ModelClientGlobs Include="@(PackageNames-&gt;'$(ETRootDir)Packages/%(Identity)/Scripts/Model/Client/**/*.cs')" />
+      <CodeModeModelGlobs Include="@(PackageNames-&gt;'$(ETRootDir)Packages/%(Identity)/CodeMode/Model/Server/**/*.cs')" />
     </ItemGroup>
-
-	<ItemGroup>
-	<Reference Include="Sirenix.OdinInspector.Attributes">
-	<HintPath>..\..\..\..\Assets\Plugins\Sirenix\Assemblies\Sirenix.OdinInspector.Attributes.dll</HintPath>
-	</Reference>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Folder Include="..\..\..\cn.etetet.transfer\Scripts\Model\Server\">
-	    <Link>Packages\cn.etetet.transfer\Scripts\Model\Server</Link>
-	  </Folder>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <Compile Remove="..\..\..\cn.etetet.transfer\Scripts\Model\Server\Transfer\**" />
-	</ItemGroup>
+    <CreateItem Include="@(ModelShareGlobs)">
+      <Output TaskParameter="Include" ItemName="Compile" />
+    </CreateItem>
+    <CreateItem Include="@(ModelServerGlobs)">
+      <Output TaskParameter="Include" ItemName="Compile" />
+    </CreateItem>
+    <CreateItem Include="@(ModelClientGlobs)">
+      <Output TaskParameter="Include" ItemName="Compile" />
+    </CreateItem>
+    <CreateItem Include="@(CodeModeModelGlobs)">
+      <Output TaskParameter="Include" ItemName="Compile" />
+    </CreateItem>
+  </Target>
+  <Target Name="AddTestCompileItems" BeforeTargets="BeforeBuild;BeforeResolveReferences;CoreCompile" Condition="'$(Configuration)'=='Debug'">
+    <ReadLinesFromFile File="$(MainPackageFile)">
+      <Output TaskParameter="Lines" ItemName="TestPackageNames" />
+    </ReadLinesFromFile>
+    <ItemGroup>
+      <TestPackageNames Remove="@(TestPackageNames)" Condition="'%(Identity)' == ''" />
+      <ModelTestGlobs Include="@(TestPackageNames-&gt;'$(ETRootDir)Packages/%(Identity)/Scripts/Model/Test/**/*.cs')" />
+    </ItemGroup>
+    <CreateItem Include="@(ModelTestGlobs)">
+      <Output TaskParameter="Include" ItemName="Compile" />
+    </CreateItem>
+  </Target>
+  <ItemGroup>
+    <ProjectReference Include="$(ETRootDir)Packages/cn.etetet.sourcegenerator/DotNet~/ET.SourceGenerator/ET.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <ProjectReference Include="..\..\..\cn.etetet.loader\DotNet~\ET.Loader.csproj" />
+    <ProjectReference Include="..\..\..\cn.etetet.mathematics\DotNet~\ET.Mathematics.csproj" />
+    <Analyzer Include="$(ETRootDir)Packages/cn.etetet.yiuinino/Runtime/Nino.Generator.dll" />
+    <Reference Include="Nino.Core">
+      <HintPath>$(ETRootDir)Packages/cn.etetet.yiuinino/Runtime/Nino.Core.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <CompilerVisibleProperty Include="DotNetAssembly" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Sirenix.OdinInspector.Attributes">
+      <HintPath>..\..\..\..\Assets\Plugins\Sirenix\Assemblies\Sirenix.OdinInspector.Attributes.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="..\..\..\cn.etetet.transfer\Scripts\Model\Server\">
+      <Link>Packages\cn.etetet.transfer\Scripts\Model\Server</Link>
+    </Folder>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Remove="..\..\..\cn.etetet.transfer\Scripts\Model\Server\Transfer\**" />
+  </ItemGroup>
 </Project>

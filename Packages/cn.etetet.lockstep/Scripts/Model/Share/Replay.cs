@@ -1,18 +1,18 @@
 using System.Collections.Generic;
-using MemoryPack;
+using Nino.Core;
 
 namespace ET
 {
-    [MemoryPackable]
+    [NinoType(false)]
     public partial class Replay: Object
     {
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public List<LockStepUnitInfo> UnitInfos;
         
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public List<OneFrameInputs> FrameInputs = new();
         
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public List<byte[]> Snapshots = new();
     }
 }

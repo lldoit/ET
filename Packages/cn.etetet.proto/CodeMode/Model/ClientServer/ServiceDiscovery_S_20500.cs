@@ -1,9 +1,9 @@
-using MemoryPack;
+using Nino.Core;
 using System.Collections.Generic;
 
 namespace ET
 {
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.ServiceRegisterRequest)]
     [ResponseType(nameof(ServiceRegisterResponse))]
     public partial class ServiceRegisterRequest : MessageObject, IRequest
@@ -13,16 +13,16 @@ namespace ET
             return ObjectPool.Fetch<ServiceRegisterRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string SceneName { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public ActorId ActorId { get; set; }
         /// <summary>
         /// new()
         /// </summary>
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public StringKV Metadata { get; set; } = new();
         public override void Dispose()
         {
@@ -30,7 +30,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.ServiceRegisterResponse)]
     public partial class ServiceRegisterResponse : MessageObject, IResponse
     {
@@ -39,11 +39,11 @@ namespace ET
             return ObjectPool.Fetch<ServiceRegisterResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
         public override void Dispose()
         {
@@ -51,7 +51,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.ServiceUnregisterRequest)]
     [ResponseType(nameof(ServiceUnregisterResponse))]
     public partial class ServiceUnregisterRequest : MessageObject, IRequest
@@ -61,9 +61,9 @@ namespace ET
             return ObjectPool.Fetch<ServiceUnregisterRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string SceneName { get; set; }
         public override void Dispose()
         {
@@ -71,7 +71,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.ServiceUnregisterResponse)]
     public partial class ServiceUnregisterResponse : MessageObject, IResponse
     {
@@ -80,11 +80,11 @@ namespace ET
             return ObjectPool.Fetch<ServiceUnregisterResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
         public override void Dispose()
         {
@@ -92,7 +92,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.ServiceHeartbeatRequest)]
     [ResponseType(nameof(ServiceHeartbeatResponse))]
     public partial class ServiceHeartbeatRequest : MessageObject, IRequest
@@ -102,11 +102,11 @@ namespace ET
             return ObjectPool.Fetch<ServiceHeartbeatRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string SceneName { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public ActorId AgentActorId { get; set; }
         public override void Dispose()
         {
@@ -114,7 +114,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.ServiceHeartbeatResponse)]
     public partial class ServiceHeartbeatResponse : MessageObject, IResponse
     {
@@ -123,11 +123,11 @@ namespace ET
             return ObjectPool.Fetch<ServiceHeartbeatResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
         public override void Dispose()
         {
@@ -135,7 +135,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.ServiceAgentRegisterRequest)]
     [ResponseType(nameof(ServiceAgentRegisterResponse))]
     public partial class ServiceAgentRegisterRequest : MessageObject, IRequest
@@ -145,11 +145,11 @@ namespace ET
             return ObjectPool.Fetch<ServiceAgentRegisterRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public ActorId AgentActorId { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public List<ServiceInfoProto> LocalServices { get; set; } = new();
 
         public override void Dispose()
@@ -158,7 +158,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.ServiceAgentRegisterResponse)]
     public partial class ServiceAgentRegisterResponse : MessageObject, IResponse
     {
@@ -167,13 +167,13 @@ namespace ET
             return ObjectPool.Fetch<ServiceAgentRegisterResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public List<ServiceInfoProto> Services { get; set; } = new();
 
         public override void Dispose()
@@ -182,7 +182,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.ServiceQueryRequest)]
     [ResponseType(nameof(ServiceQueryResponse))]
     public partial class ServiceQueryRequest : MessageObject, IRequest
@@ -192,12 +192,12 @@ namespace ET
             return ObjectPool.Fetch<ServiceQueryRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
         /// <summary>
         /// new()
         /// </summary>
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public StringKV Filter { get; set; } = new();
         public override void Dispose()
         {
@@ -205,7 +205,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.ServiceQueryResponse)]
     public partial class ServiceQueryResponse : MessageObject, IResponse
     {
@@ -214,13 +214,13 @@ namespace ET
             return ObjectPool.Fetch<ServiceQueryResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public List<ServiceInfoProto> Services { get; set; } = new();
 
         public override void Dispose()
@@ -229,7 +229,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.ServiceSubscribeRequest)]
     [ResponseType(nameof(ServiceSubscribeResponse))]
     public partial class ServiceSubscribeRequest : MessageObject, IRequest
@@ -239,18 +239,18 @@ namespace ET
             return ObjectPool.Fetch<ServiceSubscribeRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string SceneName { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string FilterName { get; set; }
         /// <summary>
         /// new()
         /// </summary>
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public StringKV FilterMetadata { get; set; } = new();
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public ActorId SubscriberActorId { get; set; }
         public override void Dispose()
         {
@@ -258,7 +258,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.ServiceSubscribeResponse)]
     public partial class ServiceSubscribeResponse : MessageObject, IResponse
     {
@@ -267,13 +267,13 @@ namespace ET
             return ObjectPool.Fetch<ServiceSubscribeResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public List<ServiceInfoProto> Services { get; set; } = new();
 
         public override void Dispose()
@@ -282,7 +282,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.ServiceUnsubscribeRequest)]
     [ResponseType(nameof(ServiceUnsubscribeResponse))]
     public partial class ServiceUnsubscribeRequest : MessageObject, IRequest
@@ -292,9 +292,9 @@ namespace ET
             return ObjectPool.Fetch<ServiceUnsubscribeRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string SceneName { get; set; }
         public override void Dispose()
         {
@@ -302,7 +302,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.ServiceUnsubscribeResponse)]
     public partial class ServiceUnsubscribeResponse : MessageObject, IResponse
     {
@@ -311,11 +311,11 @@ namespace ET
             return ObjectPool.Fetch<ServiceUnsubscribeResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
         public override void Dispose()
         {
@@ -324,7 +324,7 @@ namespace ET
     }
 
     // 服务变更通知消息
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.ServiceChangeNotification)]
     public partial class ServiceChangeNotification : MessageObject, IMessage
     {
@@ -336,13 +336,13 @@ namespace ET
         /// <summary>
         /// 1=添加, 2=删除, 3=主机切换
         /// </summary>
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int ChangeType { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public long Epoch { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public ActorId MasterActorId { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public List<ServiceInfoProto> ServiceInfo { get; set; } = new();
 
         public override void Dispose()
@@ -352,7 +352,7 @@ namespace ET
     }
 
     // Proxy销毁时单向通知Agent执行注销
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.ServiceProxyDestroyUnregisterMessage)]
     public partial class ServiceProxyDestroyUnregisterMessage : MessageObject, IMessage
     {
@@ -361,7 +361,7 @@ namespace ET
             return ObjectPool.Fetch<ServiceProxyDestroyUnregisterMessage>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public string SceneName { get; set; }
         public override void Dispose()
         {
@@ -370,7 +370,7 @@ namespace ET
     }
 
     // 服务信息Proto定义
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.ServiceInfoProto)]
     public partial class ServiceInfoProto : MessageObject
     {
@@ -379,14 +379,14 @@ namespace ET
             return ObjectPool.Fetch<ServiceInfoProto>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public string SceneName { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public ActorId ActorId { get; set; }
         /// <summary>
         /// new()
         /// </summary>
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public StringKV Metadata { get; set; } = new();
         public override void Dispose()
         {

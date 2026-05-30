@@ -3,7 +3,7 @@
   "displayName": "ET.LockStep",
   "version": "3.0.2",
   "unity": "2022.3",
-  "description": "\u9884\u6d4b\u56de\u6eda\u7684\u5e27\u540c\u6b65demo",
+  "description": "预测回滚的帧同步demo",
   "author": {
     "name": "tanghai",
     "url": "https://github.com/egametang/ET"
@@ -30,7 +30,6 @@
     "cn.etetet.proto": "3.0.2",
     "cn.etetet.sourcegenerator": "3.0.1",
     "cn.etetet.yooassets": "2.3.6",
-    "cn.etetet.memorypack": "1.10.1",
     "cn.etetet.startconfig": "3.0.0",
     "cn.etetet.yiuiframework": "4.0.0",
     "cn.etetet.yiuitips": "4.0.0",
@@ -40,7 +39,8 @@
     "cn.etetet.test": "4.0.0",
     "cn.etetet.servicediscovery": "4.0.0",
     "cn.etetet.yiuiloopscrollrectasync": "4.0.0",
-    "cn.etetet.yiuireddot": "4.0.0"
+    "cn.etetet.yiuireddot": "4.0.0",
+    "cn.etetet.yiuinino": "0.0.3"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com/@ET-Packages"

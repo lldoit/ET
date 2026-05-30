@@ -1,9 +1,9 @@
-using MemoryPack;
+using Nino.Core;
 using System.Collections.Generic;
 
 namespace ET
 {
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.MoveInfo)]
     public partial class MoveInfo : MessageObject
     {
@@ -12,12 +12,12 @@ namespace ET
             return ObjectPool.Fetch<MoveInfo>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public List<Unity.Mathematics.float3> Points { get; set; } = new();
 
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public Unity.Mathematics.quaternion Rotation { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int TurnSpeed { get; set; }
         public override void Dispose()
         {
@@ -25,7 +25,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.C2M_PathfindingResult)]
     public partial class C2M_PathfindingResult : MessageObject, ILocationMessage
     {
@@ -34,9 +34,9 @@ namespace ET
             return ObjectPool.Fetch<C2M_PathfindingResult>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public Unity.Mathematics.float3 Position { get; set; }
         public override void Dispose()
         {
@@ -44,7 +44,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.C2M_Stop)]
     public partial class C2M_Stop : MessageObject, ILocationMessage
     {
@@ -53,7 +53,7 @@ namespace ET
             return ObjectPool.Fetch<C2M_Stop>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
         public override void Dispose()
         {
@@ -61,7 +61,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.M2C_PathfindingResult)]
     public partial class M2C_PathfindingResult : MessageObject, ICurrentMessage
     {
@@ -70,11 +70,11 @@ namespace ET
             return ObjectPool.Fetch<M2C_PathfindingResult>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public long Id { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public Unity.Mathematics.float3 Position { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public List<Unity.Mathematics.float3> Points { get; set; } = new();
 
         public override void Dispose()
@@ -83,7 +83,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.M2C_Stop)]
     public partial class M2C_Stop : MessageObject, ICurrentMessage
     {
@@ -92,13 +92,13 @@ namespace ET
             return ObjectPool.Fetch<M2C_Stop>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int Error { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public long Id { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public Unity.Mathematics.float3 Position { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public Unity.Mathematics.quaternion Rotation { get; set; }
         public override void Dispose()
         {
@@ -106,7 +106,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.M2C_Turn)]
     public partial class M2C_Turn : MessageObject, ICurrentMessage
     {
@@ -115,11 +115,11 @@ namespace ET
             return ObjectPool.Fetch<M2C_Turn>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public long UnitId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public Unity.Mathematics.quaternion Rotation { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int TurnTime { get; set; }
         public override void Dispose()
         {

@@ -1,9 +1,9 @@
-using MemoryPack;
+using Nino.Core;
 using System.Collections.Generic;
 
 namespace ET
 {
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.C2M_TransferMap)]
     [ResponseType(nameof(M2C_TransferMap))]
     public partial class C2M_TransferMap : MessageObject, ILocationRequest
@@ -13,7 +13,7 @@ namespace ET
             return ObjectPool.Fetch<C2M_TransferMap>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
         public override void Dispose()
         {
@@ -21,7 +21,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.M2C_TransferMap)]
     public partial class M2C_TransferMap : MessageObject, ILocationResponse
     {
@@ -30,11 +30,11 @@ namespace ET
             return ObjectPool.Fetch<M2C_TransferMap>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
         public override void Dispose()
         {

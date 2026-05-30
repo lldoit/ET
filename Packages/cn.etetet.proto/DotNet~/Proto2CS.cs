@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -137,7 +137,7 @@ namespace ET
             string s = File.ReadAllText(proto);
 
             StringBuilder sb = new();
-            sb.Append("using MemoryPack;\n");
+            sb.Append("using Nino.Core;\n");
             sb.Append("using System.Collections.Generic;\n\n");
             sb.Append($"namespace ET\n");
             sb.Append("{\n");
@@ -196,7 +196,7 @@ namespace ET
 
                     msgOpcode.Add(new OpcodeInfo() { Name = msgName, Opcode = ++startOpcode });
 
-                    sb.Append($"\t[MemoryPackable]\n");
+                    sb.Append($"\t[NinoType(false)]\n");
                     sb.Append($"\t[Message(Opcode.{msgName})]\n");
                     if (!string.IsNullOrEmpty(responseType))
                     {
@@ -354,7 +354,7 @@ namespace ET
             int n = int.Parse(ss[2]);
 
             sb.Append("\t\t[MongoDB.Bson.Serialization.Attributes.BsonDictionaryOptions(MongoDB.Bson.Serialization.Options.DictionaryRepresentation.ArrayOfArrays)]\n");
-            sb.Append($"\t\t[MemoryPackOrder({n - 1})]\n");
+            sb.Append($"\t\t[NinoMember({n - 1})]\n");
             sb.Append($"\t\tpublic Dictionary<{keyType}, {valueType}> {v} {{ get; set; }} = new();\n");
 
             sbDispose.Append($"this.{v}.Clear();\n\t\t\t");
@@ -372,7 +372,7 @@ namespace ET
                 string name = ss[2];
                 int n = int.Parse(ss[4]);
 
-                sb.Append($"\t\t[MemoryPackOrder({n - 1})]\n");
+                sb.Append($"\t\t[NinoMember({n - 1})]\n");
                 sb.Append($"\t\tpublic List<{type}> {name} {{ get; set; }} = new();\n\n");
 
                 sbDispose.Append($"this.{name}.Clear();\n\t\t\t");
@@ -412,7 +412,7 @@ namespace ET
                 int n = int.Parse(ss[3]);
                 string typeCs = ConvertType(type);
 
-                sb.Append($"\t\t[MemoryPackOrder({n - 1})]\n");
+                sb.Append($"\t\t[NinoMember({n - 1})]\n");
                 sb.Append($"\t\tpublic {typeCs} {name} {{ get; set; }}");
                 
                 if (oldline.Contains("new()"))

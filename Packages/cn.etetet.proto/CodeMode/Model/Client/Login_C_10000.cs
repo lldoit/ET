@@ -1,9 +1,9 @@
-using MemoryPack;
+using Nino.Core;
 using System.Collections.Generic;
 
 namespace ET
 {
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.Main2NetClient_Login)]
     [ResponseType(nameof(NetClient2Main_Login))]
     public partial class Main2NetClient_Login : MessageObject, IRequest
@@ -13,21 +13,21 @@ namespace ET
             return ObjectPool.Fetch<Main2NetClient_Login>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public long OwnerFiberId { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Address { get; set; }
         /// <summary>
         /// 账号
         /// </summary>
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string Account { get; set; }
         /// <summary>
         /// 密码
         /// </summary>
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public string Password { get; set; }
         public override void Dispose()
         {
@@ -35,7 +35,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.NetClient2Main_Login)]
     public partial class NetClient2Main_Login : MessageObject, IResponse
     {
@@ -44,13 +44,13 @@ namespace ET
             return ObjectPool.Fetch<NetClient2Main_Login>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public long PlayerId { get; set; }
         public override void Dispose()
         {
@@ -58,7 +58,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.C2G_Ping)]
     [ResponseType(nameof(G2C_Ping))]
     public partial class C2G_Ping : MessageObject, ISessionRequest
@@ -68,7 +68,7 @@ namespace ET
             return ObjectPool.Fetch<C2G_Ping>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
         public override void Dispose()
         {
@@ -76,7 +76,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.G2C_Ping)]
     public partial class G2C_Ping : MessageObject, ISessionResponse
     {
@@ -85,13 +85,13 @@ namespace ET
             return ObjectPool.Fetch<G2C_Ping>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public long Time { get; set; }
         public override void Dispose()
         {
@@ -99,7 +99,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.C2R_Login)]
     [ResponseType(nameof(R2C_Login))]
     public partial class C2R_Login : MessageObject, ISessionRequest
@@ -109,17 +109,17 @@ namespace ET
             return ObjectPool.Fetch<C2R_Login>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
         /// <summary>
         /// 帐号
         /// </summary>
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string Account { get; set; }
         /// <summary>
         /// 密码
         /// </summary>
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Password { get; set; }
         public override void Dispose()
         {
@@ -127,7 +127,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.R2C_Login)]
     public partial class R2C_Login : MessageObject, ISessionResponse
     {
@@ -136,17 +136,17 @@ namespace ET
             return ObjectPool.Fetch<R2C_Login>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string Address { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public long Key { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public long GateId { get; set; }
         public override void Dispose()
         {
@@ -154,7 +154,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.C2G_LoginGate)]
     [ResponseType(nameof(G2C_LoginGate))]
     public partial class C2G_LoginGate : MessageObject, ISessionRequest
@@ -164,14 +164,14 @@ namespace ET
             return ObjectPool.Fetch<C2G_LoginGate>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
         /// <summary>
         /// 帐号
         /// </summary>
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public long Key { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public long GateId { get; set; }
         public override void Dispose()
         {
@@ -179,7 +179,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.G2C_LoginGate)]
     public partial class G2C_LoginGate : MessageObject, ISessionResponse
     {
@@ -188,13 +188,13 @@ namespace ET
             return ObjectPool.Fetch<G2C_LoginGate>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public long PlayerId { get; set; }
         public override void Dispose()
         {
@@ -202,7 +202,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.C2G_Logout)]
     [ResponseType(nameof(G2C_Logout))]
     public partial class C2G_Logout : MessageObject, ISessionRequest
@@ -212,7 +212,7 @@ namespace ET
             return ObjectPool.Fetch<C2G_Logout>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
         public override void Dispose()
         {
@@ -220,7 +220,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.G2C_Logout)]
     public partial class G2C_Logout : MessageObject, ISessionResponse
     {
@@ -229,11 +229,11 @@ namespace ET
             return ObjectPool.Fetch<G2C_Logout>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
         public override void Dispose()
         {
@@ -241,7 +241,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.C2G_EnterMap)]
     [ResponseType(nameof(G2C_EnterMap))]
     public partial class C2G_EnterMap : MessageObject, ISessionRequest
@@ -251,7 +251,7 @@ namespace ET
             return ObjectPool.Fetch<C2G_EnterMap>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
         public override void Dispose()
         {
@@ -259,7 +259,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.G2C_EnterMap)]
     public partial class G2C_EnterMap : MessageObject, ISessionResponse
     {
@@ -268,16 +268,16 @@ namespace ET
             return ObjectPool.Fetch<G2C_EnterMap>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
         /// <summary>
         /// 自己的UnitId
         /// </summary>
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public long MyId { get; set; }
         public override void Dispose()
         {

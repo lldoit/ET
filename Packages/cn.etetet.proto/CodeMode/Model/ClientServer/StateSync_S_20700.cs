@@ -1,9 +1,9 @@
-using MemoryPack;
+using Nino.Core;
 using System.Collections.Generic;
 
 namespace ET
 {
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.M2A_Reload)]
     [ResponseType(nameof(A2M_Reload))]
     public partial class M2A_Reload : MessageObject, IRequest
@@ -13,7 +13,7 @@ namespace ET
             return ObjectPool.Fetch<M2A_Reload>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
         public override void Dispose()
         {
@@ -21,7 +21,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.A2M_Reload)]
     public partial class A2M_Reload : MessageObject, IResponse
     {
@@ -30,11 +30,11 @@ namespace ET
             return ObjectPool.Fetch<A2M_Reload>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
         public override void Dispose()
         {

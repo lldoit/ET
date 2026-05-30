@@ -1,21 +1,20 @@
 using System.Collections;
 using System.Collections.Generic;
-using MemoryPack;
+using Nino.Core;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson.Serialization.Options;
 
 namespace ET
 {
     [EnableClass]
-    [MemoryPackable]
+    [NinoType(false, true)]
     public partial class StringKV : IEnumerable<KeyValuePair<string, string>>
     {
-        [MemoryPackOrder(0)]
-        [MemoryPackInclude]
+        [NinoMember(0)]
         [BsonDictionaryOptions(DictionaryRepresentation.ArrayOfArrays)]
         private Dictionary<string, string> data = new();
 
-        [MemoryPackConstructor]
+        [NinoConstructor]
         public StringKV() { }
 
         public StringKV(StringKV other)

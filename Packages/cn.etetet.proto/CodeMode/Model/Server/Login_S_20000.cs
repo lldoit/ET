@@ -1,9 +1,9 @@
-using MemoryPack;
+using Nino.Core;
 using System.Collections.Generic;
 
 namespace ET
 {
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.R2G_GetLoginKey)]
     [ResponseType(nameof(G2R_GetLoginKey))]
     public partial class R2G_GetLoginKey : MessageObject, IRequest
@@ -13,9 +13,9 @@ namespace ET
             return ObjectPool.Fetch<R2G_GetLoginKey>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string Account { get; set; }
         public override void Dispose()
         {
@@ -23,7 +23,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.G2R_GetLoginKey)]
     public partial class G2R_GetLoginKey : MessageObject, IResponse
     {
@@ -32,15 +32,15 @@ namespace ET
             return ObjectPool.Fetch<G2R_GetLoginKey>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public long Key { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public long GateId { get; set; }
         public override void Dispose()
         {
@@ -48,7 +48,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.G2M_SessionDisconnect)]
     public partial class G2M_SessionDisconnect : MessageObject, ILocationMessage
     {
@@ -57,7 +57,7 @@ namespace ET
             return ObjectPool.Fetch<G2M_SessionDisconnect>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
         public override void Dispose()
         {

@@ -1,9 +1,9 @@
-using MemoryPack;
+using Nino.Core;
 using System.Collections.Generic;
 
 namespace ET
 {
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.RouterSync)]
     public partial class RouterSync : MessageObject
     {
@@ -12,9 +12,9 @@ namespace ET
             return ObjectPool.Fetch<RouterSync>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public uint ConnectId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string Address { get; set; }
         public override void Dispose()
         {
@@ -22,7 +22,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.C2M_Reload)]
     [ResponseType(nameof(M2C_Reload))]
     public partial class C2M_Reload : MessageObject, ISessionRequest
@@ -32,11 +32,11 @@ namespace ET
             return ObjectPool.Fetch<C2M_Reload>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string Account { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Password { get; set; }
         public override void Dispose()
         {
@@ -44,7 +44,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.M2C_Reload)]
     public partial class M2C_Reload : MessageObject, ISessionResponse
     {
@@ -53,11 +53,11 @@ namespace ET
             return ObjectPool.Fetch<M2C_Reload>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
         public override void Dispose()
         {
@@ -65,7 +65,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.G2C_TestHotfixMessage)]
     public partial class G2C_TestHotfixMessage : MessageObject, ISessionMessage
     {
@@ -74,7 +74,7 @@ namespace ET
             return ObjectPool.Fetch<G2C_TestHotfixMessage>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public string Info { get; set; }
         public override void Dispose()
         {
@@ -82,7 +82,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.C2G_Benchmark)]
     [ResponseType(nameof(G2C_Benchmark))]
     public partial class C2G_Benchmark : MessageObject, ISessionRequest
@@ -92,7 +92,7 @@ namespace ET
             return ObjectPool.Fetch<C2G_Benchmark>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
         public override void Dispose()
         {
@@ -100,7 +100,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.G2C_Benchmark)]
     public partial class G2C_Benchmark : MessageObject, ISessionResponse
     {
@@ -109,11 +109,11 @@ namespace ET
             return ObjectPool.Fetch<G2C_Benchmark>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
         public override void Dispose()
         {

@@ -1,9 +1,9 @@
-using MemoryPack;
+using Nino.Core;
 using System.Collections.Generic;
 
 namespace ET
 {
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.G2Map_EnterMap)]
     [ResponseType(nameof(Map2G_EnterMap))]
     public partial class G2Map_EnterMap : MessageObject, IRequest
@@ -13,17 +13,17 @@ namespace ET
             return ObjectPool.Fetch<G2Map_EnterMap>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public long PlayerId { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public ActorId GateActorId { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string MapName { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public long MapId { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public int UnitConfigId { get; set; }
         public override void Dispose()
         {
@@ -31,7 +31,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.Map2G_EnterMap)]
     public partial class Map2G_EnterMap : MessageObject, IResponse
     {
@@ -40,11 +40,11 @@ namespace ET
             return ObjectPool.Fetch<Map2G_EnterMap>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
         public override void Dispose()
         {
@@ -52,7 +52,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.M2M_UnitTransferRequest)]
     [ResponseType(nameof(M2M_UnitTransferResponse))]
     public partial class M2M_UnitTransferRequest : MessageObject, IRequest, IEntityMessage
@@ -62,16 +62,16 @@ namespace ET
             return ObjectPool.Fetch<M2M_UnitTransferRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public ActorId OldActorId { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public byte[] UnitBytes { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public List<byte[]> EntityBytes { get; set; } = new();
 
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public bool ChangeScene { get; set; }
         public override void Dispose()
         {
@@ -79,7 +79,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.M2M_UnitTransferResponse)]
     public partial class M2M_UnitTransferResponse : MessageObject, IResponse
     {
@@ -88,13 +88,13 @@ namespace ET
             return ObjectPool.Fetch<M2M_UnitTransferResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public ActorId NewActorId { get; set; }
         public override void Dispose()
         {

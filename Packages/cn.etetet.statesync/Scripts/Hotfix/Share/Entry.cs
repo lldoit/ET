@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Net;
 using Unity.Mathematics;
 
@@ -18,7 +18,7 @@ namespace ET
             // 注册Mongo type
             MongoRegister.Init();
             
-            MemoryPackRegister.Init();
+            NinoHelper.Init();
             
             // 注册Entity序列化器
             EntitySerializeRegister.Init();

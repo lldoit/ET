@@ -113,7 +113,7 @@
       "source": "embedded",
       "dependencies": {
         "cn.etetet.sourcegenerator": "0.0.5",
-        "cn.etetet.memorypack": "1.10.0"
+        "cn.etetet.yiuinino": "0.0.3"
       }
     },
     "cn.etetet.crawlers": {
@@ -215,7 +215,6 @@
         "cn.etetet.proto": "3.0.2",
         "cn.etetet.sourcegenerator": "3.0.1",
         "cn.etetet.yooassets": "2.3.6",
-        "cn.etetet.memorypack": "1.10.1",
         "cn.etetet.startconfig": "3.0.0",
         "cn.etetet.yiuiframework": "4.0.0",
         "cn.etetet.yiuitips": "4.0.0",
@@ -225,7 +224,8 @@
         "cn.etetet.test": "4.0.0",
         "cn.etetet.servicediscovery": "4.0.0",
         "cn.etetet.yiuiloopscrollrectasync": "4.0.0",
-        "cn.etetet.yiuireddot": "4.0.0"
+        "cn.etetet.yiuireddot": "4.0.0",
+        "cn.etetet.yiuinino": "0.0.3"
       }
     },
     "cn.etetet.login": {
@@ -315,12 +315,6 @@
       "dependencies": {
         "com.unity.mathematics": "1.2.6"
       }
-    },
-    "cn.etetet.memorypack": {
-      "version": "file:cn.etetet.memorypack",
-      "depth": 0,
-      "source": "embedded",
-      "dependencies": {}
     },
     "cn.etetet.move": {
       "version": "file:cn.etetet.move",
@@ -658,6 +652,12 @@
     },
     "cn.etetet.yiuiluban": {
       "version": "file:cn.etetet.yiuiluban",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {}
+    },
+    "cn.etetet.yiuinino": {
+      "version": "file:cn.etetet.yiuinino",
       "depth": 0,
       "source": "embedded",
       "dependencies": {}

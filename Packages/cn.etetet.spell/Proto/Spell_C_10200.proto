@@ -17,8 +17,8 @@ message M2C_SpellAdd // IMessage
 	int64 SpellId = 2;
 	int32 SpellConfigId = 3;
 
-	repeated int64 TargetUnitId = 3;
-	Unity.Mathematics.float3 TargetPosition = 4;
+	repeated int64 TargetUnitId = 4;
+	Unity.Mathematics.float3 TargetPosition = 5;
 }
 
 message M2C_SpellRemove // IMessage

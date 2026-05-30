@@ -1,17 +1,17 @@
-﻿using System;
+using System;
 using System.Net;
 using System.Runtime.InteropServices;
-using MemoryPack;
+using Nino.Core;
 
 namespace ET
 {
-    [MemoryPackable]
+    [NinoType(false)]
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public partial struct Address: IEquatable<Address>
     {
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public string IP;
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Port;
         
         public bool Equals(Address other)
@@ -61,13 +61,13 @@ namespace ET
         }
     }
     
-    [MemoryPackable]
+    [NinoType(false)]
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public partial struct FiberInstanceId: IEquatable<FiberInstanceId>
     {
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public long Fiber;
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public long InstanceId;
         
         public bool Equals(FiberInstanceId other)
@@ -113,14 +113,14 @@ namespace ET
         }
     }
     
-    [MemoryPackable]
+    [NinoType(false)]
     [StructLayout(LayoutKind.Sequential, Pack = 1)]
     public partial struct ActorId: IEquatable<ActorId>
     {
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public Address Address;
         
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public FiberInstanceId FiberInstanceId;
         
         

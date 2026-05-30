@@ -1,93 +1,85 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <TargetFramework>net10.0</TargetFramework>
-        <ImplicitUsings>disable</ImplicitUsings>
-        <Nullable>disable</Nullable>
-        <RootNamespace>ET</RootNamespace>
-        <LangVersion>default</LangVersion>
-        <Configurations>Debug;Release</Configurations>
-        <Platforms>AnyCPU</Platforms>
-    </PropertyGroup>
-
-    <PropertyGroup>
-        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-        <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
-    </PropertyGroup>
-    
-    <PropertyGroup>
-        <ETRootDir>$([MSBuild]::EnsureTrailingSlash($([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\..\' ))))</ETRootDir>
-        <ETRootDirForPwsh>$(ETRootDir).</ETRootDirForPwsh>
-        <MainPackageFile>$(ETRootDir)MainPackage.txt</MainPackageFile>
-        <MainPackageDesignTimeProps>$(MSBuildProjectDirectory)/$(BaseIntermediateOutputPath)ET.Core.MainPackage.g.props</MainPackageDesignTimeProps>
-    </PropertyGroup>
-    
-    <Import Project="$(MainPackageDesignTimeProps)" Condition="'$(DesignTimeBuild)' == 'true' and Exists('$(MainPackageDesignTimeProps)')" />
-
-    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-      <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-      <DefineConstants>DOTNET;ET10</DefineConstants>
-      <OutputPath>$(ETRootDir)Bin</OutputPath>
-      <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-      <Optimize>false</Optimize>
-      <NoWarn>CA2022;NU1903;NU1902</NoWarn>
-    </PropertyGroup>
-
-    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">  
-      <AllowUnsafeBlocks>true</AllowUnsafeBlocks> 
-      <DefineConstants>DOTNET;ET10</DefineConstants>
-      <OutputPath>$(ETRootDir)Bin</OutputPath>
-      <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-      <NoWarn>CA2022;NU1903;NU1902</NoWarn>
-      <Optimize>true</Optimize>
-      <DebugType>full</DebugType>
-      <DebugSymbols>true</DebugSymbols>
-      <Deterministic>false</Deterministic>
-    </PropertyGroup>
-
-    <!-- 生成 IDE 设计时引用文件，解决 ET.Core 无法显示 MainPackage 引用代码 -->
-    <Target Name="GenerateDesignTimePackageProps" BeforeTargets="BeforeBuild" Inputs="$(MainPackageFile)" Outputs="$(MainPackageDesignTimeProps)" Condition="Exists('$(MainPackageFile)')">
-        <Exec Command="pwsh -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildThisFileDirectory)Generate-ETCoreMainPackageProps.ps1&quot; -RootDir &quot;$(ETRootDirForPwsh)&quot; -OutputPath &quot;$(MainPackageDesignTimeProps)&quot;" />
-    </Target>
-
-    <!-- 动态读取 MainPackage.txt 并生成 Compile 项 -->
-    <Target Name="AddPackageCompileItems" BeforeTargets="BeforeBuild;BeforeResolveReferences;CoreCompile">
-        <ReadLinesFromFile File="$(MainPackageFile)">
-            <Output TaskParameter="Lines" ItemName="PackageNames" />
-        </ReadLinesFromFile>
-        <ItemGroup>
-            <PackageNames Remove="@(PackageNames)" Condition="'%(Identity)' == ''" />
-        </ItemGroup>
-        <!-- 生成通配符路径 -->
-        <ItemGroup>
-            <CoreShareGlobs Include="@(PackageNames->'$(ETRootDir)Packages/%(Identity)/Scripts/Core/Share/**/*.cs')" />
-            <CoreServerGlobs Include="@(PackageNames->'$(ETRootDir)Packages/%(Identity)/Scripts/Core/Server/**/*.cs')" />
-            <CodeModeCoreGlobs Include="@(PackageNames->'$(ETRootDir)Packages/%(Identity)/CodeMode/Core/Server/**/*.cs')" />
-        </ItemGroup>
-        <!-- 使用 CreateItem 展开通配符 -->
-        <CreateItem Include="@(CoreShareGlobs)">
-            <Output TaskParameter="Include" ItemName="Compile" />
-        </CreateItem>
-        <CreateItem Include="@(CoreServerGlobs)">
-            <Output TaskParameter="Include" ItemName="Compile" />
-        </CreateItem>
-        <CreateItem Include="@(CodeModeCoreGlobs)">
-            <Output TaskParameter="Include" ItemName="Compile" />
-        </CreateItem>
-    </Target>
-    
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
+    <RootNamespace>ET</RootNamespace>
+    <LangVersion>default</LangVersion>
+    <Configurations>Debug;Release</Configurations>
+    <Platforms>AnyCPU</Platforms>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ETRootDir>$([MSBuild]::EnsureTrailingSlash($([System.IO.Path]::GetFullPath('$(MSBuildThisFileDirectory)..\..\..\' ))))</ETRootDir>
+    <ETRootDirForPwsh>$(ETRootDir).</ETRootDirForPwsh>
+    <MainPackageFile>$(ETRootDir)MainPackage.txt</MainPackageFile>
+    <MainPackageDesignTimeProps>$(MSBuildProjectDirectory)/$(BaseIntermediateOutputPath)ET.Core.MainPackage.g.props</MainPackageDesignTimeProps>
+  </PropertyGroup>
+  <Import Project="$(MainPackageDesignTimeProps)" Condition="'$(DesignTimeBuild)' == 'true' and Exists('$(MainPackageDesignTimeProps)')" />
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>DOTNET;ET10</DefineConstants>
+    <OutputPath>$(ETRootDir)Bin</OutputPath>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Optimize>false</Optimize>
+    <NoWarn>CA2022;NU1903;NU1902</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DefineConstants>DOTNET;ET10</DefineConstants>
+    <OutputPath>$(ETRootDir)Bin</OutputPath>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>CA2022;NU1903;NU1902</NoWarn>
+    <Optimize>true</Optimize>
+    <DebugType>full</DebugType>
+    <DebugSymbols>true</DebugSymbols>
+    <Deterministic>false</Deterministic>
+  </PropertyGroup>
+  <!-- 生成 IDE 设计时引用文件，解决 ET.Core 无法显示 MainPackage 引用代码 -->
+  <Target Name="GenerateDesignTimePackageProps" BeforeTargets="BeforeBuild" Inputs="$(MainPackageFile)" Outputs="$(MainPackageDesignTimeProps)" Condition="Exists('$(MainPackageFile)')">
+    <Exec Command="pwsh -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildThisFileDirectory)Generate-ETCoreMainPackageProps.ps1&quot; -RootDir &quot;$(ETRootDirForPwsh)&quot; -OutputPath &quot;$(MainPackageDesignTimeProps)&quot;" />
+  </Target>
+  <!-- 动态读取 MainPackage.txt 并生成 Compile 项 -->
+  <Target Name="AddPackageCompileItems" BeforeTargets="BeforeBuild;BeforeResolveReferences;CoreCompile">
+    <ReadLinesFromFile File="$(MainPackageFile)">
+      <Output TaskParameter="Lines" ItemName="PackageNames" />
+    </ReadLinesFromFile>
     <ItemGroup>
-        <ProjectReference Include="$(ETRootDir)Packages/cn.etetet.sourcegenerator/DotNet~/ET.SourceGenerator/ET.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-        <ProjectReference Include="$(ETRootDir)Packages/cn.etetet.memorypack/DotNet~/ET.MemoryPack.Generator/ET.MemoryPack.Generator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
-        <ProjectReference Include="$(ETRootDir)Packages/cn.etetet.memorypack/DotNet~/ET.MemoryPack/ET.MemoryPack.csproj" />
-        <PackageReference Include="CommandLineParser" Version="2.9.1" />
-        <PackageReference Include="MongoDB.Driver" Version="3.5.0" />
-        <PackageReference Include="NLog" Version="6.0.6" />
+      <PackageNames Remove="@(PackageNames)" Condition="'%(Identity)' == ''" />
     </ItemGroup>
-    
+    <!-- 生成通配符路径 -->
     <ItemGroup>
-      <Reference Include="Unity.Mathematics">
-        <HintPath>..\..\..\Library\ScriptAssemblies\Unity.Mathematics.dll</HintPath>
-      </Reference>
+      <CoreShareGlobs Include="@(PackageNames-&gt;'$(ETRootDir)Packages/%(Identity)/Scripts/Core/Share/**/*.cs')" />
+      <CoreServerGlobs Include="@(PackageNames-&gt;'$(ETRootDir)Packages/%(Identity)/Scripts/Core/Server/**/*.cs')" />
+      <CodeModeCoreGlobs Include="@(PackageNames-&gt;'$(ETRootDir)Packages/%(Identity)/CodeMode/Core/Server/**/*.cs')" />
     </ItemGroup>
+    <!-- 使用 CreateItem 展开通配符 -->
+    <CreateItem Include="@(CoreShareGlobs)">
+      <Output TaskParameter="Include" ItemName="Compile" />
+    </CreateItem>
+    <CreateItem Include="@(CoreServerGlobs)">
+      <Output TaskParameter="Include" ItemName="Compile" />
+    </CreateItem>
+    <CreateItem Include="@(CodeModeCoreGlobs)">
+      <Output TaskParameter="Include" ItemName="Compile" />
+    </CreateItem>
+  </Target>
+  <ItemGroup>
+    <ProjectReference Include="$(ETRootDir)Packages/cn.etetet.sourcegenerator/DotNet~/ET.SourceGenerator/ET.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
+    <PackageReference Include="CommandLineParser" Version="2.9.1" />
+    <PackageReference Include="MongoDB.Driver" Version="3.5.0" />
+    <PackageReference Include="NLog" Version="6.0.6" />
+    <Analyzer Include="$(ETRootDir)Packages/cn.etetet.yiuinino/Runtime/Nino.Generator.dll" />
+    <Reference Include="Nino.Core">
+      <HintPath>$(ETRootDir)Packages/cn.etetet.yiuinino/Runtime/Nino.Core.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="Unity.Mathematics">
+      <HintPath>..\..\..\Library\ScriptAssemblies\Unity.Mathematics.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>

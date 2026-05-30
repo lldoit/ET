@@ -1,15 +1,15 @@
 using System;
-using MemoryPack;
+using Nino.Core;
 
 namespace ET
 {
-    [MemoryPackable]
+    [NinoType(false)]
     public partial struct LSInput
     {
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public TrueSync.TSVector2 V;
 
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Button;
         
         public bool Equals(LSInput other)

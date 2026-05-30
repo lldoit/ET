@@ -1,9 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using MemoryPack;
+using Nino.Core;
 using MongoDB.Bson.Serialization.Attributes;
 
 namespace ET
@@ -19,7 +19,7 @@ namespace ET
         IsSerializeWithParent = 1 << 4,
     }
 
-    [MemoryPackable(GenerateType.NoGenerate)]
+    [NinoType(false)]
     public abstract partial class Entity: DisposeObject
     {
         // 给source generater调用的
@@ -41,18 +41,15 @@ namespace ET
 #if ENABLE_VIEW && UNITY_EDITOR
         [BsonIgnore]
         [UnityEngine.HideInInspector]
-        [MemoryPackIgnore]
         public UnityEngine.GameObject ViewGO;
 #endif
 
-        [MemoryPackIgnore]
         [BsonIgnore]
         public long InstanceId { get; protected set; }
 
         [BsonIgnore]
         private EntityStatus status = EntityStatus.None;
 
-        [MemoryPackIgnore]
         [BsonIgnore]
         public bool IsFromPool
         {
@@ -175,7 +172,6 @@ namespace ET
             }
         }
 
-        [MemoryPackIgnore]
         [BsonIgnore]
         public bool IsDisposed => this.InstanceId == 0;
         
@@ -183,7 +179,6 @@ namespace ET
         private Entity parent;
 
         // 可以改变parent，但是不能设置为null
-        [MemoryPackIgnore]
         [BsonIgnore]
         public Entity Parent
         {
@@ -312,7 +307,6 @@ namespace ET
         [BsonIgnore]
         protected IScene iScene;
 
-        [MemoryPackIgnore]
         [BsonIgnore]
         public IScene IScene
         {
@@ -379,13 +373,12 @@ namespace ET
                 }
             }
         }
-
-        [MemoryPackInclude]
         [BsonElement]
         [BsonIgnoreIfNull]
+        [NinoMember(0)]
+        [NinoCustomFormatter(typeof(NinoChildrenCollectionFormatter))]
         protected ChildrenCollection children;
 
-        [MemoryPackIgnore]
         [BsonIgnore]
         public ChildrenCollection Children
         {
@@ -399,13 +392,12 @@ namespace ET
         {
             this.Children.Add(entity.Id, entity);
         }
-
-        [MemoryPackInclude]
         [BsonElement]
         [BsonIgnoreIfNull]
+        [NinoMember(1)]
+        [NinoCustomFormatter(typeof(NinoComponentsCollectionFormatter))]
         protected ComponentsCollection components;
 
-        [MemoryPackIgnore]
         [BsonIgnore]
         public ComponentsCollection Components
         {

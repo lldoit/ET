@@ -57,7 +57,7 @@ namespace ET
         {
             MemoryBuffer memoryBuffer = self.FrameBuffer.Snapshot(frame);
             memoryBuffer.Seek(0, SeekOrigin.Begin);
-            LSWorld lsWorld = MemoryPackHelper.Deserialize(typeof (LSWorld), memoryBuffer) as LSWorld;
+            LSWorld lsWorld = NinoHelper.Deserialize(typeof (LSWorld), memoryBuffer) as LSWorld;
             lsWorld.SceneType = sceneType;
             memoryBuffer.Seek(0, SeekOrigin.Begin);
             return lsWorld;
@@ -70,7 +70,7 @@ namespace ET
             memoryBuffer.Seek(0, SeekOrigin.Begin);
             memoryBuffer.SetLength(0);
             
-            MemoryPackHelper.Serialize(self.LSWorld, memoryBuffer);
+            NinoHelper.Serialize(self.LSWorld, memoryBuffer);
             memoryBuffer.Seek(0, SeekOrigin.Begin);
 
             long hash = memoryBuffer.GetBuffer().Hash(0, (int) memoryBuffer.Length);

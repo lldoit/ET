@@ -1,10 +1,10 @@
-using MemoryPack;
+using Nino.Core;
 using System.Collections.Generic;
 
 namespace ET
 {
     // 使用物品请求
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.C2M_UseItem)]
     [ResponseType(nameof(M2C_UseItem))]
     public partial class C2M_UseItem : MessageObject, ILocationRequest
@@ -14,17 +14,17 @@ namespace ET
             return ObjectPool.Fetch<C2M_UseItem>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
         /// <summary>
         /// 物品ID
         /// </summary>
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public long ItemId { get; set; }
         /// <summary>
         /// 使用数量
         /// </summary>
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int Count { get; set; }
         public override void Dispose()
         {
@@ -32,7 +32,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.M2C_UseItem)]
     public partial class M2C_UseItem : MessageObject, ILocationResponse
     {
@@ -41,11 +41,11 @@ namespace ET
             return ObjectPool.Fetch<M2C_UseItem>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
         public override void Dispose()
         {
@@ -54,7 +54,7 @@ namespace ET
     }
 
     // 物品信息
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.ItemData)]
     public partial class ItemData : MessageObject
     {
@@ -66,22 +66,22 @@ namespace ET
         /// <summary>
         /// 物品ID
         /// </summary>
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public long ItemId { get; set; }
         /// <summary>
         /// 槽位索引
         /// </summary>
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int SlotIndex { get; set; }
         /// <summary>
         /// 物品配置ID
         /// </summary>
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int ConfigId { get; set; }
         /// <summary>
         /// 物品数量
         /// </summary>
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public int Count { get; set; }
         public override void Dispose()
         {
@@ -90,7 +90,7 @@ namespace ET
     }
 
     // 同步背包数据请求
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.C2M_SyncBagData)]
     [ResponseType(nameof(M2C_SyncBagData))]
     public partial class C2M_SyncBagData : MessageObject, ILocationRequest
@@ -100,7 +100,7 @@ namespace ET
             return ObjectPool.Fetch<C2M_SyncBagData>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
         public override void Dispose()
         {
@@ -108,7 +108,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.M2C_SyncBagData)]
     public partial class M2C_SyncBagData : MessageObject, ILocationResponse
     {
@@ -117,21 +117,21 @@ namespace ET
             return ObjectPool.Fetch<M2C_SyncBagData>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
         /// <summary>
         /// 背包容量
         /// </summary>
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public int Capacity { get; set; }
         /// <summary>
         /// 物品列表
         /// </summary>
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public List<ItemData> Items { get; set; } = new();
 
         public override void Dispose()
@@ -141,7 +141,7 @@ namespace ET
     }
 
     // 更新物品通知（服务器推送）
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.M2C_UpdateItem)]
     public partial class M2C_UpdateItem : MessageObject, IMessage
     {
@@ -153,22 +153,22 @@ namespace ET
         /// <summary>
         /// 物品ID
         /// </summary>
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public long ItemId { get; set; }
         /// <summary>
         /// 槽位索引
         /// </summary>
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int SlotIndex { get; set; }
         /// <summary>
         /// 物品配置ID
         /// </summary>
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int ConfigId { get; set; }
         /// <summary>
         /// 物品数量
         /// </summary>
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public int Count { get; set; }
         public override void Dispose()
         {
@@ -177,7 +177,7 @@ namespace ET
     }
 
     // 背包容量变化通知
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.M2C_UpdateBagCapacity)]
     public partial class M2C_UpdateBagCapacity : MessageObject, IMessage
     {
@@ -189,7 +189,7 @@ namespace ET
         /// <summary>
         /// 新的背包容量
         /// </summary>
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int Capacity { get; set; }
         public override void Dispose()
         {
@@ -198,7 +198,7 @@ namespace ET
     }
 
     // 物品移动/交换槽位
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.C2M_MoveItem)]
     [ResponseType(nameof(M2C_MoveItem))]
     public partial class C2M_MoveItem : MessageObject, ILocationRequest
@@ -208,17 +208,17 @@ namespace ET
             return ObjectPool.Fetch<C2M_MoveItem>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
         /// <summary>
         /// 要移动的物品ID
         /// </summary>
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public long ItemId { get; set; }
         /// <summary>
         /// 目标槽位
         /// </summary>
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int ToSlot { get; set; }
         public override void Dispose()
         {
@@ -226,7 +226,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.M2C_MoveItem)]
     public partial class M2C_MoveItem : MessageObject, ILocationResponse
     {
@@ -235,11 +235,11 @@ namespace ET
             return ObjectPool.Fetch<M2C_MoveItem>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
         public override void Dispose()
         {
@@ -248,7 +248,7 @@ namespace ET
     }
 
     // 丢弃物品
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.C2M_DiscardItem)]
     [ResponseType(nameof(M2C_DiscardItem))]
     public partial class C2M_DiscardItem : MessageObject, ILocationRequest
@@ -258,17 +258,17 @@ namespace ET
             return ObjectPool.Fetch<C2M_DiscardItem>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
         /// <summary>
         /// 物品ID
         /// </summary>
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public long ItemId { get; set; }
         /// <summary>
         /// 丢弃数量
         /// </summary>
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int Count { get; set; }
         public override void Dispose()
         {
@@ -276,7 +276,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.M2C_DiscardItem)]
     public partial class M2C_DiscardItem : MessageObject, ILocationResponse
     {
@@ -285,11 +285,11 @@ namespace ET
             return ObjectPool.Fetch<M2C_DiscardItem>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
         public override void Dispose()
         {
@@ -298,7 +298,7 @@ namespace ET
     }
 
     // 整理背包
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.C2M_SortBag)]
     [ResponseType(nameof(M2C_SortBag))]
     public partial class C2M_SortBag : MessageObject, ILocationRequest
@@ -308,7 +308,7 @@ namespace ET
             return ObjectPool.Fetch<C2M_SortBag>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
         public override void Dispose()
         {
@@ -316,7 +316,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.M2C_SortBag)]
     public partial class M2C_SortBag : MessageObject, ILocationResponse
     {
@@ -325,11 +325,11 @@ namespace ET
             return ObjectPool.Fetch<M2C_SortBag>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
         public override void Dispose()
         {

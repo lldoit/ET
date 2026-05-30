@@ -1,9 +1,9 @@
-using MemoryPack;
+using Nino.Core;
 using System.Collections.Generic;
 
 namespace ET
 {
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.G2Map_Logout)]
     [ResponseType(nameof(Map2G_Logout))]
     public partial class G2Map_Logout : MessageObject, ILocationRequest
@@ -13,7 +13,7 @@ namespace ET
             return ObjectPool.Fetch<G2Map_Logout>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
         public override void Dispose()
         {
@@ -21,7 +21,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.Map2G_Logout)]
     public partial class Map2G_Logout : MessageObject, ILocationResponse
     {
@@ -30,11 +30,11 @@ namespace ET
             return ObjectPool.Fetch<Map2G_Logout>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
         public override void Dispose()
         {

@@ -3,7 +3,7 @@
     "rootNamespace": "",
     "references": [
         "ET.Core",
-        "ET.MemoryPack"
+        "Nino.Core"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

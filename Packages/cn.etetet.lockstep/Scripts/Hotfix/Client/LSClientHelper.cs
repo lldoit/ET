@@ -90,7 +90,7 @@ namespace ET.Client
             }
             
             Log.Debug($"save replay: {path} frame: {room.Replay.FrameInputs.Count}");
-            byte[] bytes = MemoryPackHelper.Serialize(room.Replay);
+            byte[] bytes = NinoHelper.Serialize(room.Replay);
             File.WriteAllBytes(path, bytes);
         }
         
@@ -113,7 +113,7 @@ namespace ET.Client
                 room.LSWorld.Dispose();
                 // 回滚
                 byte[] memoryBuffer = room.Replay.Snapshots[snapshotIndex];
-                LSWorld lsWorld = MemoryPackHelper.Deserialize(typeof (LSWorld), memoryBuffer, 0, memoryBuffer.Length) as LSWorld;
+                LSWorld lsWorld = NinoHelper.Deserialize(typeof (LSWorld), memoryBuffer, 0, memoryBuffer.Length) as LSWorld;
                 room.LSWorld = lsWorld;
                 room.AuthorityFrame = snapshotIndex * LSConstValue.SaveLSWorldFrameCount;
                 RunLSRollbackSystem(room);

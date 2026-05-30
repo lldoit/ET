@@ -1,12 +1,12 @@
 using System;
-using MemoryPack;
+using Nino.Core;
 using MongoDB.Bson.Serialization.Attributes;
 using TrueSync;
 
 namespace ET
 {
     [ChildOf(typeof(LSUnitComponent))]
-    [MemoryPackable]
+    [NinoType]
     public partial class LSUnit: LSEntity, IAwake, ISerializeToEntity
     {
         public TSVector Position
@@ -15,7 +15,7 @@ namespace ET
             set;
         }
 
-        [MemoryPackIgnore]
+        [NinoIgnore]
         [BsonIgnore]
         public TSVector Forward
         {

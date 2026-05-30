@@ -140,7 +140,7 @@ namespace ET
         private readonly IMGUIContainer imgui;
 
         private NodeIMGUI nodeIMGUI;
-        private Editor editor;
+        private UnityEditor.Editor editor;
 
         public bool ContentCollapsed
         {
@@ -243,7 +243,7 @@ namespace ET
             // 根据DescCollapsed状态设置tooltip
             UpdateTooltip();
 
-            this.editor = Editor.CreateEditor(this.nodeIMGUI);
+            this.editor = UnityEditor.Editor.CreateEditor(this.nodeIMGUI);
 
             this.imgui = new(() =>
             {

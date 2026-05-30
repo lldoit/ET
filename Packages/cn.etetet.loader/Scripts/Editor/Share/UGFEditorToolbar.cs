@@ -49,7 +49,7 @@ namespace ET
 
         private static GUIContent GetBuildTargetIcon()
         {
-            MethodInfo getIconMethod = typeof(Editor).Assembly
+            MethodInfo getIconMethod = typeof(UnityEditor.Editor).Assembly
                     .GetType("UnityEditor.Networking.PlayerConnection.ConnectionUIHelper")
                     ?.GetMethod("GetIcon", BindingFlags.Static | BindingFlags.Public);
 
@@ -96,7 +96,7 @@ namespace ET
 
         private static VisualElement GetToolbarRoot()
         {
-            System.Type toolbarType = typeof(Editor).Assembly.GetType("UnityEditor.Toolbar");
+            System.Type toolbarType = typeof(UnityEditor.Editor).Assembly.GetType("UnityEditor.Toolbar");
             if (toolbarType == null)
             {
                 return null;

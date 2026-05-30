@@ -1,9 +1,9 @@
-using MemoryPack;
+using Nino.Core;
 using System.Collections.Generic;
 
 namespace ET
 {
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.PetInfo)]
     public partial class PetInfo : MessageObject
     {
@@ -12,7 +12,7 @@ namespace ET
             return ObjectPool.Fetch<PetInfo>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public long OwnerId { get; set; }
         public override void Dispose()
         {
@@ -20,7 +20,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.UnitInfo)]
     public partial class UnitInfo : MessageObject
     {
@@ -29,22 +29,22 @@ namespace ET
             return ObjectPool.Fetch<UnitInfo>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public long UnitId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int ConfigId { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int Type { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public Unity.Mathematics.float3 Position { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public Unity.Mathematics.float3 Forward { get; set; }
         [MongoDB.Bson.Serialization.Attributes.BsonDictionaryOptions(MongoDB.Bson.Serialization.Options.DictionaryRepresentation.ArrayOfArrays)]
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public Dictionary<int, long> KV { get; set; } = new();
-        [MemoryPackOrder(6)]
+        [NinoMember(6)]
         public MoveInfo MoveInfo { get; set; }
-        [MemoryPackOrder(7)]
+        [NinoMember(7)]
         public PetInfo PetInfo { get; set; }
         public override void Dispose()
         {
@@ -52,7 +52,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.M2C_CreateUnits)]
     public partial class M2C_CreateUnits : MessageObject, ICurrentMessage
     {
@@ -61,7 +61,7 @@ namespace ET
             return ObjectPool.Fetch<M2C_CreateUnits>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public List<UnitInfo> Units { get; set; } = new();
 
         public override void Dispose()
@@ -70,7 +70,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.M2C_CreateMyUnit)]
     public partial class M2C_CreateMyUnit : MessageObject, ICurrentMessage
     {
@@ -79,7 +79,7 @@ namespace ET
             return ObjectPool.Fetch<M2C_CreateMyUnit>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public UnitInfo Unit { get; set; }
         public override void Dispose()
         {
@@ -87,7 +87,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.M2C_StartSceneChange)]
     public partial class M2C_StartSceneChange : MessageObject, IMessage
     {
@@ -96,9 +96,9 @@ namespace ET
             return ObjectPool.Fetch<M2C_StartSceneChange>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public long SceneId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string SceneName { get; set; }
         public override void Dispose()
         {
@@ -106,7 +106,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.M2C_RemoveUnits)]
     public partial class M2C_RemoveUnits : MessageObject, ICurrentMessage
     {
@@ -115,7 +115,7 @@ namespace ET
             return ObjectPool.Fetch<M2C_RemoveUnits>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public List<long> Units { get; set; } = new();
 
         public override void Dispose()
@@ -124,7 +124,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.M2C_Error)]
     public partial class M2C_Error : MessageObject, IMessage
     {
@@ -133,9 +133,9 @@ namespace ET
             return ObjectPool.Fetch<M2C_Error>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int Error { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public List<string> Values { get; set; } = new();
 
         public override void Dispose()
@@ -144,7 +144,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.M2C_NumericChange)]
     public partial class M2C_NumericChange : MessageObject, ICurrentMessage
     {
@@ -153,11 +153,11 @@ namespace ET
             return ObjectPool.Fetch<M2C_NumericChange>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public long UnitId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int NumericType { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public long Value { get; set; }
         public override void Dispose()
         {
@@ -165,7 +165,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.C2M_PetAttack)]
     public partial class C2M_PetAttack : MessageObject, ILocationMessage
     {
@@ -174,9 +174,9 @@ namespace ET
             return ObjectPool.Fetch<C2M_PetAttack>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public long UnitId { get; set; }
         public override void Dispose()
         {

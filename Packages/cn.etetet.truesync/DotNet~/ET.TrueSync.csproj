@@ -1,43 +1,40 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <TargetFramework>net8.0</TargetFramework>
-        <Nullable>disable</Nullable>
-        <LangVersion>12</LangVersion>
-        <RootNamespace>ET</RootNamespace>
-        <PackageId>ET.Recast</PackageId>
-    </PropertyGroup>
-
-    <PropertyGroup>
-        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-        <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
-    </PropertyGroup>
-
-    <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
-        <DefineConstants>DOTNET</DefineConstants>
-        <OutputPath>$(SolutionDir)Bin</OutputPath>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <Optimize>true</Optimize>
-        <NoWarn>0169,0649,3021,8981,NU1903</NoWarn>
-    </PropertyGroup>
-
-    <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-        <DefineConstants>DOTNET</DefineConstants>
-        <OutputPath>$(SolutionDir)Bin</OutputPath>
-        <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
-        <NoWarn>0169,0649,3021,8981,NU1903</NoWarn>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <Compile Include="..\Runtime\**\*.cs">
-            <Link>%(RecursiveDir)%(FileName)%(Extension)</Link>
-        </Compile>
-    </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="MemoryPack" Version="1.10.0" />
-      <PackageReference Include="MongoDB.Bson" Version="2.17.1" />
-    </ItemGroup>
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>disable</Nullable>
+    <LangVersion>12</LangVersion>
+    <RootNamespace>ET</RootNamespace>
+    <PackageId>ET.Recast</PackageId>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <DefineConstants>DOTNET</DefineConstants>
+    <OutputPath>$(SolutionDir)Bin</OutputPath>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <Optimize>true</Optimize>
+    <NoWarn>0169,0649,3021,8981,NU1903</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <DefineConstants>DOTNET</DefineConstants>
+    <OutputPath>$(SolutionDir)Bin</OutputPath>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <NoWarn>0169,0649,3021,8981,NU1903</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="..\Runtime\**\*.cs">
+      <Link>%(RecursiveDir)%(FileName)%(Extension)</Link>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="MongoDB.Bson" Version="2.17.1" />
+    <Analyzer Include="$(ETRootDir)Packages/cn.etetet.yiuinino/Runtime/Nino.Generator.dll" />
+    <Reference Include="Nino.Core">
+      <HintPath>$(ETRootDir)Packages/cn.etetet.yiuinino/Runtime/Nino.Core.dll</HintPath>
+    </Reference>
+  </ItemGroup>
 </Project>

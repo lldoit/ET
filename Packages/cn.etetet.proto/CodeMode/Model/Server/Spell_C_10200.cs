@@ -1,10 +1,10 @@
-using MemoryPack;
+using Nino.Core;
 using System.Collections.Generic;
 
 namespace ET
 {
     // Spell相关消息定义
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.C2M_SpellCast)]
     public partial class C2M_SpellCast : MessageObject, ILocationMessage
     {
@@ -13,13 +13,13 @@ namespace ET
             return ObjectPool.Fetch<C2M_SpellCast>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int SpellConfigId { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public Unity.Mathematics.float3 TargetPosition { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public long TargetUnitId { get; set; }
         public override void Dispose()
         {
@@ -27,7 +27,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.M2C_SpellAdd)]
     public partial class M2C_SpellAdd : MessageObject, IMessage
     {
@@ -36,16 +36,16 @@ namespace ET
             return ObjectPool.Fetch<M2C_SpellAdd>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public long UnitId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public long SpellId { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int SpellConfigId { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(3)]
         public List<long> TargetUnitId { get; set; } = new();
 
-        [MemoryPackOrder(3)]
+        [NinoMember(4)]
         public Unity.Mathematics.float3 TargetPosition { get; set; }
         public override void Dispose()
         {
@@ -53,7 +53,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.M2C_SpellRemove)]
     public partial class M2C_SpellRemove : MessageObject, IMessage
     {
@@ -62,11 +62,11 @@ namespace ET
             return ObjectPool.Fetch<M2C_SpellRemove>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public long UnitId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public long SpellId { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int RemoveType { get; set; }
         public override void Dispose()
         {
@@ -74,7 +74,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.SpellTarget)]
     public partial class SpellTarget : MessageObject
     {
@@ -83,10 +83,10 @@ namespace ET
             return ObjectPool.Fetch<SpellTarget>(isFromPool);
         }
 
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public List<long> TargetUnitId { get; set; } = new();
 
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public Unity.Mathematics.float3 TargetPosition { get; set; }
         public override void Dispose()
         {
@@ -95,7 +95,7 @@ namespace ET
     }
 
     // Buff相关消息定义
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.M2C_BuffAdd)]
     public partial class M2C_BuffAdd : MessageObject, ICurrentMessage
     {
@@ -104,23 +104,23 @@ namespace ET
             return ObjectPool.Fetch<M2C_BuffAdd>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public long UnitId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public long BuffId { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int BuffConfigId { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public long CreateTime { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public int TickTime { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public long ExpireTime { get; set; }
-        [MemoryPackOrder(6)]
+        [NinoMember(6)]
         public long CasterId { get; set; }
-        [MemoryPackOrder(7)]
+        [NinoMember(7)]
         public int Stack { get; set; }
-        [MemoryPackOrder(8)]
+        [NinoMember(8)]
         public SpellTarget SpellTarget { get; set; }
         public override void Dispose()
         {
@@ -128,7 +128,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.M2C_BuffUpdate)]
     public partial class M2C_BuffUpdate : MessageObject, ICurrentMessage
     {
@@ -137,15 +137,15 @@ namespace ET
             return ObjectPool.Fetch<M2C_BuffUpdate>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public long UnitId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public long BuffId { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public int TickTime { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public long ExpireTime { get; set; }
-        [MemoryPackOrder(6)]
+        [NinoMember(6)]
         public int Stack { get; set; }
         public override void Dispose()
         {
@@ -153,7 +153,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.M2C_BuffRemove)]
     public partial class M2C_BuffRemove : MessageObject, ICurrentMessage
     {
@@ -162,13 +162,13 @@ namespace ET
             return ObjectPool.Fetch<M2C_BuffRemove>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public long UnitId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public long BuffId { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int BuffConfigId { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public int RemoveType { get; set; }
         public override void Dispose()
         {
@@ -177,7 +177,7 @@ namespace ET
     }
 
     // CD相关消息定义
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.M2C_UpdateCD)]
     public partial class M2C_UpdateCD : MessageObject, ICurrentMessage
     {
@@ -186,16 +186,16 @@ namespace ET
             return ObjectPool.Fetch<M2C_UpdateCD>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public long UnitId { get; set; }
         /// <summary>
         /// 0表示公共CD
         /// </summary>
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int SpellConfigId { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public long Time { get; set; }
         public override void Dispose()
         {

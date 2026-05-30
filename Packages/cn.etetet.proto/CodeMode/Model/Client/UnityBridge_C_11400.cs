@@ -1,9 +1,9 @@
-using MemoryPack;
+using Nino.Core;
 using System.Collections.Generic;
 
 namespace ET
 {
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.GameObjectCreateRequest)]
     [ResponseType(nameof(GameObjectCreateResponse))]
     public partial class GameObjectCreateRequest : MessageObject, IRequest
@@ -13,13 +13,13 @@ namespace ET
             return ObjectPool.Fetch<GameObjectCreateRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string Name { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string PrimitiveType { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string ParentPath { get; set; }
         public override void Dispose()
         {
@@ -27,7 +27,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.GameObjectCreateResponse)]
     public partial class GameObjectCreateResponse : MessageObject, IResponse
     {
@@ -36,15 +36,15 @@ namespace ET
             return ObjectPool.Fetch<GameObjectCreateResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public bool Created { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public BridgeObjectInfo Object { get; set; }
         public override void Dispose()
         {
@@ -52,7 +52,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.GameObjectDestroyRequest)]
     [ResponseType(nameof(GameObjectDestroyResponse))]
     public partial class GameObjectDestroyRequest : MessageObject, IRequest
@@ -62,11 +62,11 @@ namespace ET
             return ObjectPool.Fetch<GameObjectDestroyRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string Path { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int InstanceId { get; set; }
         public override void Dispose()
         {
@@ -74,7 +74,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.GameObjectDestroyResponse)]
     public partial class GameObjectDestroyResponse : MessageObject, IResponse
     {
@@ -83,17 +83,17 @@ namespace ET
             return ObjectPool.Fetch<GameObjectDestroyResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public bool Destroyed { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public string DestroyedName { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public string DestroyedPath { get; set; }
         public override void Dispose()
         {
@@ -101,7 +101,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.GameObjectFindRequest)]
     [ResponseType(nameof(GameObjectFindResponse))]
     public partial class GameObjectFindRequest : MessageObject, IRequest
@@ -111,19 +111,19 @@ namespace ET
             return ObjectPool.Fetch<GameObjectFindRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string Name { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Tag { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string WithComponent { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public int MaxResults { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public bool IncludeInactive { get; set; }
-        [MemoryPackOrder(6)]
+        [NinoMember(6)]
         public bool IncludeComponents { get; set; }
         public override void Dispose()
         {
@@ -131,7 +131,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.GameObjectFindResponse)]
     public partial class GameObjectFindResponse : MessageObject, IResponse
     {
@@ -140,16 +140,16 @@ namespace ET
             return ObjectPool.Fetch<GameObjectFindResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public List<BridgeObjectInfo> Objects { get; set; } = new();
 
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public int Count { get; set; }
         public override void Dispose()
         {
@@ -157,7 +157,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.GameObjectSetActiveRequest)]
     [ResponseType(nameof(GameObjectSetActiveResponse))]
     public partial class GameObjectSetActiveRequest : MessageObject, IRequest
@@ -167,15 +167,15 @@ namespace ET
             return ObjectPool.Fetch<GameObjectSetActiveRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string Path { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int InstanceId { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public bool Active { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public bool Toggle { get; set; }
         public override void Dispose()
         {
@@ -183,7 +183,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.GameObjectSetActiveResponse)]
     public partial class GameObjectSetActiveResponse : MessageObject, IResponse
     {
@@ -192,17 +192,17 @@ namespace ET
             return ObjectPool.Fetch<GameObjectSetActiveResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public BridgeObjectInfo Object { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public bool ActiveSelf { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public bool ActiveInHierarchy { get; set; }
         public override void Dispose()
         {
@@ -210,7 +210,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.GameObjectRenameRequest)]
     [ResponseType(nameof(GameObjectRenameResponse))]
     public partial class GameObjectRenameRequest : MessageObject, IRequest
@@ -220,13 +220,13 @@ namespace ET
             return ObjectPool.Fetch<GameObjectRenameRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string Path { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int InstanceId { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string NewName { get; set; }
         public override void Dispose()
         {
@@ -234,7 +234,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.GameObjectRenameResponse)]
     public partial class GameObjectRenameResponse : MessageObject, IResponse
     {
@@ -243,17 +243,17 @@ namespace ET
             return ObjectPool.Fetch<GameObjectRenameResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string OldName { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public string NewName { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public BridgeObjectInfo Object { get; set; }
         public override void Dispose()
         {
@@ -261,7 +261,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.GameObjectDuplicateRequest)]
     [ResponseType(nameof(GameObjectDuplicateResponse))]
     public partial class GameObjectDuplicateRequest : MessageObject, IRequest
@@ -271,11 +271,11 @@ namespace ET
             return ObjectPool.Fetch<GameObjectDuplicateRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string Path { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int InstanceId { get; set; }
         public override void Dispose()
         {
@@ -283,7 +283,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.GameObjectDuplicateResponse)]
     public partial class GameObjectDuplicateResponse : MessageObject, IResponse
     {
@@ -292,15 +292,15 @@ namespace ET
             return ObjectPool.Fetch<GameObjectDuplicateResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public BridgeObjectInfo Original { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public BridgeObjectInfo Duplicate { get; set; }
         public override void Dispose()
         {
@@ -308,7 +308,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.GameObjectGetInfoRequest)]
     [ResponseType(nameof(GameObjectGetInfoResponse))]
     public partial class GameObjectGetInfoRequest : MessageObject, IRequest
@@ -318,15 +318,15 @@ namespace ET
             return ObjectPool.Fetch<GameObjectGetInfoRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string Path { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int InstanceId { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public bool IncludeComponents { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public int MaxChildren { get; set; }
         public override void Dispose()
         {
@@ -334,7 +334,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.GameObjectGetInfoResponse)]
     public partial class GameObjectGetInfoResponse : MessageObject, IResponse
     {
@@ -343,20 +343,20 @@ namespace ET
             return ObjectPool.Fetch<GameObjectGetInfoResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public BridgeObjectInfo Object { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public int ChildCount { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public List<string> Children { get; set; } = new();
 
-        [MemoryPackOrder(6)]
+        [NinoMember(6)]
         public string ParentName { get; set; }
         public override void Dispose()
         {
@@ -364,7 +364,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.TransformGetRequest)]
     [ResponseType(nameof(TransformGetResponse))]
     public partial class TransformGetRequest : MessageObject, IRequest
@@ -374,11 +374,11 @@ namespace ET
             return ObjectPool.Fetch<TransformGetRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string Path { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int InstanceId { get; set; }
         public override void Dispose()
         {
@@ -386,7 +386,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.TransformGetResponse)]
     public partial class TransformGetResponse : MessageObject, IResponse
     {
@@ -395,17 +395,17 @@ namespace ET
             return ObjectPool.Fetch<TransformGetResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string Name { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public string Path { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public BridgeTransformInfo Transform { get; set; }
         public override void Dispose()
         {
@@ -413,7 +413,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.TransformSetPositionRequest)]
     [ResponseType(nameof(TransformSetPositionResponse))]
     public partial class TransformSetPositionRequest : MessageObject, IRequest
@@ -423,15 +423,15 @@ namespace ET
             return ObjectPool.Fetch<TransformSetPositionRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string Path { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int InstanceId { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public BridgeVector3 Position { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public bool Local { get; set; }
         public override void Dispose()
         {
@@ -439,7 +439,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.TransformSetPositionResponse)]
     public partial class TransformSetPositionResponse : MessageObject, IResponse
     {
@@ -448,17 +448,17 @@ namespace ET
             return ObjectPool.Fetch<TransformSetPositionResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string Name { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public string Path { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public BridgeTransformInfo Transform { get; set; }
         public override void Dispose()
         {
@@ -466,7 +466,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.TransformSetRotationRequest)]
     [ResponseType(nameof(TransformSetRotationResponse))]
     public partial class TransformSetRotationRequest : MessageObject, IRequest
@@ -476,15 +476,15 @@ namespace ET
             return ObjectPool.Fetch<TransformSetRotationRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string Path { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int InstanceId { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public BridgeVector3 EulerAngles { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public bool Local { get; set; }
         public override void Dispose()
         {
@@ -492,7 +492,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.TransformSetRotationResponse)]
     public partial class TransformSetRotationResponse : MessageObject, IResponse
     {
@@ -501,17 +501,17 @@ namespace ET
             return ObjectPool.Fetch<TransformSetRotationResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string Name { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public string Path { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public BridgeTransformInfo Transform { get; set; }
         public override void Dispose()
         {
@@ -519,7 +519,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.TransformSetScaleRequest)]
     [ResponseType(nameof(TransformSetScaleResponse))]
     public partial class TransformSetScaleRequest : MessageObject, IRequest
@@ -529,17 +529,17 @@ namespace ET
             return ObjectPool.Fetch<TransformSetScaleRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string Path { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int InstanceId { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public BridgeVector3 Scale { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public bool UseUniform { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public float Uniform { get; set; }
         public override void Dispose()
         {
@@ -547,7 +547,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.TransformSetScaleResponse)]
     public partial class TransformSetScaleResponse : MessageObject, IResponse
     {
@@ -556,17 +556,17 @@ namespace ET
             return ObjectPool.Fetch<TransformSetScaleResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string Name { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public string Path { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public BridgeTransformInfo Transform { get; set; }
         public override void Dispose()
         {
@@ -574,7 +574,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.TransformSetParentRequest)]
     [ResponseType(nameof(TransformSetParentResponse))]
     public partial class TransformSetParentRequest : MessageObject, IRequest
@@ -584,17 +584,17 @@ namespace ET
             return ObjectPool.Fetch<TransformSetParentRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string Path { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int InstanceId { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string ParentPath { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public int ParentInstanceId { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public bool WorldPositionStays { get; set; }
         public override void Dispose()
         {
@@ -602,7 +602,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.TransformSetParentResponse)]
     public partial class TransformSetParentResponse : MessageObject, IResponse
     {
@@ -611,19 +611,19 @@ namespace ET
             return ObjectPool.Fetch<TransformSetParentResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string Name { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public string Path { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public string ParentPath { get; set; }
-        [MemoryPackOrder(6)]
+        [NinoMember(6)]
         public BridgeTransformInfo Transform { get; set; }
         public override void Dispose()
         {
@@ -631,7 +631,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.TransformLookAtRequest)]
     [ResponseType(nameof(TransformLookAtResponse))]
     public partial class TransformLookAtRequest : MessageObject, IRequest
@@ -641,19 +641,19 @@ namespace ET
             return ObjectPool.Fetch<TransformLookAtRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string Path { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int InstanceId { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string TargetPath { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public int TargetInstanceId { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public BridgeVector3 TargetPosition { get; set; }
-        [MemoryPackOrder(6)]
+        [NinoMember(6)]
         public bool HasTargetPosition { get; set; }
         public override void Dispose()
         {
@@ -661,7 +661,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.TransformLookAtResponse)]
     public partial class TransformLookAtResponse : MessageObject, IResponse
     {
@@ -670,17 +670,17 @@ namespace ET
             return ObjectPool.Fetch<TransformLookAtResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string Name { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public string Path { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public BridgeTransformInfo Transform { get; set; }
         public override void Dispose()
         {
@@ -688,7 +688,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.TransformResetRequest)]
     [ResponseType(nameof(TransformResetResponse))]
     public partial class TransformResetRequest : MessageObject, IRequest
@@ -698,17 +698,17 @@ namespace ET
             return ObjectPool.Fetch<TransformResetRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string Path { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int InstanceId { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public bool ResetPosition { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public bool ResetRotation { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public bool ResetScale { get; set; }
         public override void Dispose()
         {
@@ -716,7 +716,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.TransformResetResponse)]
     public partial class TransformResetResponse : MessageObject, IResponse
     {
@@ -725,17 +725,17 @@ namespace ET
             return ObjectPool.Fetch<TransformResetResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string Name { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public string Path { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public BridgeTransformInfo Transform { get; set; }
         public override void Dispose()
         {
@@ -743,7 +743,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.TransformSetSiblingIndexRequest)]
     [ResponseType(nameof(TransformSetSiblingIndexResponse))]
     public partial class TransformSetSiblingIndexRequest : MessageObject, IRequest
@@ -753,17 +753,17 @@ namespace ET
             return ObjectPool.Fetch<TransformSetSiblingIndexRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string Path { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int InstanceId { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public int Index { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public bool First { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public bool Last { get; set; }
         public override void Dispose()
         {
@@ -771,7 +771,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.TransformSetSiblingIndexResponse)]
     public partial class TransformSetSiblingIndexResponse : MessageObject, IResponse
     {
@@ -780,19 +780,19 @@ namespace ET
             return ObjectPool.Fetch<TransformSetSiblingIndexResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string Name { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public string Path { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public int SiblingIndex { get; set; }
-        [MemoryPackOrder(6)]
+        [NinoMember(6)]
         public BridgeTransformInfo Transform { get; set; }
         public override void Dispose()
         {
@@ -800,7 +800,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.MenuItemExecuteRequest)]
     [ResponseType(nameof(MenuItemExecuteResponse))]
     public partial class MenuItemExecuteRequest : MessageObject, IRequest
@@ -810,9 +810,9 @@ namespace ET
             return ObjectPool.Fetch<MenuItemExecuteRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string MenuPath { get; set; }
         public override void Dispose()
         {
@@ -820,7 +820,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.MenuItemExecuteResponse)]
     public partial class MenuItemExecuteResponse : MessageObject, IResponse
     {
@@ -829,15 +829,15 @@ namespace ET
             return ObjectPool.Fetch<MenuItemExecuteResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string MenuPath { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public bool Executed { get; set; }
         public override void Dispose()
         {
@@ -845,7 +845,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.PrefabInstantiateRequest)]
     [ResponseType(nameof(PrefabInstantiateResponse))]
     public partial class PrefabInstantiateRequest : MessageObject, IRequest
@@ -855,11 +855,11 @@ namespace ET
             return ObjectPool.Fetch<PrefabInstantiateRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string PrefabPath { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public BridgeVector3 Position { get; set; }
         public override void Dispose()
         {
@@ -867,7 +867,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.PrefabInstantiateResponse)]
     public partial class PrefabInstantiateResponse : MessageObject, IResponse
     {
@@ -876,15 +876,15 @@ namespace ET
             return ObjectPool.Fetch<PrefabInstantiateResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string PrefabPath { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public BridgeObjectInfo Instance { get; set; }
         public override void Dispose()
         {
@@ -892,7 +892,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.PrefabSaveRequest)]
     [ResponseType(nameof(PrefabSaveResponse))]
     public partial class PrefabSaveRequest : MessageObject, IRequest
@@ -902,11 +902,11 @@ namespace ET
             return ObjectPool.Fetch<PrefabSaveRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string GameObjectPath { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string SavePath { get; set; }
         public override void Dispose()
         {
@@ -914,7 +914,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.PrefabSaveResponse)]
     public partial class PrefabSaveResponse : MessageObject, IResponse
     {
@@ -923,19 +923,19 @@ namespace ET
             return ObjectPool.Fetch<PrefabSaveResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string GameObjectName { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public string PrefabPath { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public bool Saved { get; set; }
-        [MemoryPackOrder(6)]
+        [NinoMember(6)]
         public BridgeAssetInfo Asset { get; set; }
         public override void Dispose()
         {
@@ -943,7 +943,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.PrefabUnpackRequest)]
     [ResponseType(nameof(PrefabUnpackResponse))]
     public partial class PrefabUnpackRequest : MessageObject, IRequest
@@ -953,11 +953,11 @@ namespace ET
             return ObjectPool.Fetch<PrefabUnpackRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string GameObjectPath { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public bool Completely { get; set; }
         public override void Dispose()
         {
@@ -965,7 +965,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.PrefabUnpackResponse)]
     public partial class PrefabUnpackResponse : MessageObject, IResponse
     {
@@ -974,19 +974,19 @@ namespace ET
             return ObjectPool.Fetch<PrefabUnpackResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string GameObjectName { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public bool Unpacked { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public bool Completely { get; set; }
-        [MemoryPackOrder(6)]
+        [NinoMember(6)]
         public BridgeObjectInfo Object { get; set; }
         public override void Dispose()
         {
@@ -994,7 +994,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.PrefabGetInfoRequest)]
     [ResponseType(nameof(PrefabGetInfoResponse))]
     public partial class PrefabGetInfoRequest : MessageObject, IRequest
@@ -1004,11 +1004,11 @@ namespace ET
             return ObjectPool.Fetch<PrefabGetInfoRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string PrefabPath { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string GameObjectPath { get; set; }
         public override void Dispose()
         {
@@ -1016,7 +1016,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.PrefabGetInfoResponse)]
     public partial class PrefabGetInfoResponse : MessageObject, IResponse
     {
@@ -1025,23 +1025,23 @@ namespace ET
             return ObjectPool.Fetch<PrefabGetInfoResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string Name { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public bool IsPrefabAsset { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public bool IsPrefabInstance { get; set; }
-        [MemoryPackOrder(6)]
+        [NinoMember(6)]
         public string PrefabAssetPath { get; set; }
-        [MemoryPackOrder(7)]
+        [NinoMember(7)]
         public string PrefabType { get; set; }
-        [MemoryPackOrder(8)]
+        [NinoMember(8)]
         public string PrefabStatus { get; set; }
         public override void Dispose()
         {
@@ -1049,7 +1049,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.PrefabGetHierarchyRequest)]
     [ResponseType(nameof(PrefabGetHierarchyResponse))]
     public partial class PrefabGetHierarchyRequest : MessageObject, IRequest
@@ -1059,15 +1059,15 @@ namespace ET
             return ObjectPool.Fetch<PrefabGetHierarchyRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string PrefabPath { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int Depth { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public bool IncludeInactive { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public bool IncludeComponents { get; set; }
         public override void Dispose()
         {
@@ -1075,7 +1075,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.PrefabGetHierarchyResponse)]
     public partial class PrefabGetHierarchyResponse : MessageObject, IResponse
     {
@@ -1084,21 +1084,21 @@ namespace ET
             return ObjectPool.Fetch<PrefabGetHierarchyResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string PrefabPath { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public string PrefabName { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public int RootCount { get; set; }
-        [MemoryPackOrder(6)]
+        [NinoMember(6)]
         public bool Truncated { get; set; }
-        [MemoryPackOrder(7)]
+        [NinoMember(7)]
         public List<BridgeSceneNode> Roots { get; set; } = new();
 
         public override void Dispose()
@@ -1107,7 +1107,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.PrefabApplyRequest)]
     [ResponseType(nameof(PrefabApplyResponse))]
     public partial class PrefabApplyRequest : MessageObject, IRequest
@@ -1117,9 +1117,9 @@ namespace ET
             return ObjectPool.Fetch<PrefabApplyRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string GameObjectPath { get; set; }
         public override void Dispose()
         {
@@ -1127,7 +1127,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.PrefabApplyResponse)]
     public partial class PrefabApplyResponse : MessageObject, IResponse
     {
@@ -1136,17 +1136,17 @@ namespace ET
             return ObjectPool.Fetch<PrefabApplyResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string GameObjectName { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public string PrefabPath { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public bool Applied { get; set; }
         public override void Dispose()
         {
@@ -1154,7 +1154,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.InspectorGetComponentsRequest)]
     [ResponseType(nameof(InspectorGetComponentsResponse))]
     public partial class InspectorGetComponentsRequest : MessageObject, IRequest
@@ -1164,15 +1164,15 @@ namespace ET
             return ObjectPool.Fetch<InspectorGetComponentsRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string Path { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int InstanceId { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string AssetPath { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public string ObjectPath { get; set; }
         public override void Dispose()
         {
@@ -1180,7 +1180,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.InspectorGetComponentsResponse)]
     public partial class InspectorGetComponentsResponse : MessageObject, IResponse
     {
@@ -1189,22 +1189,22 @@ namespace ET
             return ObjectPool.Fetch<InspectorGetComponentsResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string GameObjectName { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public string AssetPath { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public string ObjectPath { get; set; }
-        [MemoryPackOrder(6)]
+        [NinoMember(6)]
         public List<BridgeComponentInfo> Components { get; set; } = new();
 
-        [MemoryPackOrder(7)]
+        [NinoMember(7)]
         public int Count { get; set; }
         public override void Dispose()
         {
@@ -1212,7 +1212,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.InspectorGetPropertiesRequest)]
     [ResponseType(nameof(InspectorGetPropertiesResponse))]
     public partial class InspectorGetPropertiesRequest : MessageObject, IRequest
@@ -1222,23 +1222,23 @@ namespace ET
             return ObjectPool.Fetch<InspectorGetPropertiesRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string Path { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int InstanceId { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string AssetPath { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public string ObjectPath { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public string ComponentName { get; set; }
-        [MemoryPackOrder(6)]
+        [NinoMember(6)]
         public int ComponentIndex { get; set; }
-        [MemoryPackOrder(7)]
+        [NinoMember(7)]
         public int ComponentInstanceId { get; set; }
-        [MemoryPackOrder(8)]
+        [NinoMember(8)]
         public bool IncludeChildren { get; set; }
         public override void Dispose()
         {
@@ -1246,7 +1246,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.InspectorGetPropertiesResponse)]
     public partial class InspectorGetPropertiesResponse : MessageObject, IResponse
     {
@@ -1255,25 +1255,25 @@ namespace ET
             return ObjectPool.Fetch<InspectorGetPropertiesResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string TargetName { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public string TargetType { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public string GameObjectName { get; set; }
-        [MemoryPackOrder(6)]
+        [NinoMember(6)]
         public string ComponentName { get; set; }
-        [MemoryPackOrder(7)]
+        [NinoMember(7)]
         public string AssetPath { get; set; }
-        [MemoryPackOrder(8)]
+        [NinoMember(8)]
         public string ObjectPath { get; set; }
-        [MemoryPackOrder(9)]
+        [NinoMember(9)]
         public List<BridgePropertyInfo> Properties { get; set; } = new();
 
         public override void Dispose()
@@ -1282,7 +1282,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.InspectorGetPropertyRequest)]
     [ResponseType(nameof(InspectorGetPropertyResponse))]
     public partial class InspectorGetPropertyRequest : MessageObject, IRequest
@@ -1292,23 +1292,23 @@ namespace ET
             return ObjectPool.Fetch<InspectorGetPropertyRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string Path { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int InstanceId { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string AssetPath { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public string ObjectPath { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public string ComponentName { get; set; }
-        [MemoryPackOrder(6)]
+        [NinoMember(6)]
         public int ComponentIndex { get; set; }
-        [MemoryPackOrder(7)]
+        [NinoMember(7)]
         public int ComponentInstanceId { get; set; }
-        [MemoryPackOrder(8)]
+        [NinoMember(8)]
         public string PropertyName { get; set; }
         public override void Dispose()
         {
@@ -1316,7 +1316,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.InspectorGetPropertyResponse)]
     public partial class InspectorGetPropertyResponse : MessageObject, IResponse
     {
@@ -1325,23 +1325,23 @@ namespace ET
             return ObjectPool.Fetch<InspectorGetPropertyResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string TargetName { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public string TargetType { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public string ComponentName { get; set; }
-        [MemoryPackOrder(6)]
+        [NinoMember(6)]
         public string AssetPath { get; set; }
-        [MemoryPackOrder(7)]
+        [NinoMember(7)]
         public string ObjectPath { get; set; }
-        [MemoryPackOrder(8)]
+        [NinoMember(8)]
         public BridgePropertyInfo Property { get; set; }
         public override void Dispose()
         {
@@ -1349,7 +1349,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.InspectorFindPropertyRequest)]
     [ResponseType(nameof(InspectorFindPropertyResponse))]
     public partial class InspectorFindPropertyRequest : MessageObject, IRequest
@@ -1359,23 +1359,23 @@ namespace ET
             return ObjectPool.Fetch<InspectorFindPropertyRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string Path { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int InstanceId { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string AssetPath { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public string ObjectPath { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public string ComponentName { get; set; }
-        [MemoryPackOrder(6)]
+        [NinoMember(6)]
         public int ComponentIndex { get; set; }
-        [MemoryPackOrder(7)]
+        [NinoMember(7)]
         public int ComponentInstanceId { get; set; }
-        [MemoryPackOrder(8)]
+        [NinoMember(8)]
         public string Keyword { get; set; }
         public override void Dispose()
         {
@@ -1383,7 +1383,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.InspectorFindPropertyResponse)]
     public partial class InspectorFindPropertyResponse : MessageObject, IResponse
     {
@@ -1392,27 +1392,27 @@ namespace ET
             return ObjectPool.Fetch<InspectorFindPropertyResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string TargetName { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public string TargetType { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public string ComponentName { get; set; }
-        [MemoryPackOrder(6)]
+        [NinoMember(6)]
         public string Keyword { get; set; }
-        [MemoryPackOrder(7)]
+        [NinoMember(7)]
         public int Count { get; set; }
-        [MemoryPackOrder(8)]
+        [NinoMember(8)]
         public string AssetPath { get; set; }
-        [MemoryPackOrder(9)]
+        [NinoMember(9)]
         public string ObjectPath { get; set; }
-        [MemoryPackOrder(10)]
+        [NinoMember(10)]
         public List<BridgePropertyInfo> Properties { get; set; } = new();
 
         public override void Dispose()
@@ -1421,7 +1421,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.InspectorSetPropertyRequest)]
     [ResponseType(nameof(InspectorSetPropertyResponse))]
     public partial class InspectorSetPropertyRequest : MessageObject, IRequest
@@ -1431,25 +1431,25 @@ namespace ET
             return ObjectPool.Fetch<InspectorSetPropertyRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string Path { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int InstanceId { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string AssetPath { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public string ObjectPath { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public string ComponentName { get; set; }
-        [MemoryPackOrder(6)]
+        [NinoMember(6)]
         public int ComponentIndex { get; set; }
-        [MemoryPackOrder(7)]
+        [NinoMember(7)]
         public int ComponentInstanceId { get; set; }
-        [MemoryPackOrder(8)]
+        [NinoMember(8)]
         public string PropertyName { get; set; }
-        [MemoryPackOrder(9)]
+        [NinoMember(9)]
         public BridgePropertyInfo Value { get; set; }
         public override void Dispose()
         {
@@ -1457,7 +1457,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.InspectorSetPropertyResponse)]
     public partial class InspectorSetPropertyResponse : MessageObject, IResponse
     {
@@ -1466,27 +1466,27 @@ namespace ET
             return ObjectPool.Fetch<InspectorSetPropertyResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string TargetName { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public string TargetType { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public string GameObjectName { get; set; }
-        [MemoryPackOrder(6)]
+        [NinoMember(6)]
         public string ComponentName { get; set; }
-        [MemoryPackOrder(7)]
+        [NinoMember(7)]
         public string AssetPath { get; set; }
-        [MemoryPackOrder(8)]
+        [NinoMember(8)]
         public string ObjectPath { get; set; }
-        [MemoryPackOrder(9)]
+        [NinoMember(9)]
         public bool Changed { get; set; }
-        [MemoryPackOrder(10)]
+        [NinoMember(10)]
         public List<BridgePropertyInfo> Properties { get; set; } = new();
 
         public override void Dispose()
@@ -1495,7 +1495,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.InspectorSetPropertiesRequest)]
     [ResponseType(nameof(InspectorSetPropertiesResponse))]
     public partial class InspectorSetPropertiesRequest : MessageObject, IRequest
@@ -1505,23 +1505,23 @@ namespace ET
             return ObjectPool.Fetch<InspectorSetPropertiesRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string Path { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int InstanceId { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string AssetPath { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public string ObjectPath { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public string ComponentName { get; set; }
-        [MemoryPackOrder(6)]
+        [NinoMember(6)]
         public int ComponentIndex { get; set; }
-        [MemoryPackOrder(7)]
+        [NinoMember(7)]
         public int ComponentInstanceId { get; set; }
-        [MemoryPackOrder(8)]
+        [NinoMember(8)]
         public List<BridgePropertyInfo> Values { get; set; } = new();
 
         public override void Dispose()
@@ -1530,7 +1530,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.InspectorSetPropertiesResponse)]
     public partial class InspectorSetPropertiesResponse : MessageObject, IResponse
     {
@@ -1539,27 +1539,27 @@ namespace ET
             return ObjectPool.Fetch<InspectorSetPropertiesResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string TargetName { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public string TargetType { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public string GameObjectName { get; set; }
-        [MemoryPackOrder(6)]
+        [NinoMember(6)]
         public string ComponentName { get; set; }
-        [MemoryPackOrder(7)]
+        [NinoMember(7)]
         public string AssetPath { get; set; }
-        [MemoryPackOrder(8)]
+        [NinoMember(8)]
         public string ObjectPath { get; set; }
-        [MemoryPackOrder(9)]
+        [NinoMember(9)]
         public bool Changed { get; set; }
-        [MemoryPackOrder(10)]
+        [NinoMember(10)]
         public List<BridgePropertyInfo> Properties { get; set; } = new();
 
         public override void Dispose()
@@ -1568,7 +1568,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.InspectorAddComponentRequest)]
     [ResponseType(nameof(InspectorAddComponentResponse))]
     public partial class InspectorAddComponentRequest : MessageObject, IRequest
@@ -1578,17 +1578,17 @@ namespace ET
             return ObjectPool.Fetch<InspectorAddComponentRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string Path { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int InstanceId { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string AssetPath { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public string ObjectPath { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public string TypeName { get; set; }
         public override void Dispose()
         {
@@ -1596,7 +1596,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.InspectorAddComponentResponse)]
     public partial class InspectorAddComponentResponse : MessageObject, IResponse
     {
@@ -1605,19 +1605,19 @@ namespace ET
             return ObjectPool.Fetch<InspectorAddComponentResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string GameObjectName { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public string AssetPath { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public string ObjectPath { get; set; }
-        [MemoryPackOrder(6)]
+        [NinoMember(6)]
         public BridgeComponentInfo AddedComponent { get; set; }
         public override void Dispose()
         {
@@ -1625,7 +1625,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.InspectorRemoveComponentRequest)]
     [ResponseType(nameof(InspectorRemoveComponentResponse))]
     public partial class InspectorRemoveComponentRequest : MessageObject, IRequest
@@ -1635,21 +1635,21 @@ namespace ET
             return ObjectPool.Fetch<InspectorRemoveComponentRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string Path { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public int InstanceId { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string AssetPath { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public string ObjectPath { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public string ComponentName { get; set; }
-        [MemoryPackOrder(6)]
+        [NinoMember(6)]
         public int ComponentIndex { get; set; }
-        [MemoryPackOrder(7)]
+        [NinoMember(7)]
         public int ComponentInstanceId { get; set; }
         public override void Dispose()
         {
@@ -1657,7 +1657,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.InspectorRemoveComponentResponse)]
     public partial class InspectorRemoveComponentResponse : MessageObject, IResponse
     {
@@ -1666,19 +1666,19 @@ namespace ET
             return ObjectPool.Fetch<InspectorRemoveComponentResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string GameObjectName { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public string AssetPath { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public string ObjectPath { get; set; }
-        [MemoryPackOrder(6)]
+        [NinoMember(6)]
         public BridgeComponentInfo RemovedComponent { get; set; }
         public override void Dispose()
         {
@@ -1686,7 +1686,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.EditorUndoRequest)]
     [ResponseType(nameof(EditorUndoResponse))]
     public partial class EditorUndoRequest : MessageObject, IRequest
@@ -1696,9 +1696,9 @@ namespace ET
             return ObjectPool.Fetch<EditorUndoRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Count { get; set; }
         public override void Dispose()
         {
@@ -1706,7 +1706,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.EditorUndoResponse)]
     public partial class EditorUndoResponse : MessageObject, IResponse
     {
@@ -1715,13 +1715,13 @@ namespace ET
             return ObjectPool.Fetch<EditorUndoResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public int Count { get; set; }
         public override void Dispose()
         {
@@ -1729,7 +1729,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.EditorRedoRequest)]
     [ResponseType(nameof(EditorRedoResponse))]
     public partial class EditorRedoRequest : MessageObject, IRequest
@@ -1739,9 +1739,9 @@ namespace ET
             return ObjectPool.Fetch<EditorRedoRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Count { get; set; }
         public override void Dispose()
         {
@@ -1749,7 +1749,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.EditorRedoResponse)]
     public partial class EditorRedoResponse : MessageObject, IResponse
     {
@@ -1758,13 +1758,13 @@ namespace ET
             return ObjectPool.Fetch<EditorRedoResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public int Count { get; set; }
         public override void Dispose()
         {
@@ -1772,7 +1772,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.EditorPauseRequest)]
     [ResponseType(nameof(EditorPauseResponse))]
     public partial class EditorPauseRequest : MessageObject, IRequest
@@ -1782,11 +1782,11 @@ namespace ET
             return ObjectPool.Fetch<EditorPauseRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public bool Toggle { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public bool Pause { get; set; }
         public override void Dispose()
         {
@@ -1794,7 +1794,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.EditorPauseResponse)]
     public partial class EditorPauseResponse : MessageObject, IResponse
     {
@@ -1803,13 +1803,13 @@ namespace ET
             return ObjectPool.Fetch<EditorPauseResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public bool IsPaused { get; set; }
         public override void Dispose()
         {
@@ -1817,7 +1817,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.EditorGetStateRequest)]
     [ResponseType(nameof(EditorGetStateResponse))]
     public partial class EditorGetStateRequest : MessageObject, IRequest
@@ -1827,7 +1827,7 @@ namespace ET
             return ObjectPool.Fetch<EditorGetStateRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
         public override void Dispose()
         {
@@ -1835,7 +1835,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.EditorGetStateResponse)]
     public partial class EditorGetStateResponse : MessageObject, IResponse
     {
@@ -1844,27 +1844,27 @@ namespace ET
             return ObjectPool.Fetch<EditorGetStateResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public bool IsPlaying { get; set; }
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public bool IsPaused { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public bool IsCompiling { get; set; }
-        [MemoryPackOrder(6)]
+        [NinoMember(6)]
         public bool IsUpdating { get; set; }
-        [MemoryPackOrder(7)]
+        [NinoMember(7)]
         public string ApplicationPath { get; set; }
-        [MemoryPackOrder(8)]
+        [NinoMember(8)]
         public string ApplicationContentsPath { get; set; }
-        [MemoryPackOrder(9)]
+        [NinoMember(9)]
         public bool EnterPlayModeOptionsEnabled { get; set; }
-        [MemoryPackOrder(10)]
+        [NinoMember(10)]
         public string EnterPlayModeOptions { get; set; }
         public override void Dispose()
         {
@@ -1872,7 +1872,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.BatchExecuteRequest)]
     [ResponseType(nameof(BatchExecuteResponse))]
     public partial class BatchExecuteRequest : MessageObject, IRequest
@@ -1882,12 +1882,12 @@ namespace ET
             return ObjectPool.Fetch<BatchExecuteRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public List<string> Commands { get; set; } = new();
 
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public bool StopOnError { get; set; }
         public override void Dispose()
         {
@@ -1895,7 +1895,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.BatchExecuteResponse)]
     public partial class BatchExecuteResponse : MessageObject, IResponse
     {
@@ -1904,20 +1904,20 @@ namespace ET
             return ObjectPool.Fetch<BatchExecuteResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public List<BridgeBatchStepResult> Results { get; set; } = new();
 
-        [MemoryPackOrder(4)]
+        [NinoMember(4)]
         public int Count { get; set; }
-        [MemoryPackOrder(5)]
+        [NinoMember(5)]
         public int Failed { get; set; }
-        [MemoryPackOrder(6)]
+        [NinoMember(6)]
         public bool Completed { get; set; }
         public override void Dispose()
         {

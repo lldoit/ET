@@ -83,8 +83,6 @@ MonoBehaviour:
     Version: 3.0.0
   - Name: cn.etetet.move
     Version: 3.0.0
-  - Name: cn.etetet.memorypack
-    Version: 1.10.1
   - Name: cn.etetet.mathematics
     Version: 0.0.2
   - Name: cn.etetet.mapmanager

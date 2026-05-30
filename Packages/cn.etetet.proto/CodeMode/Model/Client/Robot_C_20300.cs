@@ -1,9 +1,9 @@
-using MemoryPack;
+using Nino.Core;
 using System.Collections.Generic;
 
 namespace ET
 {
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.Console2Robot_LogoutRequest)]
     [ResponseType(nameof(Console2Robot_LogoutResponse))]
     public partial class Console2Robot_LogoutRequest : MessageObject, IRequest
@@ -13,7 +13,7 @@ namespace ET
             return ObjectPool.Fetch<Console2Robot_LogoutRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
         public override void Dispose()
         {
@@ -21,7 +21,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.Console2Robot_LogoutResponse)]
     public partial class Console2Robot_LogoutResponse : MessageObject, IResponse
     {
@@ -30,11 +30,11 @@ namespace ET
             return ObjectPool.Fetch<Console2Robot_LogoutResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
         public override void Dispose()
         {
@@ -42,7 +42,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.Robot_LoginRequest)]
     [ResponseType(nameof(Robot_LoginResponse))]
     public partial class Robot_LoginRequest : MessageObject, IRequest
@@ -52,13 +52,13 @@ namespace ET
             return ObjectPool.Fetch<Robot_LoginRequest>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public string Account { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Password { get; set; }
-        [MemoryPackOrder(3)]
+        [NinoMember(3)]
         public string Address { get; set; }
         public override void Dispose()
         {
@@ -66,7 +66,7 @@ namespace ET
         }
     }
 
-    [MemoryPackable]
+    [NinoType(false)]
     [Message(Opcode.Robot_LoginResponse)]
     public partial class Robot_LoginResponse : MessageObject, IResponse
     {
@@ -75,11 +75,11 @@ namespace ET
             return ObjectPool.Fetch<Robot_LoginResponse>(isFromPool);
         }
 
-        [MemoryPackOrder(0)]
+        [NinoMember(0)]
         public int RpcId { get; set; }
-        [MemoryPackOrder(1)]
+        [NinoMember(1)]
         public int Error { get; set; }
-        [MemoryPackOrder(2)]
+        [NinoMember(2)]
         public string Message { get; set; }
         public override void Dispose()
         {

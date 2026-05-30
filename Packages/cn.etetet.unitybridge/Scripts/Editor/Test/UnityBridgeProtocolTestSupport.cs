@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using MemoryPack;
+using Nino.Core;
 using MongoDB.Bson;
 
 namespace ET.Test
@@ -378,7 +378,7 @@ namespace ET.Test
             List<PropertyInfo> properties = new();
             foreach (PropertyInfo property in type.GetProperties(BindingFlags.Instance | BindingFlags.Public))
             {
-                if (property.GetCustomAttribute<MemoryPackOrderAttribute>() == null)
+                if (property.GetCustomAttribute<NinoMemberAttribute>() == null)
                 {
                     continue;
                 }
@@ -387,8 +387,8 @@ namespace ET.Test
             }
 
             properties.Sort((a, b) =>
-                    a.GetCustomAttribute<MemoryPackOrderAttribute>().Order.CompareTo(
-                        b.GetCustomAttribute<MemoryPackOrderAttribute>().Order));
+                    a.GetCustomAttribute<NinoMemberAttribute>().Index.CompareTo(
+                        b.GetCustomAttribute<NinoMemberAttribute>().Index));
             return properties;
         }
 
