@@ -1,0 +1,19 @@
+{
+    "name": "Ignore.ET.MessagePackNet",
+    "rootNamespace": "",
+    "references": [
+        "MessagePack",
+        "MessagePack.Annotations"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "IGNORE"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -82,6 +82,7 @@
   <ItemGroup>
     <ProjectReference Include="$(ETRootDir)Packages/cn.etetet.sourcegenerator/DotNet~/ET.SourceGenerator/ET.SourceGenerator.csproj" OutputItemType="Analyzer" ReferenceOutputAssembly="false" />
     <ProjectReference Include="..\Model\ET.Model.csproj" />
+    <ProjectReference Include="..\..\..\cn.etetet.messagepacknet\DotNet~\ET.MessagePackNet.csproj" />
     <Analyzer Include="$(ETRootDir)Packages/cn.etetet.yiuinino/Runtime/Nino.Generator.dll" />
     <Reference Include="Nino.Core">
       <HintPath>$(ETRootDir)Packages/cn.etetet.yiuinino/Runtime/Nino.Core.dll</HintPath>

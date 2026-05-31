@@ -517,7 +517,8 @@
         "cn.etetet.yiuiinvoke": "4.0.0",
         "cn.etetet.db": "4.0.0",
         "cn.etetet.unitybridge": "4.0.0",
-        "cn.etetet.conditionexpr": "4.0.0"
+        "cn.etetet.conditionexpr": "4.0.0",
+        "cn.etetet.messagepacknet": "1.0.0"
       }
     },
     "cn.etetet.test": {
@@ -1132,6 +1133,23 @@
       "depth": 0,
       "source": "builtin",
       "dependencies": {}
+    },
+    "cn.etetet.messagepack": {
+      "version": "file:cn.etetet.messagepack",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "com.unity.mathematics": "1.2.6"
+      }
+    },
+    "cn.etetet.messagepacknet": {
+      "version": "file:cn.etetet.messagepacknet",
+      "depth": 0,
+      "source": "embedded",
+      "dependencies": {
+        "cn.etetet.core": "4.0.0",
+        "cn.etetet.messagepack": "2.3.74"
+      }
     }
   }
 }

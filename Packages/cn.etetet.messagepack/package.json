@@ -1,0 +1,26 @@
+{
+    "name": "cn.etetet.messagepack",
+    "displayName": "ET.MessagePack",
+    "version": "2.3.74",
+    "unity": "2018.4",
+    "description": "Embedded MessagePack-CSharp package for UGF network serialization.",
+    "keywords": [
+        "Serializer"
+    ],
+    "license": "MIT",
+    "category": "Scripting",
+    "dependencies": {
+        "com.unity.mathematics": "1.2.6"
+    },
+    "author": {
+        "name": "neuecc"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/MessagePack-CSharp/MessagePack-CSharp"
+    },
+    "relatedPackages": {},
+    "publishConfig": {
+        "registry": "https://npm.pkg.github.com/@ET-Packages"
+    }
+}

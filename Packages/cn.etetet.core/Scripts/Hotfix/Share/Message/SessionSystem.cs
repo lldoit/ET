@@ -10,6 +10,7 @@ namespace ET
         private static void Awake(this Session self, AService aService)
         {
             self.AService = aService;
+            self.NetworkMessageCodec = null;
             long timeNow = self.GetSingleton<TimeInfo>().ClientNow();
             self.LastRecvTime = timeNow;
             self.LastSendTime = timeNow;
@@ -103,9 +104,19 @@ namespace ET
             
             self.LastSendTime = self.GetSingleton<TimeInfo>().ClientNow();
 
-            (ushort opcode, MemoryBuffer memoryBuffer) = MessageSerializeHelper.ToMemoryBuffer(self.AService, fiberInstanceId, message);
+            (ushort opcode, MemoryBuffer memoryBuffer) = self.GetNetworkMessageCodec().ToMemoryBuffer(self.AService, fiberInstanceId, message);
             
             self.AService.Send(self.Id, memoryBuffer);
+        }
+
+        public static void SetNetworkMessageCodec(this Session self, INetworkMessageCodec codec)
+        {
+            self.NetworkMessageCodec = codec;
+        }
+
+        public static INetworkMessageCodec GetNetworkMessageCodec(this Session self)
+        {
+            return self.NetworkMessageCodec as INetworkMessageCodec ?? NinoNetworkMessageCodec.Instance;
         }
     }
 }

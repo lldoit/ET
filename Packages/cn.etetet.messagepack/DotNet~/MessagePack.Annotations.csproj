@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <TargetFramework>net10.0</TargetFramework>
+        <Nullable>disable</Nullable>
+        <LangVersion>12</LangVersion>
+        <AssemblyName>MessagePack.Annotations</AssemblyName>
+        <RootNamespace>MessagePack</RootNamespace>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <SatelliteResourceLanguages>en</SatelliteResourceLanguages>
+        <OutputPath>$(SolutionDir)Bin</OutputPath>
+        <DefineConstants>DOTNET</DefineConstants>
+        <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+        <NoWarn>0169,0649,3021,8981,NU1903</NoWarn>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <Compile Include="..\Annotations\**\*.cs" />
+    </ItemGroup>
+</Project>

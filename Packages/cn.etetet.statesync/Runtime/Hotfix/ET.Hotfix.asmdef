@@ -11,7 +11,8 @@
         "Unity.Mathematics",
         "ET.HybridCLR",
         "ET.Init",
-        "ET.YooAssets"
+        "ET.YooAssets",
+        "ET.MessagePackNet"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

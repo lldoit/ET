@@ -1,0 +1,22 @@
+{
+  "name": "cn.etetet.messagepacknet",
+  "displayName": "ET.MessagePackNet",
+  "version": "1.0.0",
+  "unity": "2022.3",
+  "description": "External server MessagePack payload codec for UGF10.",
+  "author": {
+    "name": "ET"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ET-Packages/cn.etetet.messagepacknet"
+  },
+  "relatedPackages": {},
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/@ET-Packages"
+  },
+  "dependencies": {
+    "cn.etetet.core": "4.0.0",
+    "cn.etetet.messagepack": "2.3.74"
+  }
+}

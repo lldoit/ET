@@ -63,7 +63,7 @@ namespace ET
             }
             session.LastRecvTime = self.GetSingleton<TimeInfo>().ClientNow();
             
-            (FiberInstanceId _, object message) = MessageSerializeHelper.ToMessage(self.AService, memoryBuffer);
+            (FiberInstanceId _, object message) = session.GetNetworkMessageCodec().ToMessage(self.AService, memoryBuffer);
             self.AService.Recycle(memoryBuffer);
 
             // 外网消息是10000~20000

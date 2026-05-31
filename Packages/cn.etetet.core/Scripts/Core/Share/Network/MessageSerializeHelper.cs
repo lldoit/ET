@@ -3,6 +3,33 @@ using System.IO;
 
 namespace ET
 {
+    public interface INetworkMessageCodec
+    {
+        (ushort Opcode, MemoryBuffer MemoryBuffer) ToMemoryBuffer(AService service, FiberInstanceId fiberInstanceId, object message);
+
+        (FiberInstanceId FiberInstanceId, object Message) ToMessage(AService service, MemoryBuffer memoryBuffer);
+    }
+
+    public sealed class NinoNetworkMessageCodec: INetworkMessageCodec
+    {
+        [StaticField]
+        public static readonly NinoNetworkMessageCodec Instance = new();
+
+        private NinoNetworkMessageCodec()
+        {
+        }
+
+        public (ushort Opcode, MemoryBuffer MemoryBuffer) ToMemoryBuffer(AService service, FiberInstanceId fiberInstanceId, object message)
+        {
+            return MessageSerializeHelper.ToMemoryBuffer(service, fiberInstanceId, message);
+        }
+
+        public (FiberInstanceId FiberInstanceId, object Message) ToMessage(AService service, MemoryBuffer memoryBuffer)
+        {
+            return MessageSerializeHelper.ToMessage(service, memoryBuffer);
+        }
+    }
+
     public static class MessageSerializeHelper
     {
         public static byte[] Serialize(MessageObject message)

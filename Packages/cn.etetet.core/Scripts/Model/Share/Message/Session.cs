@@ -38,6 +38,8 @@ namespace ET
     public sealed class Session: Entity, IAwake<AService>, IDestroy
     {
         public AService AService { get; set; }
+
+        public object NetworkMessageCodec { get; set; }
         
         public int RpcId
         {
