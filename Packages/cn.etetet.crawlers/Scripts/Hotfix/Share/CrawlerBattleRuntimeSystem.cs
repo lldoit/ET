@@ -21,6 +21,7 @@ namespace ET
             self.PlayerShield = 0;
             self.MaxMana = stageConfig.MaxMana;
             self.Mana = 0;
+            self.ActionRecords.Clear();
 
             CrawlerDeckComponent deck = self.DeckRef;
             CrawlerEnemyFormationComponent formation = self.FormationRef;
@@ -81,7 +82,7 @@ namespace ET
                 self.ApplyPlayerManaLoss(enemyTurn.ManaLoss);
             }
 
-            return new CrawlerTurnResult(
+            CrawlerTurnResult result = new CrawlerTurnResult(
                 true,
                 CrawlerPlayFailReason.None,
                 chantDamage,
@@ -101,6 +102,9 @@ namespace ET
                 self.CurrentTurn,
                 self.Phase,
                 self.Result);
+            self.AddEnemyTurnActionRecord(result);
+            self.TryAddBattleEndActionRecord();
+            return result;
         }
 
         private static void ApplyPlayerManaLoss(this CrawlerBattleComponent self, int amount)
@@ -115,6 +119,23 @@ namespace ET
             {
                 self.Mana = 0;
             }
+        }
+
+        private static void AddEnemyTurnActionRecord(this CrawlerBattleComponent self, CrawlerTurnResult result)
+        {
+            self.ActionRecords.Add(new CrawlerBattleActionRecord
+            {
+                Kind = CrawlerBattleActionKind.EnemyTurn,
+                Turn = result.EndedTurn,
+                AttackDamage = result.AttackDamage,
+                PoisonDamage = result.PoisonDamage,
+                ManaLoss = result.ManaLoss,
+                ShieldGained = result.ShieldGained,
+                SummonedEnemies = result.SummonedEnemies,
+                ChantDamage = result.ChantDamage,
+                PlayerDamage = result.PlayerDamage,
+                BattleResult = result.BattleResult
+            });
         }
     }
 }

@@ -66,6 +66,11 @@ namespace ET.Test
                 return Fail(500205, "battle should start boss chant from stage config");
             }
 
+            if (battle.ActionRecords.Count != 0)
+            {
+                return Fail(500206, "battle should start with empty action records");
+            }
+
             return ErrorCode.ERR_Success;
         }
 
@@ -91,6 +96,15 @@ namespace ET.Test
             if (battle.Mana != 3 || deck.Hand.Contains(damageCard) || !deck.DiscardPile.Contains(damageCard))
             {
                 return Fail(500212, "damage card should move from hand to discard without mana cost");
+            }
+
+            CrawlerBattleActionRecord playRecord = LastAction(battle);
+            if (playRecord == null || playRecord.Kind != CrawlerBattleActionKind.PlayCard ||
+                playRecord.CardId != damageCard.CardId || playRecord.CardInstanceId != damageCard.InstanceId ||
+                string.IsNullOrEmpty(playRecord.CardName) || playRecord.Damage != damageResult.Damage ||
+                playRecord.ComboLayer != damageResult.ComboLayer || playRecord.BattleResult != CrawlerBattleResult.InProgress)
+            {
+                return Fail(500216, "play card action record should capture card and effect result");
             }
 
             CrawlerPlayCardResult shieldResult = battle.TryPlayCard(shieldCard.InstanceId);
@@ -164,6 +178,14 @@ namespace ET.Test
             if (!result.Success || result.AttackDamage != 18 || result.PlayerDamage != 8)
             {
                 return Fail(500231, "front row attack should be reduced by shield");
+            }
+
+            CrawlerBattleActionRecord turnRecord = LastAction(battle);
+            if (turnRecord == null || turnRecord.Kind != CrawlerBattleActionKind.EnemyTurn ||
+                turnRecord.Turn != result.EndedTurn || turnRecord.AttackDamage != result.AttackDamage ||
+                turnRecord.PlayerDamage != result.PlayerDamage || turnRecord.BattleResult != result.BattleResult)
+            {
+                return Fail(500234, "enemy turn action record should capture turn damage result");
             }
 
             if (battle.PlayerHp != battle.PlayerMaxHp - 8 || battle.PlayerShield != 0)
@@ -256,6 +278,14 @@ namespace ET.Test
                 return Fail(500265, "disrupt intent should reduce next player turn mana");
             }
 
+            CrawlerBattleActionRecord turnRecord = LastAction(battle);
+            if (turnRecord == null || turnRecord.Kind != CrawlerBattleActionKind.EnemyTurn ||
+                turnRecord.PoisonDamage != result.PoisonDamage || turnRecord.ManaLoss != result.ManaLoss ||
+                turnRecord.ShieldGained != result.ShieldGained || turnRecord.SummonedEnemies != result.SummonedEnemies)
+            {
+                return Fail(500266, "enemy turn action record should capture intent aggregate fields");
+            }
+
             return ErrorCode.ERR_Success;
         }
 
@@ -281,6 +311,12 @@ namespace ET.Test
                 return Fail(500251, "clearing enemies should set victory");
             }
 
+            CrawlerBattleActionRecord victoryEnd = LastBattleEndAction(battle);
+            if (victoryEnd == null || victoryEnd.BattleResult != CrawlerBattleResult.Victory)
+            {
+                return Fail(500253, "victory should append battle end action record");
+            }
+
             battle.StartBattle(1);
             battle.PlayerHp = 1;
             battle.PlayerShield = 0;
@@ -291,7 +327,37 @@ namespace ET.Test
                 return Fail(500252, "lethal enemy damage should set defeat");
             }
 
+            CrawlerBattleActionRecord defeatEnd = LastBattleEndAction(battle);
+            if (defeatEnd == null || defeatEnd.BattleResult != CrawlerBattleResult.Defeat)
+            {
+                return Fail(500254, "defeat should append battle end action record");
+            }
+
             return ErrorCode.ERR_Success;
+        }
+
+        private static CrawlerBattleActionRecord LastAction(CrawlerBattleComponent battle)
+        {
+            if (battle.ActionRecords.Count == 0)
+            {
+                return null;
+            }
+
+            return battle.ActionRecords[battle.ActionRecords.Count - 1];
+        }
+
+        private static CrawlerBattleActionRecord LastBattleEndAction(CrawlerBattleComponent battle)
+        {
+            for (int i = battle.ActionRecords.Count - 1; i >= 0; i--)
+            {
+                CrawlerBattleActionRecord record = battle.ActionRecords[i];
+                if (record.Kind == CrawlerBattleActionKind.BattleEnd)
+                {
+                    return record;
+                }
+            }
+
+            return null;
         }
 
         private static void ResetPiles(CrawlerDeckComponent deck)

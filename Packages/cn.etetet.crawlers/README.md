@@ -9,6 +9,7 @@
 - `CardInput`：封装 pointer hover、click、drag 事件；当前战斗只用 click 触发出牌，drag 只保留为输入能力，不承担出牌判定。
 - `CardAnimator`：统一处理卡牌位置、旋转、缩放插值；后续可替换为 PrimeTween/DOTween 实现。
 - `CrawlerBattleComponent`：保存样例战斗回合、灵力、气血、战斗阶段和核心子组件引用。
+- `CrawlerBattleActionRecord`：保存出牌、敌方回合和战斗结束的结构化行动记录，供后续 UI 绑定和动画回放消费。
 - `CrawlerDeckComponent`：维护抽牌堆、手牌、弃牌堆、消耗区和临时包裹。
 - `CrawlerComboComponent`：维护费用严格递增连段、断链和 Wild 补链。
 - `Excel`：Crawlers 战斗参数源表，使用 Luban 表头格式，通过 `ET/Luban/Generate` 导出到 `cn.etetet.luban` 的运行时配置链路。
@@ -50,6 +51,7 @@
 8. 点击结束回合后，规则层先清理空前排并推进后一排，再结算当前前排敌人意图；若成功，出牌堆视觉牌进入右下 `DiscardPile`，再飞回左下 `DrawPile` 并销毁，新手牌从 `DrawPile` 飞到 `HandArea`。
 9. UI 刷新只读取当前 `BattleRef`，不会在刷新、出牌失败或结束回合失败时隐式创建新战斗。
 10. 点击返回退出战斗时会释放 Crawlers 战斗 Scene，并清理 Root 上可能残留的旧战斗组件；重新进入时会清空旧的出牌堆、弃牌堆和抽牌堆视觉牌。
+11. `ActionRecords` 在每次 `StartBattle` 时清空；成功出牌追加 `PlayCard`，结束玩家回合追加 `EnemyTurn`，首次胜利或失败追加 `BattleEnd`。
 
 ## 敌人意图
 
@@ -87,7 +89,7 @@
 
 ## 测试
 
-P0 战斗规则闭环由 `Crawlers_CombatRules_Test` 覆盖，包含启动战斗、出牌效果、连段、敌方回合、护盾、Boss 破势和胜负结算。
+P0 战斗规则闭环由 `Crawlers_CombatRules_Test` 覆盖，包含启动战斗、出牌效果、连段、敌方回合、敌人意图、行动记录、护盾、Boss 破势和胜负结算。
 
 ```powershell
 dotnet build ET.sln

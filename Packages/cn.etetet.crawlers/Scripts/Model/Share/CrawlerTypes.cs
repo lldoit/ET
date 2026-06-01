@@ -19,10 +19,37 @@ namespace ET
         Defeat = 2
     }
 
+    public enum CrawlerBattleActionKind
+    {
+        PlayCard = 0,
+        EnemyTurn = 1,
+        BattleEnd = 2
+    }
 
-
-
-
+    [EnableClass]
+    public sealed class CrawlerBattleActionRecord
+    {
+        public CrawlerBattleActionKind Kind;
+        public int Turn;
+        public int CardId;
+        public long CardInstanceId;
+        public string CardName;
+        public int Damage;
+        public int Shield;
+        public int DrawCount;
+        public int ManaGain;
+        public int ComboLayer;
+        public bool ComboBroken;
+        public bool ChantBroken;
+        public int AttackDamage;
+        public int PoisonDamage;
+        public int ManaLoss;
+        public int ShieldGained;
+        public int SummonedEnemies;
+        public int ChantDamage;
+        public int PlayerDamage;
+        public CrawlerBattleResult BattleResult;
+    }
 
     public enum CrawlerPlayFailReason
     {

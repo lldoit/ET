@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace ET
 {
     [ComponentOf(typeof(Scene))]
@@ -18,5 +20,6 @@ namespace ET
         public EntityRef<CrawlerComboComponent> ComboRef;
         public EntityRef<CrawlerEnemyFormationComponent> FormationRef;
         public EntityRef<CrawlerChantComponent> ChantRef;
+        public List<CrawlerBattleActionRecord> ActionRecords;
     }
 }

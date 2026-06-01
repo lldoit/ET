@@ -28,6 +28,7 @@ namespace ET
             self.ComboRef = self.AddComponent<CrawlerComboComponent>();
             self.FormationRef = self.AddComponent<CrawlerEnemyFormationComponent>();
             self.ChantRef = self.AddComponent<CrawlerChantComponent>();
+            self.ActionRecords = new List<CrawlerBattleActionRecord>();
         }
 
         [EntitySystem]
@@ -37,6 +38,8 @@ namespace ET
             self.ComboRef = default;
             self.FormationRef = default;
             self.ChantRef = default;
+            self.ActionRecords?.Clear();
+            self.ActionRecords = null;
         }
 
         public static CrawlerPlayCardResult TryPlayCard(this CrawlerBattleComponent self, long cardInstanceId)
@@ -85,6 +88,8 @@ namespace ET
             deck.RemoveHandCard(card);
             deck.DiscardPlayedCard(card, data);
             self.CheckBattleEnd();
+            self.AddPlayCardActionRecord(card, data, result);
+            self.TryAddBattleEndActionRecord();
             Log.Info(self.BuildPlayLog(data, result));
             return result;
         }
@@ -224,6 +229,59 @@ namespace ET
                 self.Result = CrawlerBattleResult.Defeat;
                 self.Phase = CrawlerBattlePhase.Defeat;
             }
+        }
+
+        private static void AddPlayCardActionRecord(
+            this CrawlerBattleComponent self,
+            CrawlerCardInstance card,
+            CrawlerCardData data,
+            CrawlerPlayCardResult result)
+        {
+            self.ActionRecords.Add(new CrawlerBattleActionRecord
+            {
+                Kind = CrawlerBattleActionKind.PlayCard,
+                Turn = self.CurrentTurn,
+                CardId = card.CardId,
+                CardInstanceId = card.InstanceId,
+                CardName = data.Name,
+                Damage = result.Damage,
+                Shield = result.Shield,
+                DrawCount = result.DrawCount,
+                ManaGain = result.ManaGain,
+                ComboLayer = result.ComboLayer,
+                ComboBroken = result.ComboBroken,
+                ChantBroken = result.ChantBroken,
+                BattleResult = self.Result
+            });
+        }
+
+        private static void TryAddBattleEndActionRecord(this CrawlerBattleComponent self)
+        {
+            if (self.Result == CrawlerBattleResult.InProgress || self.HasBattleEndActionRecord())
+            {
+                return;
+            }
+
+            self.ActionRecords.Add(new CrawlerBattleActionRecord
+            {
+                Kind = CrawlerBattleActionKind.BattleEnd,
+                Turn = self.CurrentTurn,
+                BattleResult = self.Result,
+                PlayerDamage = self.PlayerMaxHp - self.PlayerHp
+            });
+        }
+
+        private static bool HasBattleEndActionRecord(this CrawlerBattleComponent self)
+        {
+            for (int i = 0; i < self.ActionRecords.Count; i++)
+            {
+                if (self.ActionRecords[i].Kind == CrawlerBattleActionKind.BattleEnd)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
     }
