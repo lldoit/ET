@@ -107,6 +107,13 @@ namespace ET.Test
                 return Fail(500216, "play card action record should capture card and effect result");
             }
 
+            string playSummary = battle.BuildUiBattleSummary();
+            if (!playSummary.Contains("最近 出牌") || !playSummary.Contains(playRecord.CardName) ||
+                !playSummary.Contains("伤害:18") || !playSummary.Contains("连段:1"))
+            {
+                return Fail(500217, "battle summary should include latest play card action");
+            }
+
             CrawlerPlayCardResult shieldResult = battle.TryPlayCard(shieldCard.InstanceId);
             if (!shieldResult.Success || shieldResult.Shield != 10 || battle.PlayerShield != 10 || battle.Mana != 2)
             {
@@ -286,6 +293,14 @@ namespace ET.Test
                 return Fail(500266, "enemy turn action record should capture intent aggregate fields");
             }
 
+            string enemySummary = battle.BuildUiBattleSummary();
+            if (!enemySummary.Contains("最近 敌方") || !enemySummary.Contains("中毒:6") ||
+                !enemySummary.Contains("扰乱:2") || !enemySummary.Contains("防御:4") ||
+                !enemySummary.Contains("召唤:1"))
+            {
+                return Fail(500267, "battle summary should include latest enemy turn action");
+            }
+
             return ErrorCode.ERR_Success;
         }
 
@@ -317,6 +332,11 @@ namespace ET.Test
                 return Fail(500253, "victory should append battle end action record");
             }
 
+            if (!battle.BuildUiBattleSummary().Contains("最近 战斗结束 Victory"))
+            {
+                return Fail(500255, "battle summary should include victory action");
+            }
+
             battle.StartBattle(1);
             battle.PlayerHp = 1;
             battle.PlayerShield = 0;
@@ -331,6 +351,11 @@ namespace ET.Test
             if (defeatEnd == null || defeatEnd.BattleResult != CrawlerBattleResult.Defeat)
             {
                 return Fail(500254, "defeat should append battle end action record");
+            }
+
+            if (!battle.BuildUiBattleSummary().Contains("最近 战斗结束 Defeat"))
+            {
+                return Fail(500256, "battle summary should include defeat action");
             }
 
             return ErrorCode.ERR_Success;

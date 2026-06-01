@@ -52,6 +52,7 @@
 9. UI 刷新只读取当前 `BattleRef`，不会在刷新、出牌失败或结束回合失败时隐式创建新战斗。
 10. 点击返回退出战斗时会释放 Crawlers 战斗 Scene，并清理 Root 上可能残留的旧战斗组件；重新进入时会清空旧的出牌堆、弃牌堆和抽牌堆视觉牌。
 11. `ActionRecords` 在每次 `StartBattle` 时清空；成功出牌追加 `PlayCard`，结束玩家回合追加 `EnemyTurn`，首次胜利或失败追加 `BattleEnd`。
+12. `u_DataBattleSummary` 通过 `BuildUiBattleSummary()` 追加最近行动摘要，显示最近出牌、敌方回合或战斗结束结果。
 
 ## 敌人意图
 
@@ -89,7 +90,7 @@
 
 ## 测试
 
-P0 战斗规则闭环由 `Crawlers_CombatRules_Test` 覆盖，包含启动战斗、出牌效果、连段、敌方回合、敌人意图、行动记录、护盾、Boss 破势和胜负结算。
+P0 战斗规则闭环由 `Crawlers_CombatRules_Test` 覆盖，包含启动战斗、出牌效果、连段、敌方回合、敌人意图、行动记录、行动摘要、护盾、Boss 破势和胜负结算。
 
 ```powershell
 dotnet build ET.sln
