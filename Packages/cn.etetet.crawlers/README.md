@@ -73,3 +73,13 @@
 6. `CrawlerCardComponent` 的 `ComponentTable` 字段包含 `u_ComCardView`、`u_ComCardInput`、`u_ComCardAnimator`、`u_ComTitleText`、`u_ComBodyText`、`u_ComCostText` 等引用。
 7. 用 `CrawlerHandView.SetCards` 填充卡牌，或在 Inspector 的 `previewCards` 中配置预览数据。
 8. `CrawlersPanel` 需要保留 `RightHud`、`RightHud/PlayedPile`、`RightHud/ManaWidget`、`RightHud/ManaWidget/Value`、`DiscardPile`、`DrawPile` 和 `HandArea` 节点。
+
+## 测试
+
+P0 战斗规则闭环由 `Crawlers_CombatRules_Test` 覆盖，包含启动战斗、出牌效果、连段、敌方回合、护盾、Boss 破势和胜负结算。
+
+```powershell
+dotnet build ET.sln
+Remove-Item ./Logs -Recurse -Force -ErrorAction SilentlyContinue
+"Test --Name=Crawlers_CombatRules" | dotnet ./Bin/ET.App.dll --SceneName=Test
+```
