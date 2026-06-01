@@ -74,9 +74,11 @@ namespace ET
             deck.DiscardTurnRemainder();
             self.ResolveEnemyTurn(out int chantDamage, out int attackDamage, out int playerDamage);
             CrawlerEnemyFormationComponent formation = self.FormationRef;
+            CrawlerEnemyTurnResult enemyTurn = formation.LastEnemyTurnResult;
             if (self.Result == CrawlerBattleResult.InProgress)
             {
                 self.BeginPlayerTurn();
+                self.ApplyPlayerManaLoss(enemyTurn.ManaLoss);
             }
 
             return new CrawlerTurnResult(
@@ -84,13 +86,35 @@ namespace ET
                 CrawlerPlayFailReason.None,
                 chantDamage,
                 attackDamage,
+                enemyTurn.PoisonDamage,
+                enemyTurn.ManaLoss,
                 playerDamage,
                 formation.LastAdvancedRows,
                 formation.LastFrontRowAttackers,
+                enemyTurn.Defenders,
+                enemyTurn.ShieldGained,
+                enemyTurn.Summoners,
+                enemyTurn.SummonedEnemies,
+                enemyTurn.Poisoners,
+                enemyTurn.Disruptors,
                 endedTurn,
                 self.CurrentTurn,
                 self.Phase,
                 self.Result);
+        }
+
+        private static void ApplyPlayerManaLoss(this CrawlerBattleComponent self, int amount)
+        {
+            if (amount <= 0)
+            {
+                return;
+            }
+
+            self.Mana -= amount;
+            if (self.Mana < 0)
+            {
+                self.Mana = 0;
+            }
         }
     }
 }

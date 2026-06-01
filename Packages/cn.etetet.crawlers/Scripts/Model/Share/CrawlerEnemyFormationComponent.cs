@@ -11,5 +11,6 @@ namespace ET
         public int MaxColumns;
         public int LastAdvancedRows;
         public int LastFrontRowAttackers;
+        public CrawlerEnemyTurnResult LastEnemyTurnResult;
     }
 }

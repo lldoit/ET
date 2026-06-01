@@ -15,6 +15,7 @@ namespace ET
             self.MaxColumns = 5;
             self.LastAdvancedRows = 0;
             self.LastFrontRowAttackers = 0;
+            self.LastEnemyTurnResult = new CrawlerEnemyTurnResult(0, 0, 0);
         }
 
         [EntitySystem]
@@ -31,6 +32,7 @@ namespace ET
             self.NextEnemyInstanceId = 1;
             self.LastAdvancedRows = 0;
             self.LastFrontRowAttackers = 0;
+            self.LastEnemyTurnResult = new CrawlerEnemyTurnResult(0, 0, 0);
             self.LoadEnemyLibrary();
             self.LoadFormationRows(stageId);
         }
@@ -142,22 +144,96 @@ namespace ET
             if (self.Rows.Count == 0)
             {
                 self.LastFrontRowAttackers = 0;
-                return new CrawlerEnemyTurnResult(advancedRows, 0, 0);
+                self.LastEnemyTurnResult = new CrawlerEnemyTurnResult(advancedRows, 0, 0);
+                return self.LastEnemyTurnResult;
             }
 
             int attackers = 0;
-            int total = 0;
+            int attackDamage = 0;
+            int defenders = 0;
+            int shieldGained = 0;
+            int summoners = 0;
+            int summonedEnemies = 0;
+            int poisoners = 0;
+            int poisonDamage = 0;
+            int disruptors = 0;
+            int manaLoss = 0;
             foreach (CrawlerEnemyState enemy in self.Rows[0])
             {
-                if (enemy.IsAlive && enemy.Intent == CrawlerIntentType.Attack)
+                if (!enemy.IsAlive)
+                {
+                    continue;
+                }
+
+                if (enemy.Intent == CrawlerIntentType.Attack)
                 {
                     attackers++;
-                    total += enemy.Attack;
+                    attackDamage += enemy.Attack;
+                }
+                else if (enemy.Intent == CrawlerIntentType.Defence)
+                {
+                    defenders++;
+                    enemy.Shield += enemy.Attack;
+                    shieldGained += enemy.Attack;
+                }
+                else if (enemy.Intent == CrawlerIntentType.Summon)
+                {
+                    summoners++;
+                    if (self.SummonCopyBehind(enemy) != null)
+                    {
+                        summonedEnemies++;
+                    }
+                }
+                else if (enemy.Intent == CrawlerIntentType.Poison)
+                {
+                    poisoners++;
+                    poisonDamage += enemy.Attack;
+                }
+                else if (enemy.Intent == CrawlerIntentType.Disrupt)
+                {
+                    disruptors++;
+                    manaLoss += enemy.Attack;
                 }
             }
 
             self.LastFrontRowAttackers = attackers;
-            return new CrawlerEnemyTurnResult(advancedRows, attackers, total);
+            self.LastEnemyTurnResult = new CrawlerEnemyTurnResult(
+                advancedRows,
+                attackers,
+                attackDamage,
+                defenders,
+                shieldGained,
+                summoners,
+                summonedEnemies,
+                poisoners,
+                poisonDamage,
+                disruptors,
+                manaLoss);
+            return self.LastEnemyTurnResult;
+        }
+
+        public static CrawlerEnemyState SummonCopyBehind(this CrawlerEnemyFormationComponent self, CrawlerEnemyState summoner)
+        {
+            if (summoner == null || !summoner.IsAlive)
+            {
+                return null;
+            }
+
+            int targetRow = summoner.Row + 1;
+            while (self.Rows.Count <= targetRow)
+            {
+                self.Rows.Add(new List<CrawlerEnemyState>());
+            }
+
+            List<CrawlerEnemyState> row = self.Rows[targetRow];
+            CrawlerEnemyState summoned = self.CreateEnemyState(summoner.EnemyId, targetRow, row.Count);
+            row.Add(summoned);
+            if (summoned.Column + 1 > self.MaxColumns)
+            {
+                self.MaxColumns = summoned.Column + 1;
+            }
+
+            return summoned;
         }
 
         private static void AddFrontRowTargets(

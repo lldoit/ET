@@ -191,7 +191,7 @@ namespace ET
             chantDamage = chant.TickOrResolve();
             CrawlerEnemyTurnResult enemyTurn = formation.ResolveFrontRowAction();
             attackDamage = enemyTurn.AttackDamage;
-            self.ApplyPlayerDamage(chantDamage + attackDamage);
+            self.ApplyPlayerDamage(chantDamage + attackDamage + enemyTurn.PoisonDamage);
             playerDamage = hpBefore - self.PlayerHp;
             self.CheckBattleEnd();
             Log.Info(self.BuildEnemyTurnLog(enemyTurn, chantDamage, playerDamage));

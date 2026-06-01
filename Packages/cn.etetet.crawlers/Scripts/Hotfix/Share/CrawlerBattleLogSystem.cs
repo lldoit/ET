@@ -22,7 +22,7 @@ namespace ET
             int chantDamage,
             int playerDamage)
         {
-            return $"{self.BuildStateLog("[Crawlers] 敌方回合结束")} 推进:{enemyTurn.AdvancedRows} 行动敌人:{enemyTurn.Attackers} 敌方攻击:{enemyTurn.AttackDamage} 吟唱:{chantDamage} 玩家受伤:{playerDamage}";
+            return $"{self.BuildStateLog("[Crawlers] 敌方回合结束")} 推进:{enemyTurn.AdvancedRows} 攻击:{enemyTurn.Attackers}/{enemyTurn.AttackDamage} 防御:{enemyTurn.Defenders}/{enemyTurn.ShieldGained} 召唤:{enemyTurn.Summoners}/{enemyTurn.SummonedEnemies} 中毒:{enemyTurn.Poisoners}/{enemyTurn.PoisonDamage} 扰乱:{enemyTurn.Disruptors}/{enemyTurn.ManaLoss} 吟唱:{chantDamage} 玩家受伤:{playerDamage}";
         }
 
         private static int CountAliveEnemies(CrawlerEnemyFormationComponent formation)

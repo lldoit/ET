@@ -47,9 +47,20 @@
 5. 成功打出的牌按出牌顺序叠到右上 `RightHud/PlayedPile`。
 6. 费用必须严格递增续连段；费用跳档或逆序会断链。断链时，断链前已经打出的牌飞到右下角 `DiscardPile`，短暂停留后销毁；当前点击的牌作为新连段第一张进入 `PlayedPile`。
 7. 右侧 `RightHud/ManaWidget` 显示当前灵力和灵力上限，同时同步旧的 `EnergyOrb/Value`。
-8. 点击结束回合后，规则层先清理空前排并推进后一排，再结算当前前排攻击；若成功，出牌堆视觉牌进入右下 `DiscardPile`，再飞回左下 `DrawPile` 并销毁，新手牌从 `DrawPile` 飞到 `HandArea`。
+8. 点击结束回合后，规则层先清理空前排并推进后一排，再结算当前前排敌人意图；若成功，出牌堆视觉牌进入右下 `DiscardPile`，再飞回左下 `DrawPile` 并销毁，新手牌从 `DrawPile` 飞到 `HandArea`。
 9. UI 刷新只读取当前 `BattleRef`，不会在刷新、出牌失败或结束回合失败时隐式创建新战斗。
 10. 点击返回退出战斗时会释放 Crawlers 战斗 Scene，并清理 Root 上可能残留的旧战斗组件；重新进入时会清空旧的出牌堆、弃牌堆和抽牌堆视觉牌。
+
+## 敌人意图
+
+敌方回合只结算当前前排存活敌人：
+
+- `Attack`：按敌人 `Attack` 累计攻击伤害，由玩家护盾优先吸收。
+- `Defence`：按敌人 `Attack` 给自身增加护盾。
+- `Summon`：复制自身 `EnemyId`，在下一排末尾追加一个同类敌人。
+- `Poison`：按敌人 `Attack` 累计中毒伤害，并作为玩家伤害结算。
+- `Disrupt`：按敌人 `Attack` 扣除下一玩家回合的当前灵力，最低为 0。
+- `Chant`：Boss 吟唱仍由 `CrawlerChantComponent` 处理，不作为普通前排行动结算。
 
 ## 配置链路
 

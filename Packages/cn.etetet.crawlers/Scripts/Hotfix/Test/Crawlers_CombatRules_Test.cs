@@ -26,6 +26,9 @@ namespace ET.Test
             result = ValidateEnemyTurnAndShield(battle);
             if (result != ErrorCode.ERR_Success) return result;
 
+            result = ValidateEnemyIntents(battle);
+            if (result != ErrorCode.ERR_Success) return result;
+
             result = ValidateChantRules(battle);
             if (result != ErrorCode.ERR_Success) return result;
 
@@ -206,6 +209,56 @@ namespace ET.Test
             return ErrorCode.ERR_Success;
         }
 
+        private static int ValidateEnemyIntents(CrawlerBattleComponent battle)
+        {
+            battle.StartBattle(1);
+            CrawlerDeckComponent deck = battle.DeckRef;
+            ResetPiles(deck);
+            battle.PlayerHp = battle.PlayerMaxHp;
+            battle.PlayerShield = 0;
+            battle.Mana = battle.MaxMana;
+
+            CrawlerEnemyFormationComponent formation = battle.FormationRef;
+            formation.Rows.Clear();
+            var frontRow = new List<CrawlerEnemyState>
+            {
+                CreateEnemy(3001, CrawlerIntentType.Defence, 4, 0, 0),
+                CreateEnemy(3002, CrawlerIntentType.Summon, 1, 0, 1),
+                CreateEnemy(3003, CrawlerIntentType.Poison, 6, 0, 2),
+                CreateEnemy(3004, CrawlerIntentType.Disrupt, 2, 0, 3)
+            };
+            formation.Rows.Add(frontRow);
+            formation.MaxColumns = frontRow.Count;
+
+            CrawlerTurnResult result = battle.EndPlayerTurn();
+            if (!result.Success)
+            {
+                return Fail(500261, "enemy intent turn should succeed");
+            }
+
+            if (frontRow[0].Shield != 4 || result.ShieldGained != 4 || result.Defenders != 1)
+            {
+                return Fail(500262, "defence intent should add enemy shield");
+            }
+
+            if (formation.Rows.Count < 2 || formation.Rows[1].Count != 1 || result.SummonedEnemies != 1 || result.Summoners != 1)
+            {
+                return Fail(500263, "summon intent should create one enemy behind front row");
+            }
+
+            if (result.PoisonDamage != 6 || result.Poisoners != 1 || result.PlayerDamage != 6 || battle.PlayerHp != battle.PlayerMaxHp - 6)
+            {
+                return Fail(500264, "poison intent should damage player and report poison damage");
+            }
+
+            if (result.ManaLoss != 2 || result.Disruptors != 1 || battle.Mana != battle.MaxMana - 2)
+            {
+                return Fail(500265, "disrupt intent should reduce next player turn mana");
+            }
+
+            return ErrorCode.ERR_Success;
+        }
+
         private static int ValidateBattleEnd(CrawlerBattleComponent battle)
         {
             battle.StartBattle(1);
@@ -271,6 +324,25 @@ namespace ET.Test
                 InstanceId = deck.NextCardInstanceId++,
                 CardId = cardId,
                 RuntimeCost = runtimeCost
+            };
+        }
+
+        private static CrawlerEnemyState CreateEnemy(long instanceId, CrawlerIntentType intent, int attack, int row, int column)
+        {
+            return new CrawlerEnemyState
+            {
+                InstanceId = instanceId,
+                EnemyId = 2001,
+                Name = intent.ToString(),
+                Element = CrawlerElement.Earth,
+                MaxHp = 30,
+                Hp = 30,
+                Shield = 0,
+                Attack = attack,
+                Row = row,
+                Column = column,
+                IsBoss = false,
+                Intent = intent
             };
         }
 

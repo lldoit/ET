@@ -106,12 +106,44 @@ namespace ET
         public readonly int AdvancedRows;
         public readonly int Attackers;
         public readonly int AttackDamage;
+        public readonly int Defenders;
+        public readonly int ShieldGained;
+        public readonly int Summoners;
+        public readonly int SummonedEnemies;
+        public readonly int Poisoners;
+        public readonly int PoisonDamage;
+        public readonly int Disruptors;
+        public readonly int ManaLoss;
 
         public CrawlerEnemyTurnResult(int advancedRows, int attackers, int attackDamage)
+            : this(advancedRows, attackers, attackDamage, 0, 0, 0, 0, 0, 0, 0, 0)
+        {
+        }
+
+        public CrawlerEnemyTurnResult(
+            int advancedRows,
+            int attackers,
+            int attackDamage,
+            int defenders,
+            int shieldGained,
+            int summoners,
+            int summonedEnemies,
+            int poisoners,
+            int poisonDamage,
+            int disruptors,
+            int manaLoss)
         {
             this.AdvancedRows = advancedRows;
             this.Attackers = attackers;
             this.AttackDamage = attackDamage;
+            this.Defenders = defenders;
+            this.ShieldGained = shieldGained;
+            this.Summoners = summoners;
+            this.SummonedEnemies = summonedEnemies;
+            this.Poisoners = poisoners;
+            this.PoisonDamage = poisonDamage;
+            this.Disruptors = disruptors;
+            this.ManaLoss = manaLoss;
         }
     }
 
@@ -161,9 +193,17 @@ namespace ET
         public readonly CrawlerPlayFailReason FailReason;
         public readonly int ChantDamage;
         public readonly int AttackDamage;
+        public readonly int PoisonDamage;
+        public readonly int ManaLoss;
         public readonly int PlayerDamage;
         public readonly int AdvancedRows;
         public readonly int Attackers;
+        public readonly int Defenders;
+        public readonly int ShieldGained;
+        public readonly int Summoners;
+        public readonly int SummonedEnemies;
+        public readonly int Poisoners;
+        public readonly int Disruptors;
         public readonly int EndedTurn;
         public readonly int CurrentTurn;
         public readonly CrawlerBattlePhase Phase;
@@ -174,9 +214,17 @@ namespace ET
             CrawlerPlayFailReason failReason,
             int chantDamage,
             int attackDamage,
+            int poisonDamage,
+            int manaLoss,
             int playerDamage,
             int advancedRows,
             int attackers,
+            int defenders,
+            int shieldGained,
+            int summoners,
+            int summonedEnemies,
+            int poisoners,
+            int disruptors,
             int endedTurn,
             int currentTurn,
             CrawlerBattlePhase phase,
@@ -186,9 +234,17 @@ namespace ET
             this.FailReason = failReason;
             this.ChantDamage = chantDamage;
             this.AttackDamage = attackDamage;
+            this.PoisonDamage = poisonDamage;
+            this.ManaLoss = manaLoss;
             this.PlayerDamage = playerDamage;
             this.AdvancedRows = advancedRows;
             this.Attackers = attackers;
+            this.Defenders = defenders;
+            this.ShieldGained = shieldGained;
+            this.Summoners = summoners;
+            this.SummonedEnemies = summonedEnemies;
+            this.Poisoners = poisoners;
+            this.Disruptors = disruptors;
             this.EndedTurn = endedTurn;
             this.CurrentTurn = currentTurn;
             this.Phase = phase;
@@ -197,7 +253,26 @@ namespace ET
 
         public static CrawlerTurnResult Fail(CrawlerPlayFailReason reason)
         {
-            return new CrawlerTurnResult(false, reason, 0, 0, 0, 0, 0, 0, 0, CrawlerBattlePhase.Preparing, CrawlerBattleResult.InProgress);
+            return new CrawlerTurnResult(
+                false,
+                reason,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                0,
+                CrawlerBattlePhase.Preparing,
+                CrawlerBattleResult.InProgress);
         }
     }
 }
