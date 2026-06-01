@@ -229,6 +229,8 @@ Codex 规范 skill 均采用 `skills/{skill-name}/SKILL.md` 结构，且 `SKILL.
 - 每个 package 中都有 `packagegit.json` 文件，每个 `packagegit.json` 中的 `Id` 是项目唯一的。
 - 每个 package 中都有 `Scripts/Model/Share/PackageType.cs` 文件，里面的编号就是 `packagegit.json` 中的 `Id`。
 - 每个包都有 `AGENTS.md` 文件；如果没有请创建。修改前先读取并理解包内规范，可以参考 `cn.etetet.test` 包。
+- 继承 `MonoBehaviour`、`SerializedMonoBehaviour` 或其它 Unity `Component` 的 Prefab / Inspector 配置组件，默认放在包内 `Runtime/`，不要放进 `Scripts/Model*`、`Scripts/Hotfix*` 等 ET 代码分层目录；通过 `Runtime/AssemblyReference.asmref` 汇入合适程序集，例如 UI/YIUI 组件汇入 `ET.YIUIFramework`。
+- Unity 组件脚本不要添加 `[EnableClass]`；该标记只用于确需通过 ET 分析器允许的普通 C# 类。
 
 ## 核心开发原则
 

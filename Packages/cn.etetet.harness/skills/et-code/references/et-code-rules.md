@@ -16,6 +16,9 @@
 - 修改包内文件前先读取对应包的 `AGENTS.md`。
 - Model 层：`Scripts/Model/` 或 `Scripts/ModelView/`。
 - Hotfix 层：`Scripts/Hotfix/` 或 `Scripts/HotfixView/`。
+- 继承 `MonoBehaviour`、`SerializedMonoBehaviour` 或其它 Unity `Component` 的 Prefab / Inspector 配置组件，默认放在包内 `Runtime/`，不要放进 `Scripts/Model*`、`Scripts/Hotfix*` 等 ET 代码分层目录。
+- `Runtime/` 下通过 `AssemblyReference.asmref` 汇入实际归属程序集；UI/YIUI 相关组件优先汇入 `ET.YIUIFramework`，不要为了让 Hotfix 访问而指向 `ET.ModelView`。
+- Unity 组件脚本不要添加 `[EnableClass]`；该标记只用于确需通过 ET 分析器允许的普通 C# 类。
 - 新建 C# 文件不手工创建 `.meta`，由 Unity 自动生成。
 - 移动 C# 文件必须同时移动对应 `.meta`，确保 GUID 不变。
 - 默认一类一文件；主类型与文件名保持一致。
