@@ -528,7 +528,8 @@
         "cn.etetet.db": "4.0.0",
         "cn.etetet.unitybridge": "4.0.0",
         "cn.etetet.conditionexpr": "4.0.0",
-        "cn.etetet.messagepacknet": "1.0.0"
+        "cn.etetet.messagepacknet": "1.0.0",
+        "cn.etetet.audio": "1.0.0"
       }
     },
     "cn.etetet.test": {

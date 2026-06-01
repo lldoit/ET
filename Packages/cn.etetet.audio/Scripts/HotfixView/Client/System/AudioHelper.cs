@@ -1,5 +1,7 @@
 namespace ET.Client
 {
+    using UnityEngine.Audio;
+
     public static class AudioHelper
     {
         public static AudioComponent Get(Scene scene)
@@ -63,6 +65,11 @@ namespace ET.Client
         public static void SetGroupVolume(Scene scene, string groupName, float volume)
         {
             scene.GetComponent<AudioComponent>()?.SetGroupVolume(groupName, volume);
+        }
+
+        public static void SetGroupMixerGroup(Scene scene, string groupName, AudioMixerGroup mixerGroup)
+        {
+            scene.GetComponent<AudioComponent>()?.SetGroupMixerGroup(groupName, mixerGroup);
         }
     }
 }

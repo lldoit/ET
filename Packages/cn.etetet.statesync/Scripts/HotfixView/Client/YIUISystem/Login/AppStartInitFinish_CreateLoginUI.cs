@@ -10,6 +10,7 @@ namespace ET.Client
 			World.Instance.AddSingleton<YIUIEventComponent>();
 			root.AddComponent<ResourcesLoaderComponent>();
 			root.AddComponent<GlobalComponent>();
+			AudioHelper.PlayMusic(root, "BGM_Login").Coroutine();
 			bool result = await root.AddComponent<YIUIMgrComponent>().Initialize();
 			if (!result)
 			{

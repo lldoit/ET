@@ -26,6 +26,8 @@ namespace ET.Client
         [EntitySystem]
         private static async ETTask<bool> YIUIOpen(this HomePanelComponent self)
         {
+            self.Root().BindUIAudio(self.UIBase.OwnerGameObject);
+            AudioHelper.PlaySound(self.Root(), "SFX_UI_Open").Coroutine();
             await ETTask.CompletedTask;
             return true;
         }
@@ -35,6 +37,7 @@ namespace ET.Client
         [YIUIInvoke(HomePanelComponent.OnEventStageInvoke)]
         private static async ETTask OnEventStageInvoke(this HomePanelComponent self)
         {
+            AudioHelper.PlaySound(self.Root(), "SFX_UI_Click").Coroutine();
             await self.YIUIMgr().Root.OpenPanelAsync<StagePanelComponent>();
         }
         #endregion YIUIEvent结束

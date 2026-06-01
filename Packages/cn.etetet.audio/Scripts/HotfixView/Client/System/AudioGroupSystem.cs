@@ -123,6 +123,14 @@ namespace ET.Client
             }
         }
 
+        public static void RefreshMixerGroup(this AudioGroup self)
+        {
+            foreach (AudioAgent agent in self.Agents)
+            {
+                agent.RefreshMixerGroup(self);
+            }
+        }
+
         public static void Destroy(this AudioGroup self)
         {
             foreach (AudioAgent agent in self.Agents)

@@ -6,6 +6,7 @@ namespace ET.Client
 	{
 		protected override async ETTask Run(Scene scene, LoginFinish args)
 		{
+			AudioHelper.PlaySound(scene, "SFX_UI_Close").Coroutine();
 			await scene.YIUIMgr().ClosePanelAsync<LoginPanelComponent>();
 		}
 	}

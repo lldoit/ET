@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Audio;
 
 namespace ET.Client
 {
@@ -148,6 +149,17 @@ namespace ET.Client
 
             group.Volume = Mathf.Clamp01(volume);
             group.RefreshVolume();
+        }
+
+        public static void SetGroupMixerGroup(this AudioComponent self, string groupName, AudioMixerGroup mixerGroup)
+        {
+            if (!self.Groups.TryGetValue(groupName, out AudioGroup group))
+            {
+                return;
+            }
+
+            group.MixerGroup = mixerGroup;
+            group.RefreshMixerGroup();
         }
 
         public static bool IsLoading(this AudioComponent self, int serialId)

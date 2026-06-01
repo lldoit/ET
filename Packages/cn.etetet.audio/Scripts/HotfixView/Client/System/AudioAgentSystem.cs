@@ -52,6 +52,16 @@ namespace ET.Client
             source.dopplerLevel = Mathf.Max(0f, playParams.DopplerLevel);
         }
 
+        public static void RefreshMixerGroup(this AudioAgent self, AudioGroup group)
+        {
+            if (self.AudioSource == null || group == null)
+            {
+                return;
+            }
+
+            self.AudioSource.outputAudioMixerGroup = group.MixerGroup;
+        }
+
         public static void RefreshMute(this AudioAgent self, AudioGroup group)
         {
             if (self.AudioSource == null || group == null)
@@ -83,6 +93,7 @@ namespace ET.Client
             self.State = AudioAgentState.Playing;
             self.FadeVersion++;
             self.FadeFactor = fadeInSeconds > 0f ? 0f : 1f;
+            self.RefreshMixerGroup(group);
             self.RefreshMute(group);
             self.RefreshVolume(group);
             self.AudioSource.Play();

@@ -49,7 +49,11 @@ namespace ET.Client
                    !self.IsDisposed &&
                    agent.SerialId == serialId &&
                    agent.State != AudioAgentState.Idle &&
-                   (agent.AudioSource == null || agent.PlayParams == null || agent.PlayParams.Loop || agent.AudioSource.isPlaying);
+                   (agent.State == AudioAgentState.Paused ||
+                    agent.AudioSource == null ||
+                    agent.PlayParams == null ||
+                    agent.PlayParams.Loop ||
+                    agent.AudioSource.isPlaying);
         }
 
         private static void PublishNaturalEnd(this AudioComponent self, AudioAgent agent, int serialId, string assetName, string groupName)
