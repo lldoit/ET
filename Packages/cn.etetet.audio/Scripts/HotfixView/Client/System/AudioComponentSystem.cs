@@ -21,10 +21,10 @@ namespace ET.Client
         private static void Destroy(this AudioComponent self)
         {
             self.StopAllLoading(AudioStopReason.ComponentDestroy);
-            TimerComponent timerComponent = self.Root().TimerComponent;
+            Scene scene = self.Scene();
             foreach (AudioGroup group in self.Groups.Values)
             {
-                group.StopAll(0f, AudioStopReason.ComponentDestroy, self.Scene(), timerComponent);
+                group.StopAll(0f, AudioStopReason.ComponentDestroy, scene, null);
                 group.Destroy();
             }
 

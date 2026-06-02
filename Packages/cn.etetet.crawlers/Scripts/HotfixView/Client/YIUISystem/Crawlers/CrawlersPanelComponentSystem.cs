@@ -76,12 +76,13 @@ namespace ET.Client
         {
             CrawlerBattleComponent battle = self.GetOrStartBattle();
 
-            if (self.u_ComHandView != null)
+            CrawlerHandView handView = self.GetHandView();
+            if (handView != null)
             {
                 self.UnbindCardInteractions();
                 self.ConfigureHandPiles();
                 EntityRef<CrawlersPanelComponent> selfRef = self;
-                self.u_ComHandView.CardClicked += card => OnCardClicked(selfRef, card);
+                handView.CardClicked += card => OnCardClicked(selfRef, card);
             }
 
             self.RefreshBattleView();
@@ -89,7 +90,7 @@ namespace ET.Client
 
         private static void ConfigureHandPiles(this CrawlersPanelComponent self)
         {
-            CrawlerHandView handView = self.u_ComHandView;
+            CrawlerHandView handView = self.GetHandView();
             if (handView == null)
             {
                 return;
@@ -116,7 +117,7 @@ namespace ET.Client
                 return;
             }
 
-            self.u_ComHandView?.PlayCardToPlayedPile(cardView, result.ComboBroken);
+            self.GetHandView()?.PlayCardToPlayedPile(cardView, result.ComboBroken);
             self.RefreshStatusOnly();
         }
 
@@ -241,7 +242,7 @@ namespace ET.Client
                 return;
             }
 
-            self.u_ComHandView?.PlayEndTurnPileCycle();
+            self.GetHandView()?.PlayEndTurnPileCycle();
             self.RefreshBattleViewFromDraw();
         }
 
@@ -255,10 +256,7 @@ namespace ET.Client
 
         private static void UnbindCardInteractions(this CrawlersPanelComponent self)
         {
-            if (self.u_ComHandView != null)
-            {
-                self.u_ComHandView.ClearCardInteractionListeners();
-            }
+            self.GetHandView()?.ClearCardInteractionListeners();
         }
 
         #region YIUIEvent开始

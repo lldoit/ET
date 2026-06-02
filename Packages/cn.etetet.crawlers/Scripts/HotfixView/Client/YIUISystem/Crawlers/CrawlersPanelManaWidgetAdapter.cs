@@ -4,12 +4,12 @@ namespace ET.Client
     {
         private static void EnsureManaWidget(this CrawlersPanelComponent self)
         {
-            if (self.FindTransform(ManaWidgetPath) != null)
+            if (self.FindTransform(ManaRootPath) != null && self.FindTransform(MultiplierRootPath) != null)
             {
                 return;
             }
 
-            Log.Warning("[CrawlersPanel] 未找到 ManaWidget，请在 CrawlersPanel.prefab 的 RightHud 下创建 ManaWidget/Value");
+            Log.Warning("[CrawlersPanel] 未找到右侧灵力或倍数控件，请检查 RightHud/Bp001 和 RightHud/EnergyOrb");
         }
     }
 }

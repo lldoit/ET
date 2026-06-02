@@ -20,7 +20,7 @@ public sealed class CrawlerCardConfigCategoryFactory_Config : IConfigFactory
         {
             [ 1001 ] = new ET.CrawlerCardConfig(1001, @"御剑诀", 0, ET.CrawlerElement.Metal, ET.CrawlerCardType.Attack, ET.CrawlerTargetRule.FrontEnemy, false, false, 1, @"造成18点金属性单体伤害"),
             [ 1002 ] = new ET.CrawlerCardConfig(1002, @"回春术", 1, ET.CrawlerElement.Wood, ET.CrawlerCardType.Defence, ET.CrawlerTargetRule.Self, false, false, 1, @"获得10点护盾"),
-            [ 1003 ] = new ET.CrawlerCardConfig(1003, @"聚灵雨", 2, ET.CrawlerElement.Water, ET.CrawlerCardType.Utility, ET.CrawlerTargetRule.Self, false, false, 1, @"获得1点灵力"),
+            [ 1003 ] = new ET.CrawlerCardConfig(1003, @"聚灵雨", 2, ET.CrawlerElement.Water, ET.CrawlerCardType.Utility, ET.CrawlerTargetRule.Self, false, false, 1, @"水属性过牌调息"),
             [ 1004 ] = new ET.CrawlerCardConfig(1004, @"三昧火符", 3, ET.CrawlerElement.Fire, ET.CrawlerCardType.Attack, ET.CrawlerTargetRule.FrontRow, false, false, 1, @"对前排造成16点火属性伤害"),
             [ 1005 ] = new ET.CrawlerCardConfig(1005, @"镇山印", 4, ET.CrawlerElement.Earth, ET.CrawlerCardType.Attack, ET.CrawlerTargetRule.Boss, false, false, 1, @"对Boss造成28点土属性伤害"),
             [ 1006 ] = new ET.CrawlerCardConfig(1006, @"无相手印", 1, ET.CrawlerElement.None, ET.CrawlerCardType.Wild, ET.CrawlerTargetRule.Self, true, false, 0, @"抽1张牌，补费用链但不破势")

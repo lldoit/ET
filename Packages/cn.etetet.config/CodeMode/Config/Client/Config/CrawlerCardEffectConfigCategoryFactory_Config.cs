@@ -20,7 +20,7 @@ public sealed class CrawlerCardEffectConfigCategoryFactory_Config : IConfigFacto
         {
             [ 100101 ] = new ET.CrawlerCardEffectConfig(100101, 1001, 1, ET.CrawlerEffectType.Damage, 18, ET.CrawlerTargetRule.FrontEnemy, true, @"御剑诀伤害"),
             [ 100201 ] = new ET.CrawlerCardEffectConfig(100201, 1002, 1, ET.CrawlerEffectType.Shield, 10, ET.CrawlerTargetRule.Self, false, @"回春术护盾"),
-            [ 100301 ] = new ET.CrawlerCardEffectConfig(100301, 1003, 1, ET.CrawlerEffectType.GainMana, 1, ET.CrawlerTargetRule.Self, false, @"聚灵雨补灵力"),
+            [ 100301 ] = new ET.CrawlerCardEffectConfig(100301, 1003, 1, ET.CrawlerEffectType.GainMana, 0, ET.CrawlerTargetRule.Self, false, @"聚灵雨不回灵力"),
             [ 100401 ] = new ET.CrawlerCardEffectConfig(100401, 1004, 1, ET.CrawlerEffectType.Damage, 16, ET.CrawlerTargetRule.FrontRow, true, @"三昧火符前排伤害"),
             [ 100501 ] = new ET.CrawlerCardEffectConfig(100501, 1005, 1, ET.CrawlerEffectType.Damage, 28, ET.CrawlerTargetRule.Boss, true, @"镇山印打Boss"),
             [ 100601 ] = new ET.CrawlerCardEffectConfig(100601, 1006, 1, ET.CrawlerEffectType.Draw, 1, ET.CrawlerTargetRule.Self, false, @"无相手印抽牌")

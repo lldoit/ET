@@ -8,6 +8,7 @@ namespace ET.Client
     {
         private const float PlayedStackOffsetY = -34f;
         private const float PlayedStackOffsetX = 5f;
+        private const float PlayedCardScale = 0.8f;
         private const float PileCleanupDelay = 0.28f;
 
         private readonly List<CrawlerCardView> playedVisualCards = new();
@@ -158,7 +159,7 @@ namespace ET.Client
                 }
 
                 Vector2 position = new Vector2(i * PlayedStackOffsetX, i * PlayedStackOffsetY);
-                card.Animator.MoveTo(new CrawlerCardPose(position, 0f, Vector3.one * 0.55f, i), immediate);
+                card.Animator.MoveTo(new CrawlerCardPose(position, 0f, Vector3.one * PlayedCardScale, i), immediate);
             }
         }
 

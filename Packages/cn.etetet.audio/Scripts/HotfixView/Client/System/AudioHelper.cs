@@ -12,11 +12,21 @@ namespace ET.Client
 
         public static ETTask<int> Play(Scene scene, string assetName, string groupName, AudioPlayParams playParams = null)
         {
+            if (!IsPlaybackEnabled())
+            {
+                return NoPlayback();
+            }
+
             return Get(scene).Play(assetName, groupName, playParams);
         }
 
         public static ETTask<int> PlayMusic(Scene scene, string assetName, bool loop = true, float fadeInSeconds = 0f)
         {
+            if (!IsPlaybackEnabled())
+            {
+                return NoPlayback();
+            }
+
             AudioPlayParams playParams = AudioPlayParams.Create(loop);
             playParams.FadeInSeconds = fadeInSeconds;
             return Get(scene).Play(assetName, "Music", playParams);
@@ -24,6 +34,11 @@ namespace ET.Client
 
         public static ETTask<int> PlaySound(Scene scene, string assetName, int priority = 0)
         {
+            if (!IsPlaybackEnabled())
+            {
+                return NoPlayback();
+            }
+
             AudioPlayParams playParams = AudioPlayParams.Create();
             playParams.Priority = priority;
             return Get(scene).Play(assetName, "Sound", playParams);
@@ -70,6 +85,18 @@ namespace ET.Client
         public static void SetGroupMixerGroup(Scene scene, string groupName, AudioMixerGroup mixerGroup)
         {
             scene.GetComponent<AudioComponent>()?.SetGroupMixerGroup(groupName, mixerGroup);
+        }
+
+        private static async ETTask<int> NoPlayback()
+        {
+            await ETTask.CompletedTask;
+            return 0;
+        }
+
+        // 暂无音频资源时关闭播放入口，避免 YooAssets 尝试加载不存在的音频资源。
+        private static bool IsPlaybackEnabled()
+        {
+            return false;
         }
     }
 }

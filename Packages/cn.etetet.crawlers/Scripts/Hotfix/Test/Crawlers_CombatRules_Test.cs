@@ -121,9 +121,9 @@ namespace ET.Test
             }
 
             CrawlerPlayCardResult manaResult = battle.TryPlayCard(manaCard.InstanceId);
-            if (!manaResult.Success || manaResult.ManaGain != 1 || battle.Mana != 1)
+            if (!manaResult.Success || manaResult.ManaGain != 0 || battle.Mana != 0)
             {
-                return Fail(500214, "gain mana card should apply after paying runtime cost");
+                return Fail(500214, "two cost card should spend two mana without refund");
             }
 
             battle.StartBattle(1);

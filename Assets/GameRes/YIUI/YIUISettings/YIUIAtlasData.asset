@@ -11,5 +11,66 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: dbd9de86de4298f4fa0225a83c4b8d91, type: 3}
   m_Name: YIUIAtlasData
-  m_EditorClassIdentifier: 
-  Infos: []
+  m_EditorClassIdentifier:
+  Infos:
+  - AtlasName: Atlas_Crawlers_Atlas1
+    SpriteNames:
+    - attributeicon01
+    - attributeicon02
+    - attributeicon03
+    - attributeicon04
+    - attributeicon05
+    - avatar
+    - bg_1
+    - bg_10
+    - bg_2
+    - bg_3
+    - bg_4
+    - bg_5
+    - bg_6
+    - bg_7
+    - bg_8
+    - bg_9
+    - bg01
+    - bg01_1
+    - bg02
+    - bg02_1
+    - bg02_2
+    - body
+    - body_1
+    - body_2
+    - body_3
+    - bossbody
+    - btjieshu002
+    - btshezhi003
+    - buff001
+    - buff001_1
+    - buff002
+    - buff002_1
+    - buff003
+    - buff003_1
+    - buff004
+    - buff004_1
+    - buff005
+    - buff005_1
+    - cardart01
+    - cardart02
+    - cardart03
+    - cardart04
+    - cardart05
+    - cardbase01
+    - cardbase02
+    - cardbase03
+    - cardbase04
+    - cardbase05
+    - elementicon01
+    - elementicon02
+    - elementicon03
+    - fill
+    - fill_1
+    - fill_2
+    - fill_3
+    - fill_4
+    - fill_5
+    - fill_6
+    - fill_7

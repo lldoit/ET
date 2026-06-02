@@ -13,12 +13,16 @@ namespace ET.Client
         private const string CardCountValuePath = "CrawlersView/HandTuningPanel/CardCountValue";
         private const string AngleValuePath = "CrawlersView/HandTuningPanel/AngleValue";
         private const string SpacingValuePath = "CrawlersView/HandTuningPanel/SpacingValue";
-        private const string TurnCounterPath = "CrawlersView/TopStatusBar/TurnCounter";
-        private const string ManaValuePath = "CrawlersView/RightHud/EnergyOrb/Value";
+        private const string TurnCounterPath = "CrawlersView/TopStatusBar/Lhuihe001/Text";
+        private const string ManaRootPath = "CrawlersView/RightHud/Bp001";
+        private const string ManaValuePath = "CrawlersView/RightHud/Bp001/Title";
+        private const string MultiplierRootPath = "CrawlersView/RightHud/EnergyOrb";
+        private const string MultiplierValuePath = "CrawlersView/RightHud/EnergyOrb/Value";
         private const string BossHpLabelPath = "CrawlersView/TopStatusBar/BossHp/Label";
         private const string RightHudPath = "CrawlersView/RightHud";
-        private const string ManaWidgetPath = "CrawlersView/RightHud/ManaWidget";
-        private const string ManaWidgetValuePath = "CrawlersView/RightHud/ManaWidget/Value";
+        private const string PlayerHpValuePath = "CrawlersView/LeftHud/Hp001/Title";
+        private const string DrawPileValuePath = "CrawlersView/LeftHud/DrawPile/Title";
+        private const string DiscardPileValuePath = "CrawlersView/RightHud/DiscardPile/Title";
         private const string PlayedPilePath = "CrawlersView/RightHud/PlayedPile";
         private const string DiscardPilePath = "CrawlersView/RightHud/DiscardPile";
         private const string DrawPilePath = "CrawlersView/LeftHud/DrawPile";
@@ -38,7 +42,13 @@ namespace ET.Client
                 return null;
             }
 
-            return owner.transform.Find(path);
+            Transform transform = owner.transform.Find(path);
+            if (transform != null)
+            {
+                return transform;
+            }
+
+            return owner.transform.Find($"AllViewParent/{path}");
         }
 
         private static RectTransform FindRectTransform(this CrawlersPanelComponent self, string path)
@@ -75,6 +85,16 @@ namespace ET.Client
         private static RectTransform GetRightHudRectTransform(this CrawlersPanelComponent self)
         {
             return self.FindRectTransform(RightHudPath);
+        }
+
+        private static CrawlerHandView GetHandView(this CrawlersPanelComponent self)
+        {
+            if (self.u_ComHandView != null)
+            {
+                return self.u_ComHandView;
+            }
+
+            return self.FindComponent<CrawlerHandView>("CrawlersView/HandArea");
         }
 
         private static void SetCrawlersViewVisible(this CrawlersPanelComponent self, bool visible)

@@ -30,7 +30,7 @@ namespace ET.Client
 
         private static void RefreshHandViewInternal(this CrawlersPanelComponent self, CrawlerBattleComponent battle, bool fromDrawPile)
         {
-            CrawlerHandView handView = self.u_ComHandView;
+            CrawlerHandView handView = self.GetHandView();
             CrawlerDeckComponent deck = battle.DeckRef;
             if (handView == null || deck == null)
             {

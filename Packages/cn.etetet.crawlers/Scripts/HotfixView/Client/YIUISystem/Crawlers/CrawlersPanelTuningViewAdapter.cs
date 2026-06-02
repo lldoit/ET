@@ -10,7 +10,7 @@ namespace ET.Client
         {
             self.SetHandTuningVisible(false);
 
-            CrawlerHandView handView = self.u_ComHandView;
+            CrawlerHandView handView = self.GetHandView();
             if (handView == null)
             {
                 Log.Warning("[CrawlersPanel] 未找到 CrawlerHandView，无法绑定手牌调参控件");

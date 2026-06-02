@@ -53,14 +53,14 @@ namespace ET.Client
                 artworkImage.enabled = definition?.Artwork != null;
             }
 
-            if (frameImage != null && definition != null)
+            if (frameImage != null)
             {
-                frameImage.color = definition.FrameColor;
+                frameImage.color = Color.white;
             }
 
-            if (bodyImage != null && definition != null)
+            if (bodyImage != null)
             {
-                bodyImage.color = definition.BodyColor;
+                bodyImage.color = Color.white;
             }
         }
 
